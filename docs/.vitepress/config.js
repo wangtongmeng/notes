@@ -1,4 +1,5 @@
 export default {
+  title: 'tm的学习笔记',
   themeConfig: {
     nav: [{ text: "前端笔记", link: "/fe/" }],
     sidebar: [
