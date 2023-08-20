@@ -5,7 +5,7 @@
 - 一个函数，用大O表示，比如O(1)、O(n)、O(logN)...
 - 定性描述该算法的运行时间
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/2023/08/20/22-23-49-e92445a61295299d29ead5b3931cde36-1-3c258a.png" width=400 />
+<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230820225151-54e10c.png" width=400 />
 
 image.png
 
