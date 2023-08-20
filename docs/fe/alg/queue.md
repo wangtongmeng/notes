@@ -1,8 +1,9 @@
 # 队列
+
 - 一个先进先出的结构。
 - JavaScript中没有队列，但可以用 Array 实现队列的所有功能。
 
-<img src="/alg/queue/1.png" alt="drawing" width="400"/>
+<img src="http://rzol19n0q.hb-bkt.clouddn.com/202308202052743.png" alt="drawing" width="400"/>
 
 应用场景
 
@@ -13,10 +14,12 @@
 
 - 有新请求就入队，3000ms前发出的请求出队。
 - 队列的长度就是最近请求次数。
+
 ```bash
 输入：inputs = [[], [1], [100], [3001], [3002]]
 输出：[null, 1, 2, 3, 3]
 ```
+
 解题思路
 
 - 越早发出的请求，越早不在最近3000ms内的请求里。
@@ -26,6 +29,7 @@
 
 - 有新请求就入队，3000ms前发出的请求出队。
 - 队列的长度就是最近请求次数。
+
 ```javascript
 var RecentCounter = function() {
     this.q = []
