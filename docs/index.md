@@ -5,9 +5,9 @@ title:  前端笔记
 titleTemplate: 前端笔记
 
 hero:
-  name: 前端笔记
-  # text: 前端笔记。
-  # tagline: 前端笔记。。
+  name: 学习笔记
+  text: "专注&洞察&分享"
+  tagline: 个人技术知识库，用于整理和分享个人所掌握的碎片化、结构化、系统化的技术知识
   image:
     # src: /logo.svg
     # alt: vitepress-theme-demoblock  
@@ -18,3 +18,23 @@ hero:
     # - theme: alt
     #   text: Learn More
     #   link: /guide/
+
+features:
+  - icon:
+      src: img/focus.png
+      width: 50
+      height: 50
+    title: 保持专注
+    details: “专注于当下，专注于眼前的工作，做好每一件事情。” -- 莱昂纳多·达芬奇
+  - icon:
+      src: img/insight.png
+      width: 50
+      height: 50
+    title: 善于洞察
+    details: “洞察力的本质在于能够看到问题的本质，而不是问题本身。” -- 亨利·戴维·梭罗
+  - icon:
+      src: img/knowledge.png
+      width: 50
+      height: 50
+    title: 乐于分享
+    details: “我们的人生只有在为他人而生的时候，才能找到自己的意义。” -- 阿尔伯特·爱因斯坦
