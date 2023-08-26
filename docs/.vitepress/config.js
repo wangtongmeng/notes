@@ -38,7 +38,14 @@ export default {
             { text: 'Vue', collapsed: true },
             { text: 'React', collapsed: true },
             { text: '工程化', collapsed: true },
-            { text: 'TypeScript', collapsed: true },
+            { 
+              text: 'TypeScript', 
+              collapsed: true,
+              items: [
+                {text: 'TypeScript安装与编译', link: '/fe/typescript/01.TypeScript安装与编译'},
+                {text: '数据类型', link: '/fe/typescript/02.数据类型'},
+              ]
+            },
             { text: 'Node', collapsed: true },
             { text: '网络', collapsed: true },
             { text: '浏览器', collapsed: true },
