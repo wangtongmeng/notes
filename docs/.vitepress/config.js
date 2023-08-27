@@ -37,7 +37,15 @@ export default {
             { text: 'Css', collapsed: true },
             { text: 'Vue', collapsed: true },
             { text: 'React', collapsed: true },
-            { text: '工程化', collapsed: true },
+            { 
+              text: '工程化', 
+              collapsed: true,
+              items: [
+                {text: 'webpack', collapsed: true },
+                {text: 'vite', collapsed: true },
+                {text: 'rollup', collapsed: true },
+              ] 
+            },
             { 
               text: 'TypeScript', 
               collapsed: true,
@@ -60,7 +68,7 @@ export default {
             { text: '微前端', collapsed: true },
             { text: '设计模式', collapsed: true },
             // { text: '架构', collapsed: true },
-            { text: 'Web3D', collapsed: true },
+            // { text: 'Web3D', collapsed: true },
             { text: '安全', collapsed: true },
             { text: 'Git', collapsed: true },
             { text: '项目与轮子', collapsed: true },

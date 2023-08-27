@@ -6,7 +6,7 @@ titleTemplate: 前端笔记
 
 hero:
   name: 学习笔记
-  text: "专注&洞察&分享"
+  # text: "专注&洞察&分享"
   tagline: 个人技术知识库，用于整理和分享个人所掌握的碎片化、结构化、系统化的技术知识
   image:
     # src: /logo.svg
@@ -36,5 +36,5 @@ features:
       src: img/knowledge.png
       width: 50
       height: 50
-    title: 乐于分享
-    details: “我们的人生只有在为他人而生的时候，才能找到自己的意义。” -- 阿尔伯特·爱因斯坦
+    title: 不惧失败
+    details: “凡是失败的事，倒霉的事，错误，在一定的条件下，会产生好的结果。” -- 毛泽东
