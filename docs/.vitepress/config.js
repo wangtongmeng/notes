@@ -71,6 +71,7 @@ export default {
             { text: '浏览器', collapsed: true },
             { text: '微前端', collapsed: true },
             { text: '设计模式', collapsed: true },
+            { text: '性能优化', collapsed: true },
             // { text: '架构', collapsed: true },
             // { text: 'Web3D', collapsed: true },
             { text: '安全', collapsed: true },
