@@ -39,7 +39,13 @@ export default {
             },
             { text: 'JavaScript', collapsed: true },
             { text: 'Css', collapsed: true },
-            { text: 'Vue', collapsed: true },
+            { 
+              text: 'Vue', 
+              collapsed: true,
+              items: [
+                {text: 'Pinia使用', link: '/fe/vue/Pinia使用'}
+              ]
+            },
             { text: 'React', collapsed: true },
             { 
               text: '工程化', 
@@ -76,7 +82,13 @@ export default {
             // { text: 'Web3D', collapsed: true },
             { text: '安全', collapsed: true },
             { text: 'Git', collapsed: true },
-            { text: '项目与轮子', collapsed: true },
+            {
+              text: '项目与轮子',
+              collapsed: true,
+              items: [
+                {text: '真机调试（安卓+chrome）', link: '/fe/projects/真机调试（安卓+Chrome）'}
+              ]
+            },
             { text: 'Nginx', collapsed: true },
             { text: 'Mysql', collapsed: true },
             { text: 'MongoDB', collapsed: true },
