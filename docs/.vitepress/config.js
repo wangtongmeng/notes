@@ -1,7 +1,11 @@
 export default {
   title: 'tm的学习笔记',
+  lastUpdated: true,
   themeConfig: {
     socialLinks: [{ icon: "github", link: "https://github.com/wangtongmeng" }],
+    search: {
+      provider: 'local'
+    },
     nav: [
       { text: "前端", link: "/fe/" }, 
       { text: "读书", link: "/read/" }, 
