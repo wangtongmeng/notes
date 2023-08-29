@@ -9,6 +9,7 @@ export default {
     nav: [
       { text: "前端", link: "/fe/" }, 
       { text: "读书", link: "/read/" }, 
+      { text: "资源", link: "/resources/" }, 
       {text: '关于我', link: "/me/"}
     ],
     sidebar: {
