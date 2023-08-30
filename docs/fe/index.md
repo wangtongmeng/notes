@@ -3,16 +3,6 @@
 面试题
 - [react面试题](/fe/interview/react)
 
-算法
-- [时间与空间复杂度](/fe/alg/complexity)
-- [栈](/fe/alg/stack)
-- [队列](/fe/alg/queue)
-- [链表](/fe/alg/linkList)
-- [集合](/fe/alg/set)
-- [字典](/fe/alg/map)
-- [树](/fe/alg/tree)
-- [图](/fe/alg/graph)
-
 Vue
 - [Pinia使用](/fe/vue/Pinia使用)
 
@@ -32,3 +22,19 @@ TypeScript
 
 项目与轮子
 - [真机调试（安卓+chrome）](/fe/projects/真机调试（安卓+Chrome）)
+
+算法
+- [时间与空间复杂度](/fe/alg/complexity)
+- [栈](/fe/alg/stack)
+- [队列](/fe/alg/queue)
+- [链表](/fe/alg/linkList)
+- [集合](/fe/alg/set)
+- [字典](/fe/alg/map)
+- [树](/fe/alg/tree)
+- [图](/fe/alg/graph)
+- [堆](/fe/alg/heap)
+- [排序与搜索](/fe/alg/排序与搜索)
+- [分而治之](/fe/alg/分而治之)
+- [动态规划](/fe/alg/动态规划)
+- [贪心算法](/fe/alg/贪心算法)
+- [回溯算法](/fe/alg/回溯算法)
