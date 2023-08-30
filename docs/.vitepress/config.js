@@ -1,3 +1,4 @@
+
 export default {
   title: 'tm的学习笔记',
   lastUpdated: true,
@@ -16,6 +17,7 @@ export default {
       '/fe/': [
         {
           text: "前端笔记",
+          link: '/fe/',
           items: [
             {
               text: "面试题",
@@ -99,3 +101,4 @@ export default {
     },
   },
 };
+
