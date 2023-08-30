@@ -1,6 +1,3 @@
----
-pageClass: .vp-doc ul
----
 # 前端笔记知识库
 
 面试题
