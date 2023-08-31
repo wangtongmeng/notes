@@ -33,6 +33,8 @@ export default {
             //   async使用及原理
             //   generator
             // 作用域与作用域链
+            // 正则
+            // 新数据结构
             // 
             { text: 'Css', collapsed: true },
             // 常用知识点总结
@@ -104,7 +106,7 @@ export default {
               collapsed: true,
               items: [
                 {text: '真机调试（安卓+chrome）', link: '/fe/projects/真机调试（安卓+Chrome）'},
-                {text: 'Vite4+Vue3+Typescript 搭建开发环境', link: '/fe/projects/Vite4+Vue3+Typescript 搭建开发环境'}
+                {text: 'Vite4+Vue3+Typescript搭建开发环境', link: '/fe/projects/Vite4+Vue3+Typescript搭建开发环境'}
               ]
             },
             { text: 'Nginx', collapsed: true },
