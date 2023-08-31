@@ -71,7 +71,7 @@ export default {
             { text: '安全', collapsed: true },
             { text: 'Git', collapsed: true },
             {
-              text: '项目与轮子',
+              text: '项目开发',
               collapsed: true,
               items: [
                 {text: '真机调试（安卓+chrome）', link: '/fe/projects/真机调试（安卓+Chrome）'}
