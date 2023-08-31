@@ -1,4 +1,4 @@
-# Vite4+Vue3+Typescript 搭建开发环境
+# Vite4+Vue3+Typescript搭建开发环境
 
 - 安装使用vite4
 - 支持vue3
@@ -136,12 +136,14 @@ sh.exe.stackdump
 dist
 coverage
 ```
+
 ## 支持 vue3
 ### 安装 vue
 ```bash
 pnpm install vue
 pnpm install @vitejs/plugin-vue -D
 ```
+
 ### vite.config.ts
 vite.config.ts
 ```typescript
@@ -161,6 +163,7 @@ src\env.d.ts
 +  export default component;
 +}
 ```
+
 ### src\main.ts
 src\main.ts
 ```typescript
@@ -182,13 +185,15 @@ src\App.vue
 
 <style></style>
 ```
+
 ### HelloWorld.vue
 src\components\HelloWorld.vue
 
-- [单文件组件<script setup>](https://v3.cn.vuejs.org/api/sfc-script-setup.html#%E5%8D%95%E6%96%87%E4%BB%B6%E7%BB%84%E4%BB%B6-script-setup)是在单文件组件 (SFC) 中使用组合式 API 的编译时语法糖
+- [单文件组件`<script setup>`](https://v3.cn.vuejs.org/api/sfc-script-setup.html#%E5%8D%95%E6%96%87%E4%BB%B6%E7%BB%84%E4%BB%B6-script-setup)是在单文件组件 (SFC) 中使用组合式 API 的编译时语法糖
 - [lang](https://v3.cn.vuejs.org/api/sfc-spec.html#%E9%A2%84%E5%A4%84%E7%90%86)属性可以声明预处理语言
 - [ref](https://v3.cn.vuejs.org/api/refs-api.html#ref)接受一个内部值并返回一个响应式且可变的 ref 对象。ref 对象仅有一个 .value 属性，指向该内部值,在 JS 中操作数据需要.value,在模板中读取不需要.value
-- 在 <script setup> 中必须使用 [defineProps](https://v3.cn.vuejs.org/api/sfc-script-setup.html#defineprops-%E5%92%8C-defineemits) API 来声明 props，只在 <script setup> 中才能使用的编译器宏。他们不需要导入且会随着 <script setup> 处理过程一同被编译掉
+- 在 `<script setup>` 中必须使用 [defineProps](https://v3.cn.vuejs.org/api/sfc-script-setup.html#defineprops-%E5%92%8C-defineemits) API 来声明 props，只在 `<script setup>` 中才能使用的编译器宏。他们不需要导入且会随着 `<script setup>` 处理过程一同被编译掉
+
 ```vue
 <script setup lang="ts">
   import { ref } from 'vue'
@@ -527,7 +532,7 @@ npx mrm lint-staged
 ### commitlint
 
 - [commitlint](https://www.npmjs.com/package/@commitlint/cli)推荐我们使用[onfig-conventional](https://www.npmjs.com/package/@commitlint/config-conventional)配置去写 commit
-- 提交格式 git commit -m <type>[optional scope]: <description>
+- 提交格式 git commit -m `<type>`[optional scope]: `<description>`
    - type ：用于表明我们这次提交的改动类型，是新增了功能？还是修改了测试代码？又或者是更新了文档？
    - optional scope：一个可选的修改范围。用于标识此次提交主要涉及到代码中哪个模块
    - description：一句话描述此次提交的主要内容，做到言简意赅
@@ -579,8 +584,9 @@ module.exports = {
   }
 }
 ```
-## 9.配置别名
-### 9.1 vite.config.ts
+
+## 配置别名
+### vite.config.ts
 ```diff
 import { defineConfig } from "vite"
 +import { resolve } from "path"
@@ -594,7 +600,7 @@ export default defineConfig({
   plugins: [vue()]
 })
 ```
-### 9.2 tsconfig.json
+### tsconfig.json
 tsconfig.json
 ```diff
 {
@@ -615,7 +621,7 @@ tsconfig.json
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
 ```
-### 9.3 App.vue
+### App.vue
 src\App.vue
 ```diff
 <script setup lang="ts">
@@ -722,6 +728,7 @@ a {
 +</style>
 
 ```
+
 #### 外联
 
 - 任何以 .module.css 为后缀名的 CSS 文件都被认为是一个 CSS modules 文件
@@ -1047,15 +1054,15 @@ index.html
   <img src="/logo.png" style="width:50px" />
 </body>
 ```
-## 12. mock
+## mock
 
 - [vite-plugin-mock](https://github.com/vbenjs/vite-plugin-mock/blob/HEAD/README.zh_CN.md)提供本地和生产模拟服务
 - vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境
-### 12.1 安装
+### 安装
 ```
 pnpm install mockjs  vite-plugin-mock -D
 ```
-### 12.2 vite.config.ts
+### vite.config.ts
 vite.config.ts
 ```diff
 import { defineConfig } from "vite"
@@ -1081,7 +1088,7 @@ export default defineConfig({
   }
 })
 ```
-### 12.3 mock\auth.ts
+### mock\auth.ts
 mock\auth.ts
 ```
 import { MockMethod } from "vite-plugin-mock"

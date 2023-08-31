@@ -22,7 +22,7 @@ TypeScript
 
 项目开发
 - [真机调试（安卓+chrome）](/fe/projects/真机调试（安卓+Chrome）)
-- [Vite4+Vue3+Typescript 搭建开发环境](/fe/projects/Vite4+Vue3+Typescript 搭建开发环境)
+- [Vite4+Vue3+Typescript搭建开发环境](/fe/projects/Vite4+Vue3+Typescript搭建开发环境)
 
 算法
 - [时间与空间复杂度](/fe/alg/complexity)
