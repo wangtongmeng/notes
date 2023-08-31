@@ -20,8 +20,9 @@ TypeScript
 - [模块VS命名空间](/fe/typescript/10.模块VS命名空间)
 - [类型声明](/fe/typescript/11.类型声明)
 
-项目与轮子
+项目开发
 - [真机调试（安卓+chrome）](/fe/projects/真机调试（安卓+Chrome）)
+- [Vite4+Vue3+Typescript 搭建开发环境](/fe/projects/Vite4+Vue3+Typescript 搭建开发环境)
 
 算法
 - [时间与空间复杂度](/fe/alg/complexity)

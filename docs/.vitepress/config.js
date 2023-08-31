@@ -103,7 +103,8 @@ export default {
               text: '项目开发',
               collapsed: true,
               items: [
-                {text: '真机调试（安卓+chrome）', link: '/fe/projects/真机调试（安卓+Chrome）'}
+                {text: '真机调试（安卓+chrome）', link: '/fe/projects/真机调试（安卓+Chrome）'},
+                {text: 'Vite4+Vue3+Typescript 搭建开发环境', link: '/fe/projects/Vite4+Vue3+Typescript 搭建开发环境'}
               ]
             },
             { text: 'Nginx', collapsed: true },
