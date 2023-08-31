@@ -26,22 +26,51 @@ export default {
               items: [{ text: "react面试题", link: "/fe/interview/react" }],
             },
             { text: 'JavaScript', collapsed: true },
+            // es6+语法
+            // 异步
+            //   事件轮询
+            //   promise原理
+            //   async使用及原理
+            //   generator
+            // 作用域与作用域链
+            // 
             { text: 'Css', collapsed: true },
+            // 常用知识点总结
             { 
               text: 'Vue', 
               collapsed: true,
               items: [
                 {text: 'Pinia使用', link: '/fe/vue/Pinia使用'}
+                // router 使用
+                // vue3 options api 使用
+                // vue3 组合式api使用
+                // pinia 原理
+                // vue-router原理
+                // vue2原理
+                // vue3原理
               ]
             },
             { text: 'React', collapsed: true },
+            // react16简单实现
+            // react使用
+            // react18新特性
+            // redux react-redux 中间件 使用及实现
+            // mobx 使用及原理
+            // react-router-5简单使用
+            // react-router-6使用
+            // react-router-6实现原理
             { 
               text: '工程化', 
               collapsed: true,
               items: [
                 {text: 'webpack', collapsed: true },
+                // webpack5使用
+                // webpack5原理
                 {text: 'vite', collapsed: true },
+                // vite使用
+                // vite原理
                 {text: 'rollup', collapsed: true },
+                // rollup使用
               ] 
             },
             { 
