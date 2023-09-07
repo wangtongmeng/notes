@@ -5,6 +5,7 @@
 
 Vue
 - [Pinia使用](/fe/vue/Pinia使用)
+- [vue-router4实现原理](/fe/vue/vue-router4实现原理)
 
 工程化
 
