@@ -47,7 +47,8 @@ export default {
               collapsed: true,
               items: [
                 {text: 'Pinia使用', link: '/fe/vue/Pinia使用'},
-                {text: 'vue-router4实现原理', link: '/fe/vue/vue-router4实现原理'}
+                {text: 'pinia实现原理', link: '/fe/vue/pinia实现原理'},
+                {text: 'vue-router4实现原理', link: '/fe/vue/vue-router4实现原理'},
                 // router 使用
                 // vue3 options api 使用
                 // vue3 组合式api使用
