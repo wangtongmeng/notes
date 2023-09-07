@@ -7,6 +7,10 @@ export default {
     search: {
       provider: 'local'
     },
+    outline: {
+      level: [2,3,4,5],
+      label: '目录'
+    },
     nav: [
       { text: "前端", link: "/fe/" }, 
       { text: "读书", link: "/read/" }, 
@@ -42,7 +46,8 @@ export default {
               text: 'Vue', 
               collapsed: true,
               items: [
-                {text: 'Pinia使用', link: '/fe/vue/Pinia使用'}
+                {text: 'Pinia使用', link: '/fe/vue/Pinia使用'},
+                {text: 'vue-router4实现原理', link: '/fe/vue/vue-router4实现原理'}
                 // router 使用
                 // vue3 options api 使用
                 // vue3 组合式api使用
