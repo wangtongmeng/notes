@@ -5,10 +5,10 @@
 - JS 中没有图，但是可以用 Object 和 Array 构建图。
 - 图的表示法：邻接矩阵、邻接表、关联矩阵...
 ## 图的表示法：邻接矩阵
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230821061043-a4e6fe.png)
+![image.png](http://cdn.wangtongmeng.com/20230821061043-a4e6fe.png)
 
 ## 图的表示法：邻接表
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230821061115-2c3794.png)
+![image.png](http://cdn.wangtongmeng.com/20230821061115-2c3794.png)
 ## 图的常用操作
 
 - 深度优先遍历
@@ -22,7 +22,7 @@
 - 访问根节点。
 - 对根节点的**没访问过的相邻节点**挨个进行深度优先遍历。
 
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230821061136-2c4a41.png)
+![image.png](http://cdn.wangtongmeng.com/20230821061136-2c4a41.png)
 ```javascript
 const graph = {
   0: [1, 2],
@@ -51,7 +51,7 @@ dfs(2); // 2013
 - 把对头的**没访问过的相邻节点**入队。
 - 重复第二、三步，直到队列为空。
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821061151-75f0a4.png" width=300 />
+<img src="http://cdn.wangtongmeng.com/20230821061151-75f0a4.png" width=300 />
 
 ```javascript
 const graph = {
@@ -79,8 +79,8 @@ while (q.length) {
 ## LeetCode：65.有效数字
 解题思路
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821061222-3f446a.png" width=300 />
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821061305-429e83.png" />
+<img src="http://cdn.wangtongmeng.com/20230821061222-3f446a.png" width=300 />
+<img src="http://cdn.wangtongmeng.com/20230821061305-429e83.png" />
 
 解题步骤
 
@@ -127,7 +127,7 @@ var isNumber = function(s) {
 // 空间复杂度 O(1)
 ```
 ## LeetCode：417.太平洋大西洋水流问题
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821061323-37fdae.png" />
+<img src="http://cdn.wangtongmeng.com/20230821061323-37fdae.png" />
 
 解题思路
 

@@ -28,7 +28,7 @@ JSX工作原理
 - 通过babel将jsx解析成ast抽象语法树，再生成code源代码。
 
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202101335.png)
+![An image](http://cdn.wangtongmeng.com/202308202101335.png)
 
 <!-- there is no need to specify pathname:// if the target is explicitly specified -->
 ## 说一下你对 Virtual DOM 的理解？
@@ -77,7 +77,7 @@ vdom是什么
 - JavaScript 执行 Javascript 引擎和页面渲染引擎在同一个渲染线程,GUI 渲染和 Javascript 执行两者是互斥的
 - 如果某个任务执行时间过长，浏览器会推迟渲染
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202103595.png)
+![An image](http://cdn.wangtongmeng.com/202308202103595.png)
 
 ### requestIdleCallback
 
@@ -86,7 +86,7 @@ vdom是什么
 - 正常帧任务完成后没超过 16 ms,说明时间有富余，此时就会执行 requestIdleCallback 里注册的任务
 
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202103096.png)
+![An image](http://cdn.wangtongmeng.com/202308202103096.png)
 
 ### fiber
 
@@ -98,7 +98,7 @@ Fiber是一个执行单元
 - Fiber 是一个执行单元,每次执行完一个执行单元, React 就会检查现在还剩多少时间，如果没有时间就将控制权让出去
 
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202103903.png)
+![An image](http://cdn.wangtongmeng.com/202308202103903.png)
 
 Fiber是一种数据结构
 
@@ -110,7 +110,7 @@ Fiber是一种数据结构
 - 如果有没有下一个弟弟，返回父节点标识完成父节点遍历，如果有叔叔遍历叔叔
 - 没有父节点遍历结束
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202103722.png)
+![An image](http://cdn.wangtongmeng.com/202308202103722.png)
 
 渲染时机
 
@@ -122,7 +122,7 @@ Fiber是一种数据结构
 - [react-dom](https://gitee.com/mirrors/react/tree/v17.0.1/packages/react-dom) 把变更的内容渲染到页面上
 
 
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202104937.png)
+![An image](http://cdn.wangtongmeng.com/202308202104937.png)
 
 ## 说一下 React的 DOM-DIFF 算法？
 在 React17+中 DOM-DIFF 就是根据老的 fiber 树和最新的 JSX 对比生成新的 fiber 树的过程
@@ -133,7 +133,7 @@ React优化原则
 - 可以通过 key 标识移动的元素
 
 单节点
-![An image](http://rzol19n0q.hb-bkt.clouddn.com/202308202104230.png)
+![An image](http://cdn.wangtongmeng.com/202308202104230.png)
 
 多节点
 

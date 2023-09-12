@@ -2,7 +2,7 @@
 ## 堆是什么？
 - 堆是一种特殊的完全二叉树
 - 所有的节点都大于等于（最大堆）或小于等于（最小堆）它的子节点
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230831062507-95e260.png" width=400 />
+<img src="http://cdn.wangtongmeng.com/20230831062507-95e260.png" width=400 />
 # JS 中的堆
 
 - JS 中通常用数组表示堆。
@@ -10,7 +10,7 @@
 - 右侧子节点的位置是 2 * index + 2。
 - 父节点位置是 (index - 1) / 2。
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230831062712-38f712.png" width=400 />
+<img src="http://cdn.wangtongmeng.com/20230831062712-38f712.png" width=400 />
 ## 堆的应用
 
 - 堆能高效、快速地找出最大值和最小值，时间复杂度：O(1)
@@ -99,7 +99,7 @@ h.pop();
 
 ```
 在vscode中，可以通过watch观察堆顶和堆的大小的变化
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230831062753-e22568.png)
+![image.png](http://cdn.wangtongmeng.com/20230831062753-e22568.png)
 ## LeetCode：215.数组中的第K个最大元素
 解题思路
 

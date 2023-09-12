@@ -3,7 +3,7 @@
 - 一个先进先出的结构。
 - JavaScript中没有队列，但可以用 Array 实现队列的所有功能。
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/202308202052743.png" alt="drawing" width="400"/>
+<img src="http://cdn.wangtongmeng.com/202308202052743.png" alt="drawing" width="400"/>
 
 应用场景
 

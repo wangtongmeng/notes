@@ -5,7 +5,7 @@
 
 <!-- ![An image](/alg/stack/1.png ) -->
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/202308202100456.png" alt="drawing" width="200"/>
+<img src="http://cdn.wangtongmeng.com/202308202100456.png" alt="drawing" width="200"/>
 
 ```javascript
 const stack = []
@@ -25,7 +25,7 @@ const item2 = stack.pop()
 - 后出来的余数反而要排到前面。
 - 把余数依次入栈，然后出栈，就可以实现余数倒序输出。
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/202308202100884.png" alt="drawing" width="200"/>
+<img src="http://cdn.wangtongmeng.com/202308202100884.png" alt="drawing" width="200"/>
 
 场景二：有效的括号
 

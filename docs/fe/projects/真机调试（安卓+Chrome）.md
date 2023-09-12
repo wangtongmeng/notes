@@ -8,9 +8,9 @@
 - 打开手机浏览器
 - 打开谷歌调试网址：chrome://inspect/#devices
 - 找到手机上的网址，点击Inspect
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230828203455-47110e.png)
+![image.png](http://cdn.wangtongmeng.com/20230828203455-47110e.png)
 
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230828203518-86cd0e.png)
+![image.png](http://cdn.wangtongmeng.com/20230828203518-86cd0e.png)
 
 ## 参考
 [https://juejin.cn/post/6963540939944132615](https://juejin.cn/post/6963540939944132615)

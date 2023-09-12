@@ -5,7 +5,7 @@
 - 多个元素组成的元素
 - 元素存储不连续，用 next 指针连在一起。
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/202308202058727.png" alt="drawing" width="400"/>
+<img src="http://cdn.wangtongmeng.com/202308202058727.png" alt="drawing" width="400"/>
 
 ## 数组 vs 链表
 

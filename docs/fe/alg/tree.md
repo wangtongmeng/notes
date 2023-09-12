@@ -10,12 +10,12 @@
 - 广度优先遍历：先访问里根节点最近的节点。
 ## 深度优先遍历算法口诀
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821055919-f4268d.png" width=200 />
+<img src="http://cdn.wangtongmeng.com/20230821055919-f4268d.png" width=200 />
 
 - 访问根节点。
 - 对根节点的 children 挨个进行深度优先遍历。
 ## 广度优先遍历算法口诀
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821060452-6e4ce6.png" width=200 />
+<img src="http://cdn.wangtongmeng.com/20230821060452-6e4ce6.png" width=200 />
 
 - 新建一个队列，把根节点入队。
 - 把对头出队并访问。
@@ -27,7 +27,7 @@
 - 树中每个节点最多只能有两个子节点。
 - 在 JS 中通常用 Object来模拟二叉树。
 ### 先序遍历算法口诀
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821060529-218ef9.png" width=200 />
+<img src="http://cdn.wangtongmeng.com/20230821060529-218ef9.png" width=200 />
 
 - 访问**根**节点。
 - 对根节点的**左**子树进行先序遍历。
@@ -80,7 +80,7 @@ preOrder(bt);
 // 7
 ```
 ### 中序遍历算法口诀
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821060552-f845cb.png" width=200 />
+<img src="http://cdn.wangtongmeng.com/20230821060552-f845cb.png" width=200 />
 
 - 对根节点的**左**子树进行中序遍历。
 - 访问**根**节点。
@@ -98,7 +98,7 @@ inOrder(bt); //4251637
 ```
 ### 后序遍历算法口诀
 
-<img src="http://rzol19n0q.hb-bkt.clouddn.com/20230821060636-371a40.png" width=200 />
+<img src="http://cdn.wangtongmeng.com/20230821060636-371a40.png" width=200 />
 
 - 对根节点的**左**子树进行后序遍历。
 - 对根节点的**右**子树进行后续遍历。

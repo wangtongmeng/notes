@@ -219,7 +219,7 @@ export function registerApplication(appName,loadApp,activeWhen,customProps){
 ```
 ### single-spa/application/app.helpers.js
 处理应用状态的方法
-![image.png](http://rzol19n0q.hb-bkt.clouddn.com/20230912194348874a7fc4fe166d10911d9d70b21215f1.png)
+![image.png](http://cdn.wangtongmeng.com/20230912194348874a7fc4fe166d10911d9d70b21215f1.png)
 ```javascript
 import { apps } from "./app.js";
 
