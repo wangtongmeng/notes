@@ -27,7 +27,8 @@ const items = [
         collapsed: true,
         items: [
           {text: 'Pinia使用', link: '/fe/vue/Pinia使用'},
-          {text: 'vue-router4实现原理', link: '/fe/vue/vue-router4实现原理'}
+          {text: 'pinia实现原理', link: '/fe/vue/pinia实现原理'},
+          {text: 'vue-router4实现原理', link: '/fe/vue/vue-router4实现原理'},
           // router 使用
           // vue3 options api 使用
           // vue3 组合式api使用
@@ -79,7 +80,16 @@ const items = [
       { text: 'Node', collapsed: true },
       { text: '网络', collapsed: true },
       { text: '浏览器', collapsed: true },
-      { text: '微前端', collapsed: true },
+      { 
+        text: '微前端', 
+        collapsed: true,
+        items: [
+          {text: 'systemjs使用及原理', link: '/fe/micro-app/systemjs使用及原理'},
+          {text: 'single-spa使用', link: '/fe/micro-app/single-spa使用'},
+          {text: 'single-spa实现原理', link: '/fe/micro-app/single-spa实现原理'},
+          {text: 'qiankun使用', link: '/fe/micro-app/qiankun使用'},
+        ]
+      },
       { text: '设计模式', collapsed: true },
       { text: '性能优化', collapsed: true },
       // { text: '架构', collapsed: true },

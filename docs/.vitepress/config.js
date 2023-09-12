@@ -100,7 +100,16 @@ export default {
             { text: 'Node', collapsed: true },
             { text: '网络', collapsed: true },
             { text: '浏览器', collapsed: true },
-            { text: '微前端', collapsed: true },
+            { 
+              text: '微前端', 
+              collapsed: true,
+              items: [
+                {text: 'systemjs使用及原理', link: '/fe/micro-app/systemjs使用及原理'},
+                {text: 'single-spa使用', link: '/fe/micro-app/single-spa使用'},
+                {text: 'single-spa实现原理', link: '/fe/micro-app/single-spa实现原理'},
+                {text: 'qiankun使用', link: '/fe/micro-app/qiankun使用'},
+              ]
+            },
             { text: '设计模式', collapsed: true },
             { text: '性能优化', collapsed: true },
             // { text: '架构', collapsed: true },

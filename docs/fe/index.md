@@ -5,6 +5,7 @@
 
 Vue
 - [Pinia使用](/fe/vue/Pinia使用)
+- [pinia实现原理](/fe/vue/pinia实现原理)
 - [vue-router4实现原理](/fe/vue/vue-router4实现原理)
 
 工程化
@@ -20,6 +21,12 @@ TypeScript
 - [类型变换](/fe/typescript/09.类型变换)
 - [模块VS命名空间](/fe/typescript/10.模块VS命名空间)
 - [类型声明](/fe/typescript/11.类型声明)
+
+微前端
+- [systemjs使用及原理](/fe/micro-app/systemjs使用及原理)
+- [single-spa使用](/fe/micro-app/single-spa使用)
+- [single-spa实现原理](/fe/micro-app/single-spa实现原理)
+- [qiankun使用](/fe/micro-app/qiankun使用)
 
 项目开发
 - [真机调试（安卓+chrome）](/fe/projects/真机调试（安卓+Chrome）)
