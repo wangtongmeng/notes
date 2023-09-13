@@ -217,17 +217,17 @@ src\components\HelloWorld.vue
   }
 </style>
 ```
-## 5.支持 typescript
+## 支持 typescript
 
 - 只编译不校验
-### 5.1 安装
+### 安装
 
 - [typescript](https://www.npmjs.com/package/typescript)是一种基于 JavaScript 的强类型编程语言
 - [vue-tsc](https://www.npmjs.com/package/vue-tsc)可以对 Vue3 进行 Typescript 类型较验
 ```
 pnpm install typescript vue-tsc  -D
 ```
-### 5.2 package.json
+### package.json
 package.json
 ```diff
 {
@@ -237,7 +237,7 @@ package.json
   },
 }
 ```
-### 5.3 msg.ts
+### msg.ts
 src\msg.ts
 ```
 interface Msg {
@@ -251,7 +251,7 @@ const msg: Msg = {
 
 export default msg
 ```
-### 5.4 App.vue
+### App.vue
 src\App.vue
 ```diff
 <script setup lang="ts">
@@ -860,17 +860,17 @@ export default defineConfig({
 + }
 })
 ```
-#### 10.5.2 src\styles\theme.less
+#### src\styles\theme.less
 src\styles\theme.less
 ```diff
 @color: red;
 ```
-#### 10.5.3 src\styles\theme.scss
+#### src\styles\theme.scss
 src\styles\theme.scss
 ```diff
 $color: green;
 ```
-#### 10.5.4 src\components\HelloWorld.vue
+#### src\components\HelloWorld.vue
 src\components\HelloWorld.vue
 ```diff
 <script setup lang="ts">
@@ -938,14 +938,14 @@ module.exports = {
   plugins: [require("autoprefixer")]
 }
 ```
-#### 10.6.3 .browserslistrc
+#### .browserslistrc
 .browserslistrc
 ```
 >0.2%
 not dead
 not op_mini all
 ```
-#### 10.6.4 HelloWorld.vue
+#### HelloWorld.vue
 src\components\HelloWorld.vue
 ```diff
 <script setup lang="ts">
