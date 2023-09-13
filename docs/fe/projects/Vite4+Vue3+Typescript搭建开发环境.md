@@ -42,7 +42,9 @@ pnpm install vite -D
    - 一个开发服务器，它基于 原生 ES 模块 提供了 丰富的内建功能，如速度快到惊人的 模块热更新（HMR）,Vite 将会使用 esbuild 预构建依赖。Esbuild 使用 Go 编写，并且比以 JavaScript 编写的打包器预构建依赖快 10-100 倍
    - 一套构建指令，它使用 Rollup 打包你的代码，并且它是预配置的，可输出用于生产环境的高度优化过的静态资源
 
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/804048/1693366213332-b1570c07-c9e2-44af-b4d4-b613554ff570.png#averageHue=%23e8ebec&clientId=u92ab211b-f1ab-4&from=paste&id=u417f7add&originHeight=270&originWidth=979&originalType=url&ratio=2&rotation=0&showTitle=false&size=30268&status=done&style=none&taskId=ufed7a9c2-4838-499f-9c0d-b313a720c62&title=) ![image.png](https://cdn.nlark.com/yuque/0/2023/png/804048/1693366213451-7565410c-1a31-4b0c-82e4-c97ab74cd786.png#averageHue=%23252423&clientId=u92ab211b-f1ab-4&from=paste&id=u32e9718a&originHeight=592&originWidth=865&originalType=url&ratio=2&rotation=0&showTitle=false&size=48421&status=done&style=none&taskId=ub9a4afaa-ce31-450a-bf79-136f1073f5c&title=)
+![image.png](http://cdn.wangtongmeng.com/20230913215029080b9770fe73126cfb17467247357736.png)
+
+![image.png](http://cdn.wangtongmeng.com/2023091321522403415a82ed6d8b275735326c05a58e83.png)
 ### package.json
 ```json
 {
@@ -460,8 +462,8 @@ end_of_line = lf
 ```
 ### 自动格式化
 这里只设置项目本身
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/804048/1693376273961-de384845-a2ee-451e-9def-9f10e793648a.png#averageHue=%232a2828&clientId=u3032b7d1-8229-4&from=paste&height=201&id=u523aa33b&originHeight=197&originWidth=657&originalType=binary&ratio=2&rotation=0&showTitle=false&size=24924&status=done&style=none&taskId=uc2d6c94a-df3c-4e5e-b435-59f9c3658bd&title=&width=671.5)
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/804048/1693376371822-3d0c8514-cf30-48de-999a-d92b8b83dd75.png#averageHue=%232c2c2c&clientId=u3032b7d1-8229-4&from=paste&height=240&id=ub154cf0d&originHeight=246&originWidth=684&originalType=binary&ratio=2&rotation=0&showTitle=false&size=38746&status=done&style=none&taskId=uf003348a-bbfc-45bf-b37b-f8ce4da914d&title=&width=667)
+![image.png](http://cdn.wangtongmeng.com/20230913215340ec6c2891a9161df645c06ade48f338c5.png)
+![image.png](http://cdn.wangtongmeng.com/20230913215403bc12e03a54574c6252c1aa3a0a17b557.png)
 ## git hooks
 
 - 可以在git commit之前检查代码，保证所有提交到版本库中的代码都是符合规范的
@@ -1002,7 +1004,7 @@ h3 {
 ```
 > 如果安装依赖报错，直接删掉node_modules，重新 pnpm install
 
-![image.png](https://cdn.nlark.com/yuque/0/2023/png/804048/1693386067067-7e80d3a1-e67c-4c57-a277-4f93df6f37f4.png#averageHue=%23fbf6f6&clientId=u814b4594-d09f-4&from=paste&height=134&id=u4430cf4c&originHeight=268&originWidth=864&originalType=binary&ratio=2&rotation=0&showTitle=false&size=50155&status=done&style=none&taskId=u8930c61b-0748-418c-b447-1eb90504762&title=&width=432)
+![image.png](http://cdn.wangtongmeng.com/20230913215445b52027bd7e15c763b387c328f89c045d.png)
 ## 静态资源处理
 
 - [assets](https://cn.vitejs.dev/guide/assets.html)
