@@ -58,7 +58,14 @@ export default {
                 // vue3原理
               ]
             },
-            { text: 'React', collapsed: true },
+            {
+              text: 'React',
+              collapsed: true,
+              items: [
+                {text: 'mobx使用', link: '/fe/react/mobx使用'},
+            
+              ]
+            },
             // react16简单实现
             // react使用
             // react18新特性
