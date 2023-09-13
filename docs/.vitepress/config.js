@@ -63,6 +63,7 @@ export default {
               collapsed: true,
               items: [
                 {text: 'mobx使用', link: '/fe/react/mobx使用'},
+                {text: 'mobx实现原理', link: '/fe/react/mobx实现原理'},
             
               ]
             },
