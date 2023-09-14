@@ -26,6 +26,9 @@ TypeScript
 - [模块VS命名空间](/fe/typescript/10.模块VS命名空间)
 - [类型声明](/fe/typescript/11.类型声明)
 
+网络与浏览器
+- [跨域的方式](/fe/http/跨域的方式)
+
 微前端
 - [systemjs使用及原理](/fe/micro-app/systemjs使用及原理)
 - [single-spa使用](/fe/micro-app/single-spa使用)

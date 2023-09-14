@@ -86,8 +86,14 @@ const items = [
         ]
       },
       { text: 'Node', collapsed: true },
-      { text: '网络', collapsed: true },
-      { text: '浏览器', collapsed: true },
+      {
+        text: '网络与浏览器',
+        collapsed: true,
+        items: [
+          {text: '跨域的方式', link: '/fe/http/跨域的方式'},
+      
+        ]
+      },
       { 
         text: '微前端', 
         collapsed: true,
