@@ -82,7 +82,13 @@ export default {
                 {text: 'webpack', collapsed: true },
                 // webpack5使用
                 // webpack5原理
-                {text: 'vite', collapsed: true },
+                {
+                  text: 'vite', 
+                  collapsed: true,
+                  items: [
+                    {text: 'Vite使用', link: '/fe/engineering/vite/vite使用'}
+                  ]
+                },
                 // vite使用
                 // vite原理
                 {text: 'rollup', collapsed: true },
