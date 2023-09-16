@@ -27,7 +27,10 @@ export default {
               text: "面试题",
               // link: "/fe/interview/",
               collapsed: true,
-              items: [{ text: "react面试题", link: "/fe/interview/react" }],
+              items: [
+                { text: "javascript面试题", link: "/fe/interview/javascript" },
+                { text: "react面试题", link: "/fe/interview/react" },
+              ],
             },
             { text: 'JavaScript', collapsed: true },
             // es6+语法
@@ -62,6 +65,8 @@ export default {
               text: 'React',
               collapsed: true,
               items: [
+                {text: 'Redux与React-Redux使用及原理', link: '/fe/react/Redux与React-Redux使用及原理'},
+                {text: 'Redux中间件使用及实现原理', link: '/fe/react/Redux中间件使用及实现原理'},
                 {text: 'mobx使用', link: '/fe/react/mobx使用'},
                 {text: 'mobx实现原理', link: '/fe/react/mobx实现原理'},
             
