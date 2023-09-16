@@ -67,6 +67,9 @@ export default {
               items: [
                 {text: 'Redux与React-Redux使用及原理', link: '/fe/react/Redux与React-Redux使用及原理'},
                 {text: 'Redux中间件使用及实现原理', link: '/fe/react/Redux中间件使用及实现原理'},
+                {text: 'connected-react-router', link: '/fe/react/connected-react-router'},
+                {text: 'redux-first-history', link: '/fe/react/redux-first-history'},
+                {text: 'redux-saga实现原理', link: '/fe/react/redux-saga实现原理'},
                 {text: 'mobx使用', link: '/fe/react/mobx使用'},
                 {text: 'mobx实现原理', link: '/fe/react/mobx实现原理'},
             
