@@ -1,6 +1,7 @@
 # 前端笔记知识库
 
 面试题
+- [javascript面试题](/fe/interview/javascript)
 - [react面试题](/fe/interview/react)
 
 Vue
@@ -9,10 +10,19 @@ Vue
 - [vue-router4实现原理](/fe/vue/vue-router4实现原理)
 
 React
+- [React核心用法](/fe/react/React核心用法)
+- [Redux与React-Redux使用及原理](/fe/react/Redux与React-Redux使用及原理)
+- [Redux中间件使用及实现原理](/fe/react/Redux中间件使用及实现原理)
+- [connected-react-router](/fe/react/connected-react-router)
+- [redux-first-history](/fe/react/redux-first-history)
+- [redux-saga实现原理](/fe/react/redux-saga实现原理)
 - [mobx使用](/fe/react/mobx使用)
 - [mobx实现原理](/fe/react/mobx实现原理)
 
 工程化
+
+vite
+- [Vite使用](/fe/engineering/vite/vite使用)
 
 TypeScript
 - [TypeScript安装与编译](/fe/typescript/01.TypeScript安装与编译)

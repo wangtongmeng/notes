@@ -66,6 +66,7 @@ export default {
               text: 'React',
               collapsed: true,
               items: [
+                {text: 'React核心用法', link: '/fe/react/React核心用法'},
                 {text: 'Redux与React-Redux使用及原理', link: '/fe/react/Redux与React-Redux使用及原理'},
                 {text: 'Redux中间件使用及实现原理', link: '/fe/react/Redux中间件使用及实现原理'},
                 {text: 'connected-react-router', link: '/fe/react/connected-react-router'},
