@@ -30,6 +30,7 @@ export default {
               items: [
                 { text: "javascript面试题", link: "/fe/interview/javascript" },
                 { text: "react面试题", link: "/fe/interview/react" },
+                { text: "react面试题简答版", link: "/fe/interview/react面试题简答版" },
               ],
             },
             { text: 'JavaScript', collapsed: true },
