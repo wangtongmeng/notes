@@ -205,6 +205,7 @@ var deleteDuplicates = function(head) {
 解题思路
 
 - 两个人在圆形操场上的起点同时起跑，速度快的人一定会超过速度慢的人一圈。
+- 
 - 用一慢一快双指针遍历链表，如果指针能够相逢，那么链表就有环。
 
 解题步骤
@@ -226,18 +227,32 @@ var deleteDuplicates = function(head) {
  * @return {boolean}
  */
 var hasCycle = function(head) {
-    let p1 = p2 = head
-    while(p1 && p2 && p2.next) {
-        p1 = p1.next
-        p2 = p2.next.next
-        if (p1 === p2) {
-            return true
-        }
+    let slow = head
+    let fast = head
+    while(fast && fast.next) {
+        fast = fast.next.next
+        slow = slow.next
+        if (slow === fast) return true
     }
     return false
 };
 // 时间复杂度 O(n)
 // 空间复杂度 O(1)
+```
+普通解法：
+```javascript
+var hasCycle = function(head) {
+    let cache = new Set()
+    while (head) {
+        if (cache.has(head)) {
+            return true
+        } else {
+            cache.add(head)
+        }
+        head = head.next
+    }
+    return false
+};
 ```
 
 ## 前端与链表：JS中的原型链
@@ -252,4 +267,39 @@ var hasCycle = function(head) {
 obj -> Object.prototype -> null
 func -> Function.prototype -> Object.prototype -> null
 arr -> Array.prototype -> Object.prototype -> null
+```
+## 203. 移除链表元素
+```javascript
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} val
+ * @return {ListNode}
+ */
+var removeElements = function(head, val) {
+    // 递归的写法
+    // if (!head) return head
+    // head.next = removeElements(head.next, val)
+    // return head.val === val ? head.next : head
+
+    // 定义一个哨兵（减少没有head的判断）
+    // 哨兵=>1=>2
+    // return 哨兵.next
+    let ele = new ListNode(0, head)
+    let p = ele
+    while (p.next) {
+        if (p.next.val === val) {
+            p.next = p.next.next
+        } else {
+            p = p.next
+        }
+    }
+    return ele.next
+};
 ```
