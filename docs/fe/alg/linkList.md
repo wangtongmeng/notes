@@ -303,3 +303,42 @@ var removeElements = function(head, val) {
     return ele.next
 };
 ```
+## 146. LRU 缓存
+```javascript
+/**
+ * @param {number} capacity
+ */
+var LRUCache = function(capacity) {
+    this.cache = new Map()
+    this.max = capacity
+};
+
+/** 
+ * @param {number} key
+ * @return {number}
+ */
+LRUCache.prototype.get = function(key) {
+    if (this.cache.has(key)) {
+        let tmp = this.cache.get(key)
+        this.cache.delete(key)
+        this.cache.set(key, tmp)
+        return tmp
+    }
+    return -1
+};
+
+/** 
+ * @param {number} key 
+ * @param {number} value
+ * @return {void}
+ */
+LRUCache.prototype.put = function(key, value) {
+    if (this.cache.has(key)) {
+        this.cache.delete(key)
+    } else if (this.cache.size >= this.max ) {
+        // 新增就要有缓存的淘汰机制
+        this.cache.delete(this.cache.keys().next().value)
+    }
+    this.cache.set(key, value)
+};
+```
