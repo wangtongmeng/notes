@@ -224,6 +224,16 @@ var maxDepth = function(root) {
 // 时间复杂度 O(n) 遍历了树一遍
 // 空间负责度 O(logn) ~ O(n)
 ```
+递归的方式
+```javascript
+var maxDepth = function(root) {
+    if (root === null) {
+        return 0
+    }
+    // 树最大深度，等于左子树的深度和右子树的深度中较大的那个+1
+    return Math.max(maxDepth(root.left), maxDepth( root.right)) + 1
+};
+```
 ## LeetCode：111.二叉树的最小深度
 解题思路
 
@@ -411,5 +421,27 @@ var hasPathSum = function(root, targetSum) {
 // 时间复杂度 O(n)
 // 空间复杂度 O(n) n是递归堆栈的高度
 ```
-## 前端与树：遍历JSON的所有节点值
+## 226. 翻转二叉树
+```javascript
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var invertTree = function(root) {
+    if (root === null) {
+        return null
+    }
+    // 递归子问题
+    [root.left, root.right] = [invertTree(root.right), invertTree(root.left)]
+    return root
+};
+```
 
