@@ -1,6 +1,34 @@
 # javascript面试题
 
-## 手写
+## 作用域与作用域链
+
+### 闭包
+
+#### 1.什么是闭包？
+
+### this
+
+#### 1.对this对象的理解
+
+什么时候产生的，指向谁
+
+#### 2.call、apply、bind的区别
+
+## 原型与原型链
+
+## 异步
+
+### Promise
+
+### async await
+
+## es6+
+
+### 模块化
+
+## DOM与BOM
+
+## 手写题
 
 ### compose
 
@@ -46,3 +74,6 @@ let fn = compose(add3, add2, add1);
 console.log(fn("lisi")); // 321lisi
 
 ```
+
+### 实现call、apply、bind
+
