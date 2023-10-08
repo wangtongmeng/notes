@@ -33,6 +33,31 @@ setState默认是异步更新的，setState时会先把更新的内容放入队�
 在React无法控制的地方无法设置批量执行（addEventListener、setTimeout和setInterval）
 
 并发模式？
+
+## setState
+
+- 不可变值
+- 可能是异步更新
+- 可能会被合并
+
+React <= 17 setState
+
+-  React组件事件：异步更新+合并 state
+- DOM 事件，setTimeout：同步更新，不合并 state
+
+React18 setState
+
+- React组件事件：异步更新+合并 state
+- DOM 事件，setTimeout：异步更新，合并 state
+- Authmatic Batching 自动批处理
+
+总结
+
+- React <= 17：只有 React组件事件才**批处理**
+- React 18：所有事件都自动批处理  Authmatic Batching （操作一致，更加简单）
+
+- 
+
 ## hooks
 ### 为什么不能在条件和循环里使用Hooks?
 因为在每次组件渲染时，Hooks的调用顺序必须是固定的，因为 hooks 为了在函数组件中引入状态，维护了一个有序表。而条件和循环语句会导致hooks的顺序发生错乱，从而发生取值和更新值是发生错误。
@@ -57,6 +82,12 @@ React Hooks 的状态是保存在函数组件内部的 Fiber 数据结构的 mem
 ### 函数组件的useState和类组件的setState有什么区别?
 
 ## 生命周期
+
+https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+
+- 单组件生命周期
+- 父子组件生命周期，和Vue的一样
+
 ### React的渲染流程
 React基于Fiber架构渲染，一个Fiber是一个执行单元，React的渲染会在浏览器空闲时间进行，当空闲时间不够时，会将控制权交给浏览器（事件处理、js执行、布局/绘制等），等待下一帧的空闲时间再继续渲染，所以渲染是**异步可中断+增量更新**的
 

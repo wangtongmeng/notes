@@ -1,0 +1,52 @@
+## React高级特性
+
+- 函数组件
+  - 纯函数，输入 props，输出 JSX
+  - 没有实例，没有生命周期，没有 state
+  - 不能扩展其他方法
+- 非受控组件
+  - ref
+  - defaultValue defaultChecked
+  - 手动操作 DOM 元寿
+  - 使用场景
+    - 必须手动操作 DOM 元素，setState 实现不了
+    - 文件上传 `<input type=file />`
+    - 某些富文本编辑器，需要传入 DOM 元素
+  - vs 受控组件
+    - 优先使用受控组件，符合 React 设计原则
+    - 必须操作 DOM 时，再使用非受控组件
+- Portals
+  - 组件默认会按照既定层次渲染
+  - 如何让组件渲染到父组件以外？
+  - 使用场景
+    - overflow: hidden
+    - 父组件 z-index 值太小
+    - fixed 需要放在 body 第一层级
+- context
+  - 公共信息（语音、主题）如何传递给每个组件？
+  - 用 props 太繁琐
+  - 用 redux 小题大做
+- 异步组件（性能优化）
+  - import()
+  - React.lazy
+  - React.Suspense
+- 性能优化
+  - 回顾setState 不可变值的特性
+  - shouldComponentUpdate(简称 SCU)
+    - SCU 默认返回 true，即 React 默认重新渲染所有子组件
+    - 必须配合“不可变值”一起使用
+    - 可先不用 SCU，有性能问题时再考虑使用
+  - PureComponent 和 React.memo
+    - PureComponent，SCU 中实现了浅比较
+    - memo，函数组件中的 PureComponent
+    - 浅比较已适用大部分情况（尽量不要做深度比较）
+  - 不可变值 immutable.js
+    - 彻底拥抱“不可变质”
+    - 基于共享数据（不是深拷贝），速度好
+    - 有一定的学习和迁移成本，按需使用
+  - 总结
+    - 面试重点，且涉及 React设计理念
+    - SCU PureComponent React.memo immutable.js
+    - 按需使用 & state层级不要过多
+- 高阶组件HOC
+- Render Props
