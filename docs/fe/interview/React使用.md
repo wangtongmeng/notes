@@ -106,3 +106,51 @@ redux数据流图
 - hash模式（默认），如 `http:abc.com/#/user/10`
 - H5 history 模式，如 `http://abc.com/user/20`
 - 后者需要 server端支持（404返回首页，再由前端切换路由）
+
+## React Hooks
+
+- state hooks
+- effect hooks
+- 其他 hooks
+- 自定义 hooks
+- 组件逻辑复用
+- 规范和注意事项
+- 面试题
+  - 为什么会有 React Hooks，它解决了哪些问题？
+  - React Hooks 如何模拟组件生命周期？
+  - 如何自定义 Hooks？
+  - React Hooks 性能优化？
+  - 使用 React Hooks 遇到哪些坑？
+  - Hooks 相比 HOC 和 Render Prop 有哪些优点？
+
+函数组件的特点
+
+- 没有组件的实例
+- 没有生命周期
+- 没有 state 和 setState，只能接收 props
+
+Class 组件的问题
+
+- 大型组件很难拆分和重构，很难测试（即 class 不易拆分）
+- 相同业务逻辑，分散到各个方法中，逻辑混乱（例如 didMount，unmount的逻辑）
+- 复用逻辑变的复杂，如 Mixins（废弃）、HOC、Render Props
+
+React 组件更易用函数表达
+
+- React 提倡函数式编程，view = fn(props)
+- 函数更灵活，更易拆分，更易测试
+- 但函数组件太简单，需要增强能力——Hooks
+
+State Hooks
+
+- 让函数组件实现 state 和 setState
+  - 默认函数组件没有 state
+  - 函数组件是一个纯函数，执行完即销毁，无法存储 state
+  - 需要 State Hook，即把 state 功能“钩”到纯函数中
+
+自定义 Hooks
+
+- 封装通用的功能
+- 开发和使用第三方 Hooks
+- 自定义 Hook 带来了无限的扩展性，解耦代码
+
