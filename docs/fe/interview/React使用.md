@@ -49,4 +49,60 @@
     - SCU PureComponent React.memo immutable.js
     - 按需使用 & state层级不要过多
 - 高阶组件HOC
+  - 公共逻辑的抽离
+  - Mixin，已被React废弃
+  - 高阶组件 HOC 
+  - Render Props
 - Render Props
+
+## Redux 使用
+
+- 不可变值，纯函数
+- 面试常考
+- 基本概念
+- 单向数据流
+- React-redux
+- 异步action
+- 中间件
+
+基本概念
+
+- store state
+- action
+- reducer
+
+单向数据流概述
+
+- dispatch(action)
+- reducer -> newState
+- Subsribe 触发通知
+
+React-Redux
+
+- Provider
+- connect
+- mapStateToProps mapDispatchToProps
+
+异步 aciton
+
+- dispatch是同步的，异步action其实就是先执行异步逻辑，再执行dispatch，可以通过中间件（redux-thunk、redux-promise、redux-saga）来实现
+
+redux中间件
+
+![](http://cdn.wangtongmeng.com/20231009070751.png)
+
+redux数据流图
+
+<img src="http://cdn.wangtongmeng.com/20231009071205.png" style="zoom:33%;" />
+
+## React-router 使用
+
+- 路由模式（hash、H5 history）
+- 路由配置(动态路由，懒加载)
+- 基本使用
+
+路由模式
+
+- hash模式（默认），如 `http:abc.com/#/user/10`
+- H5 history 模式，如 `http://abc.com/user/20`
+- 后者需要 server端支持（404返回首页，再由前端切换路由）
