@@ -147,6 +147,56 @@ State Hooks
   - 默认函数组件没有 state
   - 函数组件是一个纯函数，执行完即销毁，无法存储 state
   - 需要 State Hook，即把 state 功能“钩”到纯函数中
+- useState 使用总结
+  - useState(0)传入初始值，返回数组 [state, setState]
+  - 通过 state 获取值
+  - 通过 setState(1) 修改值
+
+- Hooks命名规范
+  - 规定所有的 Hooks 都 use 开头，如 useXxx
+  - 自定义 Hook 也要以 use 开头
+  - 非 Hooks 的地方，尽量不要使用 useXxx 写法
+
+
+Effect Hooks
+
+- 让函数组件模拟生命周期
+  - 默认函数组件没有生命周期
+  - 函数组件是一个纯函数，执行完即销毁，自己无法实现生命周期
+  - 使用 Effect Hook 把生命周期 “钩” 到纯函数中
+- useEffect使用
+  - 模拟 componentDidMount - useEffect 依赖 []
+  - 模拟 componentDidUpdate - useEffect无依赖，或者依赖[a,b]
+  - 模拟 componentWillUnMount - useEffect 中返回一个函数
+- useEffect 让纯函数有了副作用
+  - 默认情况下，执行纯函数，输入参数，返回结果，无副作用
+  - 所谓副作用，就是对函数之外造成影响，如设置全局定时任务
+  - 而组件需要副作用，所以需要 useEffect “钩”到纯函数中
+- useEffect 中返回函数 fn
+  - useEffect 依赖 []，组件销毁是执行 fn，等于 willUnMount
+  - useEffect 无依赖或依赖 [a,b]，组件更新时执行 fn
+  - 即，下一次执行 useEffect 之前，就会执行 fn，无论更新或卸载
+
+小结
+
+- 函数组件更适合 React 组件，但需要 Hooks增强功能
+- useState 可实现 state 和 setState
+- useEffect 可模拟组件主要的生命周期
+
+其他 Hooks
+
+- useRef
+- useContext
+- useReducer
+  - useReducer 和 redux的区别
+    - useReducer 是 useState 的替代方案，用于 state 复杂变化
+    - useReducer 是单个组件状态管理，组件通讯还需要 props
+    - redux 是全局的状态管理，多组件共享数据
+- useMemo
+- useCallback
+  - useMemo 缓存数据
+  - useCallback 缓存函数
+  - 两者是 React Hooks 的常见优化策略
 
 自定义 Hooks
 
@@ -154,3 +204,4 @@ State Hooks
 - 开发和使用第三方 Hooks
 - 自定义 Hook 带来了无限的扩展性，解耦代码
 
+ 
