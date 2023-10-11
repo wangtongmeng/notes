@@ -117,11 +117,33 @@ redux数据流图
 - 规范和注意事项
 - 面试题
   - 为什么会有 React Hooks，它解决了哪些问题？
+    - 完善函数组件的能力，函数组件更适合 React 组件
+    - 组件逻辑复用，Hooks 表现更好
+    - class 复杂组件正在变的费解，不易拆解，不易测试，逻辑混乱
+    - class组件中，相同的逻辑散落在各处
+      - DidMount 和 DidUpdate 中获取数据
+      - DiMount 绑定事件，WillUnMount 解绑事件
+      - 使用 Hooks，相同逻辑可分割到一个一个的 useEffect 中
   - React Hooks 如何模拟组件生命周期？
+    - 模拟 componentDidMount - useEffect 依赖 []
+    - 模拟 componentDidUpdate - useEffect无依赖，或者依赖[a,b]
+    - 模拟 componentWillUnMount - useEffect 中返回一个函数
+      - useEffect 依赖 []，组件销毁是执行 fn，等于 willUnMount
+      - useEffect 无依赖或依赖 [a,b]，组件更新时执行 fn
+      - 即，下一次执行 useEffect 之前，就会执行 fn，无论更新或卸载
   - 如何自定义 Hooks？
   - React Hooks 性能优化？
+    - useMemeo 缓存数据
+    - useCallback 缓存数据
+    - 相当于 class 组件的 SCU 和 PureComponent
   - 使用 React Hooks 遇到哪些坑？
+    - useState 初始化值，只能第一次有效，如果想修改值，只能用对应的setState
+    - useEffect 内部不能修改 state（当依赖项为空时）
+    - useEffect 可能出现死循环，如依赖值是引用类型时，解决方案就是拆开传[obj.a, obj.b]，在内部重新组合
   - Hooks 相比 HOC 和 Render Prop 有哪些优点？
+    - 完全符合 Hooks 原有规则，没有其他要求，易理解记忆
+    - 变量作用域明确
+    - 不会产生组件嵌套
 
 函数组件的特点
 
@@ -201,7 +223,33 @@ Effect Hooks
 自定义 Hooks
 
 - 封装通用的功能
+  - 本质上一个函数，以 use 开头（重要）
+  - 内部正常使用 useState useEffect  或者其他 Hooks
+  - 自定义返回结果，格式不限
+
 - 开发和使用第三方 Hooks
 - 自定义 Hook 带来了无限的扩展性，解耦代码
 
- 
+ Hooks 使用规范
+
+- 再次强调命名规范 useXxx
+- Hooks 使用规范，重要！
+- 关于 Hooks 的调用顺序
+  - 无论是 render 还是 re-render，Hooks 调用顺序必须一致
+  - 如果 Hooks 出现在循环、判断里，则无法保证顺序一致
+  - Hooks 严重依赖于调用顺序！
+- 只能用于 React 函数组件和自定义 Hook 中，其他地方不可以
+- 只能用于顶层代码，不能在循环、判断中使用 Hooks
+- eslint 插件 eslint-plugin-react-hooks 
+
+Hooks 做组件逻辑复用的好处
+
+- 完全符合 Hooks 原有规则，没有其他要求，易理解记忆
+- 变量作用域明确
+- 不会产生组件嵌套
+
+React Hooks 注意事项
+
+- useState 初始化值，只能第一次有效，如果想修改值，只能用对应的setState
+- useEffect 内部不能修改 state（当依赖项为空时）
+- useEffect 可能出现死循环，如依赖值是引用类型时，解决方案就是拆开传[obj.a, obj.b]，在内部重新组合
