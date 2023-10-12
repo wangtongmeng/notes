@@ -192,6 +192,21 @@ https://cn.vuejs.org/guide/essentials/lifecycle.html#lifecycle-diagram
 - 渲染过程
 - 前端路由
 
+### 组件化
+
+- 传统组件，只是静态渲染，更新还要依赖操作 DOM
+- 数据驱动视图 - Vue MVVM，React setState
+
+### 响应式
+
+- 核心API - Object.defineProperty
+- 如何实现响应式
+  - 监听对象、数组
+  - 复杂对象，深度监听
+- 缺点
+- proxy
+  - 兼容性不好，且无法 polyfill
+
 ## 面试题
 
 ### v-show 和 v-if 的区别
