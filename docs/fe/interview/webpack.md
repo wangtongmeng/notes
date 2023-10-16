@@ -301,6 +301,15 @@ scope hosting配置
 
 ![image-20231015070836502](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015070836502.png)
 
+### 如何产出一个lib
+
+- 参考 webpack.dll.js
+- output.library
+
+<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015084534908.png" alt="image-20231015084534908" style="zoom:25%;" />
+
+## babel 面试题
+
 ### babel-runtime 和 babel-polyfill 的区别
 
 - babel-polifll 会污染全局
@@ -311,13 +320,6 @@ scope hosting配置
 
 - babel - JS 新语法编译工具，不关心模块化
 - webpack - 打包构建工具，是多个 loader plugin的集合 
-
-### 如何产出一个lib
-
-- 参考 webpack.dll.js
-- output.library
-
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015084534908.png" alt="image-20231015084534908" style="zoom:25%;" />
 
 ### 为何 Proxy 不能被 Polyfill？
 
