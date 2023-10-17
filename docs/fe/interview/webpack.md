@@ -51,10 +51,10 @@ webpack4升级webpack5
 ## 基本配置
 
 - 拆分配置和 merge
-- 启动本地服务
-- 处理 ES6
-- 处理样式
-- 处理图片
+- 启动本地服务  **webpack-dev-server html-webpack-plugin**
+- 处理 ES6 @babel/core @babel/preset-env **babel-loader**
+- 处理样式  **style-loader css-loader less-loader   postcss-loader** autoprefixer
+- 处理图片   **file-loader url-loader**
 - 模块化，webpack本身支持，但需要引入webpack
 
 ## 高级配置
@@ -64,8 +64,8 @@ webpack4升级webpack5
 > - 高级配置，也是通过面试的必要条件
 
 - 多入口
-- 抽离 CSS 文件
-- 抽离公共代码
+- 抽离 CSS 文件 mini-css-extract-plugin 压缩css terser-webpack-plugin optimize-css-assets-webpack-plugin
+- 抽离公共代码，配置splitChunks
 - 懒加载
 - 处理 JSX，用 babel
 - 处理 Vue，用 vue-loader
@@ -167,6 +167,20 @@ webpack4升级webpack5
 ### 说说对webpack的理解
 
 ### webpack的构建流程
+
+几个核心概念
+
+- Entry：入口，Webpack 执行构建的第一步将从 Entry 开始，可抽象成输入。
+- Module：模块，在 Webpack 里一切皆模块，一个模块对应着一个文件。Webpack 会从配置的 Entry 开始递归找出所有依赖的模块。
+- Chunk：代码块，一个 Chunk 由多个模块组合而成，用于代码合并与分割。
+- Loader：模块转换器，用于把模块原内容按照需求转换成新内容。
+- Plugin：扩展插件，在 Webpack 构建流程中的特定时机会广播出对应的事件，插件可以监听这些事件的发生，在特定时机做对应的事情。
+
+Webpack 的构建流程可以分为以下三大阶段：
+
+- 初始化：启动构建，读取与合并配置参数，加载 Plugin，实例化 Compiler。
+- 编译：从 Entry 发出，针对每个 Module 串行调用对应的 Loader 去翻译文件内容，再找到该 Module 依赖的 Module，递归地进行编译处理。
+- 输出：对编译后的 Module 组合成 Chunk，把 Chunk 转换成文件，输出到文件系统。
 
 ### 常用的Loader和Plugin
 
