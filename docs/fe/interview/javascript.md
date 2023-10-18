@@ -83,7 +83,33 @@ console.log(obj1) // 这里打印出什么？
 
 ### 手写深度比较，如 lodash isEqual
 
+### `split()` 和 `join()` 的区别
 
+```js
+'1-2-3'.split('-') //  ['1', '2', '3']
+[1,2,3].join('-') // '1-2-3'
+```
+
+### 数组的变异方法和非变异方法
+
+### `[10, 20, 30].map(parseInt)` 的结果是什么？
+
+```js
+[10, 20, 30].map(parseInt) // [10, NaN, NaN]
+
+// 拆解开就是
+[10, 20, 30].map((num, index) => {
+  	// 这里的 index 是 0 1 2
+    return parseInt(num, index)
+    // parseInt 第二个参数是进制
+    // 如果省略该参数或其值为 0，则数字将以 10 为基础来解析。如果它以 “0x” 或 “0X” 开头，将以 16 为基数。
+    // 如果该参数小于 2 或者大于 36，则 parseInt() 将返回 NaN
+})
+
+[10, 20, 30].map((num, index) => {
+    return parseInt(num, 10)
+}) // [10, 20, 30]
+```
 
 ## 作用域与作用域链
 
@@ -93,6 +119,22 @@ console.log(obj1) // 这里打印出什么？
 - var 和 let 是变量，可修改；const 是常量，不可修改
 - var 有变量提升，let const 没有
 - var 没有块级作用域，let const 有 （ES6 语法有块级作用域）
+
+### 对作用域和自由变量的理解，场景题
+
+```js
+let i
+for(i = 1; i <= 3; i++) {
+  setTimeout(function(){
+      console.log(i)
+  }, 0)
+}
+// what?
+
+// 444
+```
+
+
 
 ### 闭包
 
@@ -149,6 +191,23 @@ console.log( c.get('a') )
 
 什么时候产生的，指向谁
 
+#### this场景题
+
+```js
+const User = {
+    count: 1,
+    getCount: function() {
+        return this.count
+    }
+}
+console.log(User.getCount()) // what?
+const func = User.getCount
+console.log( func() ) // what?
+
+// 第一个 1
+// 第二个 undefined
+```
+
 #### 2.call、apply、bind的区别
 
 ## 原型与原型链
@@ -158,6 +217,61 @@ console.log( c.get('a') )
 ### 如何判断一个变量是不是数组？
 
 ### class 的原型本质，怎么理解？
+
+### `new Object()` 和 `Object.create()` 的区别
+
+示例一
+
+```javascript
+const obj1 = {
+    a: 10,
+    b: 20,
+    sum() {
+        return this.a + this.b
+    }
+}
+const obj2 = new Object({
+    a: 10,
+    b: 20,
+    sum() {
+        return this.a + this.b
+    }
+})
+const obj3 = Object.create({
+    a: 10,
+    b: 20,
+    sum() {
+        return this.a + this.b
+    }
+})
+// 分别打印看结构
+```
+
+<img src="http://cdn.wangtongmeng.com/20231017214046.png" style="zoom: 50%;" />
+
+示例二
+
+```javascript
+const obj1 = {
+    a: 10,
+    b: 20,
+    sum() {
+        return this.a + this.b
+    }
+}
+const obj2 = new Object(obj1)
+console.log(obj1 === obj2) // true
+const obj3 = Object.create(obj1)
+console.log(obj1 === obj3) // false
+
+const obj4 = Object.create(obj1)
+console.log(obj3 === obj4) // false
+
+// 然后修改 obj1 ，看 obj2 obj3 和 obj4
+obj1.printA = function () {
+    console.log(this.a)
+}
+```
 
 ## 面向对象
 
@@ -373,6 +487,8 @@ console.log(location.hash)
 
 ### 事件
 
+#### 事件委托（代理）是什么
+
 #### 编写一个通用的事件监听函数
 
 ```js
@@ -478,6 +594,52 @@ console.log(fn("lisi")); // 321lisi
 ### 深拷贝
 
 ### 手写深度比较，如 lodash isEqual
+
+```js
+// 手写深度比较，如 lodash isEqual
+
+const obj1 = {a: 10, b: { x: 100, y: 200 }}
+const obj2 = {a: 10, b: { x: 100, y: 200 }}
+
+// 判断是否是 object
+function isObject(obj) {
+  return typeof obj === 'object' && obj !== null
+}
+// 全相等
+function isEqual(obj1, obj2) {
+  if (!isObject(obj1) || !isObject(obj2)) {
+      // 值类型，不是对象或数组（注意，equal 时一般不会有函数，这里忽略）
+      return obj1 === obj2
+  }
+  if (obj1 === obj2) {
+      // 两个引用类型全相等（同一个地址）
+      return true
+  }
+  // 两个都是引用类型，不全相等
+  // 1. 先取出 obje2 obj2 的 keys，比较个数
+  const obj1Keys = Object.keys(obj1)
+  const obj2Keys = Object.keys(obj2)
+  if (obj1Keys.length !== obj2Keys.length) {
+      // keys 个数不相等，则不是全等
+      return false
+  }
+  // 2. 以 obj1 为基准，和 obj2 依次递归比较
+  for (let key in obj1) {
+      // 递归比较
+      const res = isEqual(obj1[key], obj2[key])
+      if (!res) {
+          // 遇到一个不相等的，则直接返回 false
+          return false
+      }
+  }
+  // 3. 都相等，则返回 true
+  return true
+}
+
+console.log(isEqual(obj1, obj2) === true); // true
+```
+
+
 
 
 
