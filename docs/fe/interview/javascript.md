@@ -111,6 +111,25 @@ console.log(obj1) // 这里打印出什么？
 }) // [10, 20, 30]
 ```
 
+### 手写 trim 函数，保证浏览器兼容性
+
+### 正则
+
+#### 判断字符串以字母开头，后面可以是数字，下划线，字母，长度为 6-30
+
+```js
+const reg = /^[a-zA-Z]\w{5,29}$/
+
+/\d{6}/ // 邮政编码
+/^[a-z]+$/ // 小写英文字母
+/^[A-Za-z]+$/ // 英文字母
+/^\d{4}-\d{1,2}-\d{1,2}$/ // 日期格式
+/^[a-zA-Z]\w{5,17}$/ // 用户名（字母开头，字母数字下划线，5-17位）
+/\d+\.\d+\.\d+\.\d+/ // 简单的 IP 地址格式
+```
+
+
+
 ## 作用域与作用域链
 
 ### **var 和 let const 的区别**
@@ -348,6 +367,25 @@ loadImg(src)
 
 - 网络请求，如 ajax 图片加载
 - 定时任务，如 setTimeout
+
+#### async/await 语法问题
+
+```js
+(async function () {
+    console.log('start')
+    const a = await 100
+    console.log('a', a)
+    const b = await Promise.resolve(200)
+    console.log('b', b)
+    const c = await Promise.reject(300)
+    console.log('c', c)
+    console.log('end')
+})() // 执行完毕，打印出那些内容？
+
+
+```
+
+<img src="http://cdn.wangtongmeng.com/20231018211053.png" style="zoom:50%;" />
 
 ## 事件轮询
 
@@ -637,6 +675,15 @@ function isEqual(obj1, obj2) {
 }
 
 console.log(isEqual(obj1, obj2) === true); // true
+```
+
+### 手写 trim 函数，保证浏览器兼容性
+
+```js
+String.prototype.trim = function () {
+  // 知识点：原型，this，正则
+  this.replace(/^\s+/, "").replace(/\s+$/, "")
+}
 ```
 
 
