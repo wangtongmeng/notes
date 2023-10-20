@@ -188,6 +188,20 @@ Webpack 的构建流程可以分为以下三大阶段：
 
 常用的要答出来
 
+loader
+
+- css：sass-loader、css-loader、style-loader（开发环境）、postcss-loader
+- js：babel-loader
+- 图片： file-loader url-loader
+
+plugin
+
+- html 模板 html-webpack-plugin
+- 每次打包清理Bundle， clean-webpack-plugin
+- 代码压缩 minCssExtracPlugin
+- 多进程：多进程打包happypack、多进程压缩ParallelUglifyPlugin
+- DllPlugin：动态链接库，配合DllReferencePlugin
+
 ### Loader和Plugin的区别
 
 - loader 模块转换器，如 less -> css
