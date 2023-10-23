@@ -901,6 +901,52 @@ export function ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $
 - 前者无需顾虑调用顺序，而后者需要保证 hooks 的顺序一致
 - 前者 reactive + ref 比后者 useState，更难理解
 
+## 核心思想
+
+###  说说你对双向绑定的理解，以及它的实现原理
+
+## 基础
+
+### v-if和v-for哪个优先级更高？
+
+### Vue组件data为什么必须是个函数？
+
+### 函数组件的优势
+
+### Vue中的过滤器了解吗？过滤器的应用场景有哪些？
+
+### v-once的使用场景有哪些
+
+### Vue中.sync修饰符的作用？
+
+### Vue中slot是如何实现的？什么时候使用它？
+
+### Vue.use是干什么的？
+
+### Vue.extend方法的作用？
+
+### Vue.mixin的使用场景和原理
+
+### Vue中递归组件理解
+
+### 组件中写name选项有哪些好处及作用？
+
+## 生命周期
+
+### Vue的生命周期方法有哪些？一般在哪一步发送请求及原因
+
+## Diff算法
+
+### Vue中diff算法原理
+
+### 请说明Vue中key的作用和原理，谈谈你对它的理解
+
+## vue-router
+
+## 数据管理
+
+## 性能优化
+
 
 
 
