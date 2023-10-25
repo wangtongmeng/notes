@@ -226,7 +226,7 @@ Object.defineProperty实现响应式
 
 - 细节不重要，updateChildren 的过程也不重要，不要深究
 - vdom 核心概念很重要：h、vnode、patch、diff、key等
-- Vdom 存在的价值更加重要：数据驱动视图，控制 DOM 操作
+- vdom 存在的价值更加重要：数据驱动视图，控制 DOM 操作
 
 Diff
 
