@@ -1,3 +1,9 @@
+## FLEX的基础知识，flex-shrink，flex-grow，flex-basis
+
+flex-shrink：当空间不足以展示的时候，是否被压缩
+flex-grow：当内容超过既定的空间，是否放大
+flex-basis：压缩和方法的基准，没设置的时候为width的值
+
 ## nth-child 和 nth-of-type的区别
 
 ```html

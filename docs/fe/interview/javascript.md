@@ -692,6 +692,33 @@ String.prototype.trim = function () {
 }
 ```
 
+## 输出题
+
+### 异步
+
+#### 1
+
+```js
+setTimeout(() => {
+    console.log(1);
+}, 0);
+new Promise((resolve) => {
+    console.log(2);
+    resolve(3)
+}).then(res => {
+    console.log(res);
+});
+async function foo() {
+    console.log(4);
+};
+(async () => {
+    await foo();
+    console.log(5);
+})();
+
+// 24351
+```
+
 
 
 
