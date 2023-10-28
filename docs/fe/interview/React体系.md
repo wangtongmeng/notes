@@ -405,7 +405,49 @@ react组件有类组件、函数组件
 
 react元素是通过jsx创建的，一般函数组件的返回值，类似组件的render返回值是react元素
 
+#### 什么是受控组件和非受控组件？
+
+我们稍微了解下什么是受控组件和非受控组件：
+
+- 受控组件：只能通过 React 修改数据或状态的组件，就是受控组件；
+- 非受控组件：与受控组件相反，如 input, textarea, select, checkbox 等组件，本身控件自己就能控制数据和状态的变更，而且 React 是不知道这些变更的；
+
+那么如何将非受控组件改为受控组件呢？那就是把上面的这些纯 html 组件数据或状态的变更，交给 React 来操作：
+
+```javascript
+const App = () => {
+  const [value, setValue] = useState('');
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <>
+      <input value={value} onInput={event => setValue(event.target.value)} />
+      <input type="checkbox" checked={checked} onChange={event => setChecked(event.target.checked)} />
+    </>
+  );
+};
+```
+
+上面代码中，输入框和 checkbox 的变化，均是经过了 React 来操作的，在数据变更时，React 是能够知道的。
+
 ### react 基础
+
+#### props 的变动，是否会引起 state hook 中数据的变动？
+
+React 组件的 props 变动，会让组件重新执行，但并不会引起 state 的值的变动。state 值的变动，只能由 setState() 来触发。因此若想在 props 变动时，重置 state 的数据，需要监听 props 的变动，如
+
+```js
+const App = props => {
+  const [count, setCount] = useState(0);
+
+  // 监听 props 的变化，重置 count 的值
+  useEffect(() => {
+    setCount(0);
+  }, [props]);
+
+  return <div onClick={() => setCount(count + 1)}>{count}</div>;
+};
+```
 
 #### 说说 setState
 
@@ -679,29 +721,36 @@ React工作的三个阶段
 - 优点：解决了浏览器兼容性的问题，并且进行了xss处理，跨平台，更新时优化等。
 - 缺点：生成vdom消耗内存，首次渲染会有生成虚拟DOM的开销。
 
+#### 并发模式是如何执行的？
+
+React 中的`并发`，并不是指同一时刻同时在做多件事情。因为 js 本身就是单线程的（同一时间只能执行一件事情），而且还要跟 UI 渲染竞争主线程。若一个很耗时的任务占据了线程，那么后续的执行内容都会被阻塞。为了避免这种情况，React 就利用 fiber 结构和时间切片的机制，将一个大任务分解成多个小任务，然后按照任务的优先级和线程的占用情况，对任务进行调度。
+
+- 对于每个更新，为其分配一个优先级 lane，用于区分其紧急程度。
+- 通过 Fiber 结构将不紧急的更新拆分成多段更新，并通过宏任务的方式将其合理分配到浏览器的帧当中。这样就能使得紧急任务能够插入进来。
+- 高优先级的更新会打断低优先级的更新，等高优先级更新完成后，再开始低优先级更新。
+
 ### React18
 
 #### React18有哪些更新
-
-- 并发模式（concurrent mode）
-- setState批量更新
-- Suspense不再需要fallback捕获
 
 1.并发模式
 
 并发模式不是一个功能，而是一个底层设计。
 
-它可以帮助应用保持响应，根据用户的设备性能和网速进行调整，它通过渲染可中断来修复阻塞渲染机制。在**concurrent模式**中，React可以同时更新多个状态
-
-区别就是使**同步不可中断更新**变成了**异步可中断更新**
-
 useDeferredValue和startTransition用来标记一次非紧急更新
 
 2.批量更新
 
-在react17中，只有react事件会进行批处理，原生js事件、promise，setTimeout、setInterval不会
 
-react18，将所有事件都进行批处理，即多次setState会被合并为1次执行，提高了性能，在数据层，将多个状态更新合并成一次处理（在视图层，将多次渲染合并成一次渲染）
+
+
+
+React 的更新都是渐进式的更新，在 React18 中启用的新特性，其实在 v17 中（甚至更早）就埋下了。
+
+1. 并发渲染机制：它可以帮助应用保持响应，根据用户的设备性能和网速进行调整，它通过渲染可中断来修复阻塞渲染机制。在**concurrent模式**中，React可以同时更新多个状态，区别就是使**同步不可中断更新**变成了**异步可中断更新**
+2. 新的创建方式：现在是要先通过`createRoot()`创建一个 root 节点，然后该 root 节点来调用`render()`方法；
+3. 自动批处理优化：批处理：react18，将**所有事件都进行批处理**，即**多次setState会被合并为1次执行**，提高了性能，在数据层，将多个状态更新合并成一次处理（在视图层，将多次渲染合并成一次渲染）；在react17中，只有react事件会进行批处理，原生js事件、promise，setTimeout、setInterval不会**，在 v18 中所有更新都将自动批处理**，包括 promise 链、setTimeout 、setInterval等异步代码以及原生js事件；
+4. startTransition：主动降低优先级。比如「搜索引擎的关键词联想」，用户在输入框中的输入希望是实时的，而联想词汇可以稍稍延迟一会儿。我们可以用 startTransition 来降低联想词汇更新的优先级；
 
 ### React 性能优化
 
