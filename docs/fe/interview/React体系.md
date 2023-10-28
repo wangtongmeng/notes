@@ -388,12 +388,24 @@ redux数据流图
   - 缺点：没有官方系统解决方案，选型成本高；过于灵活，不容易写出高质量的应用
 - 扩展：JSX 实现声明式；虚拟 DOM 可以实现跨平台；React 使用的设计模式；自己 React 大型架构经验
 
+#### React的设计思想
+
+- 组件化
+- 数据驱动视图
+- 虚拟DOM
+
 #### 为什么引入jsx
 
 - jsx是js的扩展，可以通过html+js的方式进行UI的描述，最终通过babel编译成 React.createElement （最新版是_jsx）的语法糖
 - JSX工作原理：通过babel将jsx解析成ast抽象语法树，再生成code源代码(也就是createElement函数)
 
-### react 使用
+#### React中元素和组件的区别
+
+react组件有类组件、函数组件
+
+react元素是通过jsx创建的，一般函数组件的返回值，类似组件的render返回值是react元素
+
+### react 基础
 
 #### 说说 setState
 
@@ -417,6 +429,19 @@ React18 setState
 - React <= 17：只有 React组件事件才**批处理**
 - React 18：所有事件都自动批处理  Authmatic Batching （操作一致，更加简单）
 
+#### react事件
+
+- 在容器节点上（React16的事件绑定在document上， React17以后事件绑定在container上,**ReactDOM.render(app,container)**），通过事件委托（节约内存）的方式，监听事件
+- 合成事件，基于原事件对象做了封装，处理了不同浏览器的兼容问题
+
+#### react组件通信
+
+1. 父组件向子组件通信：props
+2. 子组件向父组件通信：回调函数、事件冒泡、Ref、
+3. 兄弟组件通信：通过父组件
+4. 父组件向后代组件通信：Context
+5. 无关组件通信：redux、react-redux、mobx、context
+
 ### react 生命周期
 
 #### react 组件的生命周期
@@ -425,8 +450,45 @@ https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
 <img src="http://cdn.wangtongmeng.com/20231022213716.png" style="zoom: 25%;" />
 
+组件生命周期的三个阶段：挂载、更新、卸载阶段
+
+挂载阶段
+
+- constructor 可以进行state和props的初始化
+- static getDerivedStateFromProps
+- render
+- **componentDidMount** 第一次渲染后调用，可以访问DOM，进行异步请求和定时器、消息订阅
+
+更新阶段
+
+- 当组件的props或state变化，或者forceUpdate会触发更新
+
+- static getDerivedStateFromProps
+
+- **shouldComponentUpdate** 返回一个布尔值，默认返回true，可以通过这个生命周期钩子进行性能优化，确认不需要更新组件时调用
+
+  render
+
+  getSnapShotBeforeUpdate
+
+  componentDidUpdate 在组件完成更新后调用
+
+卸载阶段
+
+- componentWillUnmount 组件从DOM中被移除的时候调用
+
+错误捕获
+
+- static getDerivedStateFromError 在errorBoundary中使用
+
+- componentDidCatch
+
+- **render**是class组件中唯一必须实现的方法
+
+
+
 - 单组件生命周期
-- 父子组件生命周期，和Vue的一样
+- 父子组件生命周期
 
 ### react hooks
 
@@ -489,6 +551,63 @@ Hooks只能在 React 函数组件的顶层作用域中使用，而不能在函�
 #### 函数组件的useState和类组件的setState有什么区别?
 
 ### react 原理
+
+#### 什么是 fiber，解决了什么问题
+
+在React16以前，React更新是通过**树的深度优先遍历**完成的，遍历是不能中断的，当树的层级深就会产生栈的层级过深，页面渲染速度变慢的问题，为了解决这个问题引入了fiber。
+
+React16引入了Fiber，它是一个链表结构，返回了return、children、siblings，分别代表父fiber，子fiber和兄弟fiber，随时**可中断**。
+
+**应用目的**
+实现**增量渲染**，增量渲染指的是把一个渲染任务分解为多个渲染任务，而后将其分散到多个帧里。增量渲染是为了实现任务的可中断、可恢复，并按优先级处理任务，从而达到更顺滑的用户体验。
+
+**Fiber的可中断、可恢复怎么实现的**
+
+***fiber***是协程，是比线程更小的单元，可以被人为中断和恢复，当react更新时间超过1帧时，会产生视觉卡顿的效果，因此我们可以通过fiber把浏览器渲染过程分段执行，每执行一会就让出主线程控制权，执行优先级更高的任务
+
+fiber是一个链表结构，它有三个指针，分别记录了当前节点的下一个兄弟节点，子节点，父节点。当遍历中断时，它是可以恢复的，只需要保留当前节点的索引，就能根据索引找到对应的节点
+
+**Fiber更新机制**
+
+**初始化**
+
+1. 创建fiberRoot（React根元素）和rootFiber(通过ReactDOM.render或者ReactDOM.createRoot创建出来的)
+2. 进入beginWork
+
+**workInProgress**:正在内存中构建的fiber树叫workInProgress fiber，在第一次更新时，所有的更新都发生在workInProgress树，在第一次更新后，workInProgress树上的状态是最新状态，它会替换current树
+
+**current**:正在视图层渲染的树叫current fiber树
+
+```ini
+ini复制代码currentFiber.alternate = workInProgressFiber
+workInProgressFiber.alternate = currentFiber
+```
+
+1. 深度调和子节点，渲染视图
+
+在新建的alternate树上，完成整个子节点的遍历，包括fiber的创建，最后会以workInProgress树最为最新的渲染树，fiberRoot的current指针指向workInProgress使其变成current fiber，完成初始化流程
+
+**更新**
+
+1. 重新创建workInProgress树，复用当前current树上的alternate，作为新的workInProgress
+
+渲染完成后，workInProgress树又变成current树
+
+**双缓冲模式**
+
+话剧演出中，演员需要切换不同的场景，以一个一小时话剧来说，在舞台中切换场景，时间来不及。一般是准备两个舞台，切换场景从左边舞台到右边舞台演出
+
+在计算机图形领域，通过让图形硬件交替读取两套缓冲数据，可以实现画面的无缝切换，减少视觉的抖动甚至卡顿。
+
+react的current树和workInProgress树使用双缓冲模式，可以减少fiber节点的开销，减少性能损耗
+
+**React渲染流程**
+
+如图，React用JSX描述页面，JSX经过babel编译为render function，执行后产生VDOM，VDOM不是直接渲染的，会先转换为fiber，再进行渲染。vdom转换为fiber的过程叫reconcile，转换过程会创建DOM，全部转换完成后会一次性commit到DOM，这个过程不是一次性的，而是可打断的，这就是fiber架构的渲染流程
+
+vdom（React Element对象）中只记录了子节点，没有记录兄弟节点，因此渲染不可打断
+
+fiber（fiberNode对象）是一个链表，它记录了父节点、兄弟节点、子节点，因此是可以打断的
 
 #### 说一下React setState原理
 
@@ -560,6 +679,30 @@ React工作的三个阶段
 - 优点：解决了浏览器兼容性的问题，并且进行了xss处理，跨平台，更新时优化等。
 - 缺点：生成vdom消耗内存，首次渲染会有生成虚拟DOM的开销。
 
+### React18
+
+#### React18有哪些更新
+
+- 并发模式（concurrent mode）
+- setState批量更新
+- Suspense不再需要fallback捕获
+
+1.并发模式
+
+并发模式不是一个功能，而是一个底层设计。
+
+它可以帮助应用保持响应，根据用户的设备性能和网速进行调整，它通过渲染可中断来修复阻塞渲染机制。在**concurrent模式**中，React可以同时更新多个状态
+
+区别就是使**同步不可中断更新**变成了**异步可中断更新**
+
+useDeferredValue和startTransition用来标记一次非紧急更新
+
+2.批量更新
+
+在react17中，只有react事件会进行批处理，原生js事件、promise，setTimeout、setInterval不会
+
+react18，将所有事件都进行批处理，即多次setState会被合并为1次执行，提高了性能，在数据层，将多个状态更新合并成一次处理（在视图层，将多次渲染合并成一次渲染）
+
 ### React 性能优化
 
 #### React Hooks 性能优化？
@@ -570,7 +713,32 @@ React工作的三个阶段
 
 ### 公共数据管理
 
+#### Redux工作原理
+
+使用单例模式实现
+
+Store 一个全局状态管理对象
+
+Reducer 一个纯函数，根据旧state和props更新新state
+
+Action 改变状态的唯一方式是dispatch action
+
 ### react-router
+
+#### React-Router工作原理
+
+**BrowserRouter**使用的**HTML5**的**history api**实现路由跳转
+**HashRoute**r使用URL的**hash属性**控制路由跳转
+
+**前端通用路由解决方案**
+
+- hash模式
+
+> 改变URL以#分割的路径字符串，让页面感知路由变化的一种模式,通过*hashchange*事件触发
+
+- history模式
+
+> 通过浏览器的history api实现,通过*popState*事件触发
 
 
 
