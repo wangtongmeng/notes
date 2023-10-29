@@ -1,4 +1,34 @@
-## FLEX的基础知识，flex-shrink，flex-grow，flex-basis
+## 单行、多行文本溢出隐藏
+
+单号文本溢出
+
+```css
+overflow: hidden; // 溢出隐藏
+text-overflow: ellipsis; // 溢出用省略号显示
+white-space: nowrap; // 规定段落中的文本不进行换行
+```
+
+多行文本溢出
+
+```css
+overflow: hidden;
+text-overflow: ellipsis;
+display: -webkit-box; // 作为弹性伸缩盒子模型显示
+-webkit-box-orient: vertical; // 设置伸缩盒子的子元素排列方式：从上到下垂直排列
+-webkit-line-clamp: 3; // 显示的行数
+```
+
+## 如何判断元素是否到达可视区域
+
+以图片显示为例：
+
+- `window.innerHeight`是浏览器可视区的高度
+- `document.body.scrollTop || document.documentElement.scrollTop`是浏览器滚动过的距离；
+- 内容到达显示区域：img.offsetTop < window.innerHeight + document.body.scrollTop
+
+<img src="http://cdn.wangtongmeng.com/20231029184517-946265.png" style="zoom: 33%;" />
+
+## flex的基础知识，flex-shrink，flex-grow，flex-basis
 
 flex-shrink：当空间不足以展示的时候，是否被压缩
 flex-grow：当内容超过既定的空间，是否放大
