@@ -1,3 +1,15 @@
+## 清除浮动
+
+```css
+.clear::after {
+    content: ' ';
+    display: block;
+    clear: both;
+}
+```
+
+
+
 ## 单行、多行文本溢出隐藏
 
 单号文本溢出
@@ -33,6 +45,14 @@ display: -webkit-box; // 作为弹性伸缩盒子模型显示
 flex-shrink：当空间不足以展示的时候，是否被压缩
 flex-grow：当内容超过既定的空间，是否放大
 flex-basis：压缩和方法的基准，没设置的时候为width的值
+
+## flex: 1表示什么
+
+flex属性是flex-grow，flex-shrink和flex-basis的简称，默认值是0 1 auto。**flex:1 表示 flex: 1 1 0%**;
+
+- flex-grow: 定义项目的放大比例，默认是0，即如果存在剩余空间，也不放大；
+- flex-shrink：定义项目的缩小比例，默认为1，即如果空间不足，该项目将缩小；
+- flex-basis：给上面两个属性分配多余空间之前，计算项目是否有多余空间，默认值为auto，即项目本身的大小。
 
 ## nth-child 和 nth-of-type的区别
 
