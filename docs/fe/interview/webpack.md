@@ -336,6 +336,10 @@ scope hosting配置
 
 <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015084534908.png" alt="image-20231015084534908" style="zoom:25%;" />
 
+### 除了 webpack 的新打包工具
+
+### webpack分包做了什么
+
 ## babel 面试题
 
 ### babel-runtime 和 babel-polyfill 的区别
