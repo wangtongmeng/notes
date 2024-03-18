@@ -121,7 +121,13 @@ export default {
                 {text: '类型声明', link: '/fe/typescript/11.类型声明'},
               ]
             },
-            { text: 'Node', collapsed: true },
+            { 
+              text: 'Node', 
+              collapsed: true,
+              items: [
+                {text: 'mongodb使用', link: '/fe/node/mongo'},
+              ]
+            },
             {
               text: '网络与浏览器',
               collapsed: true,
