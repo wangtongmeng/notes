@@ -30,7 +30,6 @@ export default {
               items: [
                 { text: "javascript面试题", link: "/fe/interview/javascript" },
                 { text: "react面试题", link: "/fe/interview/react" },
-                { text: "react面试题简答版", link: "/fe/interview/react面试题简答版" },
               ],
             },
             { text: 'JavaScript', collapsed: true },
@@ -128,14 +127,14 @@ export default {
                 {text: 'mongodb使用', link: '/fe/node/mongo'},
               ]
             },
-            {
-              text: '网络与浏览器',
-              collapsed: true,
-              items: [
-                {text: '跨域的方式', link: '/fe/http/跨域的方式'},
+            // {
+            //   text: '网络与浏览器',
+            //   collapsed: true,
+            //   items: [
+            //     {text: '跨域的方式', link: '/fe/http/跨域的方式'},
             
-              ]
-            },
+            //   ]
+            // },
             { 
               text: '微前端', 
               collapsed: true,
