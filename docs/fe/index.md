@@ -1,8 +1,21 @@
-# 前端笔记知识库
 
 面试题
-- [javascript面试题](/fe/interview/javascript)
-- [react面试题](/fe/interview/react)
+- [css](/fe/interview/css)
+- [javascript](/fe/interview/javascript)
+- [typescript](/fe/interview/typescript)
+- [vue](/fe/interview/css)
+- [react](/fe/interview/vue体系)
+- [react1](/fe/interview/react)
+- [react2](/fe/interview/React面试题)
+- [react3](/fe/interview/React体系)
+- [node](/fe/interview/node)
+- [webpack](/fe/interview/webpack)
+- [性能优化](/fe/interview/性能优化)
+- [安全](/fe/interview/安全)
+- [项目难点](/fe/interview/项目难点)
+- [项目设计](/fe/interview/项目设计)
+- [知识广度](/fe/interview/知识广度)
+- [软技能](/fe/interview/软技能)
 
 Vue
 - [Pinia使用](/fe/vue/Pinia使用)
@@ -36,8 +49,8 @@ TypeScript
 - [模块VS命名空间](/fe/typescript/10.模块VS命名空间)
 - [类型声明](/fe/typescript/11.类型声明)
 
-网络与浏览器
-- [跨域的方式](/fe/http/跨域的方式)
+Node
+- [mongodb使用](/fe/node/mongo)
 
 微前端
 - [systemjs使用及原理](/fe/micro-app/systemjs使用及原理)
