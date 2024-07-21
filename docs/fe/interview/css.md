@@ -1,3 +1,47 @@
+## HTMLCollection 和 NodeList 区别
+
+Node 和 Element
+
+- DOM 是一颗树，所有的节点都是 Node
+- Node 是 Element 的基类
+- Element 是其他 HTML 元素的基类，如 HTMLDivElement
+
+<img src="http://cdn.wangtongmeng.com/20240629164342.png" style="zoom:33%;" />
+
+HTMLCollection 和 NodeList
+
+- HTMLCollection 是 Element 的集合
+- NodeList 是 Node 集合
+
+重点
+
+- 获取 Node 和 Element 的返回结果可能不一样
+- 如 elem.childNodes 和 elem.children 不一样
+- 前者包含 Text 和 Comment 节点，后者不会
+
+## offsetHeight scrollHeight clientHeight的区别
+
+计算规则
+
+- offsetHeight offsetWidth: border + padding + height
+- clientHeight clientWidth: padding + content
+- scrollHeight scrollWidth: padding + 实际内容尺寸
+
+## px % em rem vw/vh 有什么区别
+
+- px: 基本单位，绝对单位（其他的都是相对单位）
+
+- %：相对于父元素的宽度比例
+
+- em：相对于当前元素的 font-size
+
+- rem: 相对于根元素的 font-size
+
+- vw: 屏幕宽度的 !%
+
+- vh: 屏幕高度的 1%
+- vmin 两者的最小值，vmax 两者的最大值
+
 ## 清除浮动
 
 ```css

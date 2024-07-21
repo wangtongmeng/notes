@@ -128,6 +128,56 @@ const reg = /^[a-zA-Z]\w{5,29}$/
 /\d+\.\d+\.\d+\.\d+/ // 简单的 IP 地址格式
 ```
 
+### js中for-in和for-of的区别？
+
+- 遍历对象：for...in 可以，for...of 不可以
+- 遍历 Map Set: for...of 可以，for...in 不可以
+- 遍历 generator: for...of 可以，for...in 不可以
+
+可枚举 vs 可迭代
+
+- for...in 用于**可枚举**数据，对象、数组、字符串，得到 key
+- for...of 用于**可迭代**数据，如数组、字符串、Map、Set，得到 value
+
+### for-of 连环问 for await ... of  有什么作用？
+
+for await ... of  相当于 Promise.all
+
+### Ajax Fetch Axios 的区别？
+
+三者都用于网络请求，但是不同维度
+
+- ajax 一种技术统称
+- fetch，一个具体的 API
+- axios，第三方库
+
+Fetch
+
+- 浏览器原生 API，用于网络请求
+- 和 XMLHttpRequest 一个级别
+- Fetch 语法更加简洁、易用，支持 Promise
+
+### 节流和防抖的区别及应用场景
+
+防抖
+
+- 防止抖动
+- 场景：搜索
+
+节流
+
+- 节流，节省交互沟通。流，不一定指流量
+- 按指定时间节奏来
+- 场景：drag 或 scroll 期间触发某个回调，要设置要个时间间隔
+
+答案
+
+- 节流：限制执行频率，有节奏的执行
+- 防抖：限制执行次数，多次密集的触发只会执行一次
+- 节流关注过程，防抖关注结果
+
+
+
 
 
 ## 作用域与作用域链
@@ -228,6 +278,51 @@ console.log( func() ) // what?
 ```
 
 #### 2.call、apply、bind的区别
+
+### 箭头函数有什么缺点？什么时候不能使用？
+
+缺点：
+
+- 没有 arguments
+- 无法通过 call apply bind 改变 this
+- 不适用对象方法、原型方法、构造函数、动态上下文的回调函数，vue的生命周期和method
+- 某些箭头函数难以阅读
+
+```js
+// 难以阅读的
+const fn3 = (a, b) => b === undefined ? b => a * b : a * b
+
+// 不适用于对象方法
+const obj = {
+  name: 'lisi',
+  getName: () => {
+    return this.name
+	}
+}
+console.log(obj.getName()) // undefined
+
+// 不适用于原型方法
+const obj = { name: 'lisi' }
+obj.__proto__.getName = () => {
+  return this.name
+}
+console.log(obj.getName()) // undefined
+
+// 不适用于构造函数
+const Foo = (name, age) => {
+  this.name = name
+  this.age = age
+}
+const f = new Foo('lisi', 20) // TypeError: Foo is not a constructor
+
+// 不适合 动态上下文中的回调函数
+const btn1 = docuemnt.getElementById('btn1')
+btn1.addEventListener('click', () => {
+  this.innerHtml = 'clicked' // 
+})
+```
+
+
 
 ## 原型与原型链
 
@@ -389,6 +484,53 @@ loadImg(src)
 
 ## 事件轮询
 
+### 浏览器和 nodejs 的事件循环有什么区别？
+
+单线程和异步
+
+- JS 是单线程的（无论在浏览器还是 nodejs）
+- 浏览器中 JS 执行和 DOM 渲染共用一个线程
+- 异步（单线程的解决方案）
+
+宏任务和微任务
+
+- 宏任务，如 setTimeout setInterval 网络请求
+- 微任务，如 promise async/await
+- 微任务是在下一轮 DOM 渲染之前执行，宏任务在之后执行
+
+nodejs 异步
+
+- Nodejs 同样使用 ES 语法，也是单线程，也需要异步
+- 异步任务分为：宏任务+微任务
+- 但是，它的宏任务和微任务，分不同类型，有不同优先级
+
+nodejs 宏任务类型和优先级
+
+- Timers - setTimeout setInterval
+- I/O callbacks - 处理网络、流、TCP 的错误回调
+- Idle，prepare - 闲置状态（nodejs 内部使用）
+- Poll 轮询 - 执行 poll 中的 I/O 队列
+- Check 检查 - 存储 setImmediate 回调
+- Close callbacks - 关闭回调，如 socket.on('close')
+
+nodejs 微任务类型和优先级
+
+- 包括：promise，async/await，process.nextTick
+- 注意，process.nextTick 优先级最高
+
+nodejs event loop
+
+- 执行同步代码
+- 执行微任务（process.nextTick 优先级更高）
+- 按顺序执行6个类型的宏任务（每个结束时都执行当前的微任务）
+
+<img src="http://cdn.wangtongmeng.com/20240701093414.png" style="zoom:33%;" />
+
+答案
+
+- 浏览器和 nodejs 的 event loop 流程基本相同
+- nodejs 宏任务和微任务分类型，有优先级
+
 ## es6+
 
 ### 模块化
@@ -396,6 +538,30 @@ loadImg(src)
 ## DOM与BOM
 
 ## 垃圾回收与内存泄露
+
+### JS 内存泄露如何检测？场景有哪些？
+
+垃圾回收 GC
+
+- 什么是垃圾回收？系统清除用不到的数据
+- 引用计数（之前）缺点：循环引用导致内存泄露
+- 标记清除（现代）
+
+连环问：闭包是内存泄露吗？
+
+- 闭包不是内存泄露（不符合预期的才是内存泄露），只是闭包中被使用的数据是不能被垃圾回收的
+
+JS 内存泄露如何检测？场景有哪些？
+
+- 检测：通过浏览器的的performance，选中memory，进行记录。如果内存泄露了，heap会一直上升
+- 内存泄露场景（Vue为例）
+  - 被全局变量、函数引用，组件销毁时未清除
+  - 被全局事件、定时器引用，组件销毁时未清除
+  - 被自定义事件引用，组件销毁时未清除
+
+扩展：WeakMap WeakSet
+
+- 弱引用，避免内存泄露
 
 ## Web-API
 
@@ -691,6 +857,32 @@ String.prototype.trim = function () {
   this.replace(/^\s+/, "").replace(/\s+$/, "")
 }
 ```
+
+### 实现一个request，可以在失败的时候重试，有interval和maxCount参数
+
+```js
+async function request(options, interval, maxCount) {     
+    let alreadyRetryCounts = 0     
+    let result      
+        
+    const fetchData = async () => {         
+        await fetch(options)         
+            .then(res => result = res)         
+            .catch(() => {             
+                alreadyRetryCounts++             
+                if (alredayRetryCounts <= maxCount) {                 
+                        setTimeout(fetchData, interval)             
+                   }         
+              })     
+      }          
+      
+      await fetchData()          
+      
+      return result 
+}
+```
+
+
 
 ## 输出题
 
