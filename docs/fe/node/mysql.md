@@ -8,3 +8,9 @@
 
 https://blog.csdn.net/zz00008888/article/details/109091478
 
+## mac 
+
+```bash
+brew install mysql
+```
+
