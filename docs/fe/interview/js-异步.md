@@ -9,6 +9,12 @@
 - 轮询查找 Callback Queue，如有则移动到 Call Stack 执行
 - 然后继续轮询查找（永动机一样）
 
+讲的时候分三步
+
+- event loop 的核心过程
+- 和 DOM 渲染的关系
+- 微任务和宏任务在 event loop 过程中的不同处理
+
 ## DOM 事件和 event loop
 
 - JS 是单线程的
@@ -32,13 +38,19 @@ console.log('Bye')
 
 ## 什么是宏任务和微任务，两者有什么区别？
 
-- 什么是宏任务、微任务
+- 什么是宏任务、微任务，区别
   - 宏任务：setTimeout，setInterval，Ajax，DOM 事件
   - 微任务：Promise async/await
-  - 微任务执行时机比宏任务要早
+  - 区别：微任务（DOM渲染之前触发）执行时机比宏任务（DOM渲染之后触发）要早
+
+
+
 - event loop 和 DOM 渲染
   - JS 是单线程的，而且和 DOM 渲染共用一个线程
   - JS 执行时，得留一些时机供 DOM 渲染
+  - 每次 CallStack 清空（即每次轮询结束），即同步任务执行完
+  - 都是 DOM 重新渲染的机会， DOM 结构如有改变则重新渲染
+  - 然后再触发下一次 Event Loop
 - 微任务和宏任务的区别
 
 ```js
@@ -53,7 +65,16 @@ console.log(400)
 // 100 400 300 200
 ```
 
+宏任务和微任务的本质区别
 
+- 微任务是 ES6 语法规定的
+- 宏任务是浏览器规定的
+
+总结
+
+- 宏任务、微任务有哪些？微任务触发时机更早
+- 微任务、宏任务和 DOM 渲染的关系
+- 微任务、宏任务和 DOM 渲染，在 event loop 的过程
 
 ## Promise 有哪三种状态？如何变化？
 
@@ -279,6 +300,10 @@ async function fn() {
     console.log('c', c)
     console.log('end')
 })() // 执行完毕，打印出那些内容？
+
+
+// a 100
+// b 200
 ```
 
 ## 场景题 - Promise 和 setTimeout 顺序
@@ -329,6 +354,170 @@ console.log('script end')
 // 1. async1 函数中 await 后面的内容 —— 微任务
 // 2. setTimeout —— 宏任务
 // 3. then —— 微任务
+
+/**
+script start
+async1 start
+async2
+promise1
+script end
+async1 end
+promise2
+setTimeout
+*/
+```
+
+## 手写题 - 手写 Promise
+
+- 初始化 & 异步调用
+- then catch 链式调用
+- API .resolve .reject .all .race 
+
+```js
+class MyPromise {
+    state = 'pending' // 状态，'pending' 'fulfilled' 'rejected'
+    value = undefined // 成功后的值
+    reason = undefined // 失败后的原因
+
+    resolveCallbacks = [] // pending 状态下，存储成功的回调
+    rejectCallbacks = [] // pending 状态下，存储失败的回调
+
+    constructor(fn) {
+        const resolveHandler = (value) => {
+            // 加 setTimeout ，参考 https://coding.imooc.com/learn/questiondetail/257287.html (2022.01.21)
+            setTimeout(() => {
+                if (this.state === 'pending') {
+                    this.state = 'fulfilled'
+                    this.value = value
+                    this.resolveCallbacks.forEach(fn => fn(value))
+                }
+            })
+        }
+
+        const rejectHandler = (reason) => {
+            // 加 setTimeout ，参考 https://coding.imooc.com/learn/questiondetail/257287.html (2022.01.21)
+            setTimeout(() => {
+                if (this.state === 'pending') {
+                    this.state = 'rejected'
+                    this.reason = reason
+                    this.rejectCallbacks.forEach(fn => fn(reason))
+                }
+            })
+        }
+
+        try {
+            fn(resolveHandler, rejectHandler)
+        } catch (err) {
+            rejectHandler(err)
+        }
+    }
+
+    then(fn1, fn2) {
+        fn1 = typeof fn1 === 'function' ? fn1 : (v) => v
+        fn2 = typeof fn2 === 'function' ? fn2 : (e) => e
+
+        if (this.state === 'pending') {
+            const p1 = new MyPromise((resolve, reject) => {
+                this.resolveCallbacks.push(() => {
+                    try {
+                        const newValue = fn1(this.value)
+                        resolve(newValue)
+                    } catch (err) {
+                        reject(err)
+                    }
+                })
+
+                this.rejectCallbacks.push(() => {
+                    try {
+                        const newReason = fn2(this.reason)
+                        reject(newReason)
+                    } catch (err) {
+                        reject(err)
+                    }
+                })
+            })
+            return p1
+        }
+
+        if (this.state === 'fulfilled') {
+            const p1 = new MyPromise((resolve, reject) => {
+                try {
+                    const newValue = fn1(this.value)
+                    resolve(newValue)
+                } catch (err) {
+                    reject(err)
+                }
+            })
+            return p1
+        }
+
+        if (this.state === 'rejected') {
+            const p1 = new MyPromise((resolve, reject) => {
+                try {
+                    const newReason = fn2(this.reason)
+                    reject(newReason)
+                } catch (err) {
+                    reject(err)
+                }
+            })
+            return p1
+        }
+    }
+
+    // 就是 then 的一个语法糖，简单模式
+    catch(fn) {
+        return this.then(null, fn)
+    }
+}
+
+MyPromise.resolve = function (value) {
+    return new MyPromise((resolve, reject) => resolve(value))
+}
+MyPromise.reject = function (reason) {
+    return new MyPromise((resolve, reject) => reject(reason))
+}
+
+MyPromise.all = function (promiseList = []) {
+    const p1 = new MyPromise((resolve, reject) => {
+        const result = [] // 存储 promiseList 所有的结果
+        const length = promiseList.length
+        let resolvedCount = 0
+
+        promiseList.forEach(p => {
+            p.then(data => {
+                result.push(data)
+
+                // resolvedCount 必须在 then 里面做 ++
+                // 不能用 index
+                resolvedCount++
+                if (resolvedCount === length) {
+                    // 已经遍历到了最后一个 promise
+                    resolve(result)
+                }
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    })
+    return p1
+}
+
+MyPromise.race = function (promiseList = []) {
+    let resolved = false // 标记
+    const p1 = new Promise((resolve, reject) => {
+        promiseList.forEach(p => {
+            p.then(data => {
+                if (!resolved) {
+                    resolve(data)
+                    resolved = true
+                }
+            }).catch((err) => {
+                reject(err)
+            })
+        })
+    })
+    return p1
+}
 ```
 
 
