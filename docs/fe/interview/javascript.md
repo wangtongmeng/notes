@@ -22,6 +22,12 @@ const s = Symbol('s')
 typeof s // 'symbol'
 ```
 
+答案
+
+- undefined string number boolean symbo
+- object(注意，typeof null === 'object')
+- function
+
 ### 合适使用 === 何时使用 ==
 
 除了 == null 之外，其他一律用 ===，例如
@@ -34,8 +40,8 @@ if (obj.a == null) {}
 
 ### 列举强制类型转换和隐式类型转换
 
-- 强制 `parseInt` `parseFloat`
-- 隐式 `if` ，`==` ， `+` 拼接字符串
+- 强制： `parseInt` `parseFloat`toString 等
+- 隐式 `if` 、逻辑运算、`==` 、 `+` 拼接字符串
 
 ### 值类型和引用类型的区别
 
@@ -176,6 +182,86 @@ Fetch
 - 防抖：限制执行次数，多次密集的触发只会执行一次
 - 节流关注过程，防抖关注结果
 
+### split() 和 join 的区别
+
+### 数组的 pop push unshift shift 分别做什么,扩展：数组的API，有哪些是纯函数？
+
+```js
+// const arr = [10, 20, 30, 40]
+
+// // pop
+// const popRes = arr.pop()
+// console.log(popRes, arr)
+
+// // shift
+// const shiftRes = arr.shift()
+// console.log(shiftRes, arr)
+
+// // push
+// const pushRes = arr.push(50) // 返回 length
+// console.log(pushRes, arr)
+
+// // unshift
+// const unshiftRes = arr.unshift(5) // 返回 length
+// console.log(unshiftRes, arr)
+
+
+
+// // 纯函数：1. 不改变源数组（没有副作用）；2. 返回一个数组
+// const arr = [10, 20, 30, 40]
+
+// // concat
+// const arr1 = arr.concat([50, 60, 70])
+// // map
+// const arr2 = arr.map(num => num * 10)
+// // filter
+// const arr3 = arr.filter(num => num > 25)
+// // slice
+// const arr4 = arr.slice()
+
+// // 非纯函数
+// // push pop shift unshift
+// // forEach
+// // some every
+// // reduce
+
+
+
+
+```
+
+### 数组 slice 和 splice 的区别
+
+```js
+// const arr = [10, 20, 30, 40, 50]
+
+// // slice 纯函数
+// const arr1 = arr.slice()
+// const arr2 = arr.slice(1, 4)
+// const arr3 = arr.slice(2)
+// const arr4 = arr.slice(-3)
+
+// // splice 非纯函数
+// const spliceRes = arr.splice(1, 2, 'a', 'b', 'c')
+// // const spliceRes1 = arr.splice(1, 2)
+// // const spliceRes2 = arr.splice(1, 0, 'a', 'b', 'c')
+// console.log(spliceRes, arr)
+```
+
+
+
+### [10,20,30].map(parseInt) 返回结果是什么
+
+```js
+const res = [10, 20, 30].map(parseInt)
+console.log(res) // [10, NaN, NaN]
+
+// 拆解
+[10, 20, 30].map((num, index) => {
+    return parseInt(num, index)
+})
+```
+
 
 
 
@@ -207,7 +293,12 @@ for(i = 1; i <= 3; i++) {
 
 ### 闭包
 
-#### 1.什么是闭包？
+#### 什么是闭包？有什么特性？有什么负面影响？
+
+- 回顾作用域和自由变量
+- 回顾闭包应用场景：作为参数被传入，作为返回值被返回
+- 回顾：自由变量的查找，要在**函数定义的地方**，而非执行的地方
+- 影响：变量会常驻内存，得不到释放。闭包不要乱用
 
 #### 实际开发中闭包的应用
 
@@ -252,7 +343,9 @@ c.set('a', 100)
 console.log( c.get('a') )
 ```
 
+#### 闭包什么时候会造成内存泄露？
 
+监听事件中的闭包数据、定时器中的闭包函数，没有在组件销毁时清楚掉
 
 ### this
 
@@ -278,6 +371,13 @@ console.log( func() ) // what?
 ```
 
 #### 2.call、apply、bind的区别
+
+```js
+fn.call(this, p1, p2, p3)
+fn.apply(this, arguments)
+```
+
+
 
 ### 箭头函数有什么缺点？什么时候不能使用？
 
@@ -567,6 +667,18 @@ JS 内存泄露如何检测？场景有哪些？
 
 ### DOM
 
+### 如何阻止事件冒泡和默认行为？
+
+- event.stopPropagation()
+- event.preventDefault()
+
+### 如何减少 DOM 操作？
+
+- 缓存 DOM 查询结果
+- 多次 DOM 操作，合并到一次插入
+
+<img src="http://cdn.wangtongmeng.com/20240729213958.png" style="zoom:33%;" />
+
 #### DOM 是哪种基本的数据结构
 
 树
@@ -693,6 +805,8 @@ console.log(location.hash)
 
 #### 事件委托（代理）是什么
 
+<img src="http://cdn.wangtongmeng.com/20240729212800.png" style="zoom:33%;" />
+
 #### 编写一个通用的事件监听函数
 
 ```js
@@ -745,138 +859,6 @@ function bindEvent(elem, type, selector, fn) {
 
 - 页面的全部资源加载完才会执行，包括图片、视频等
 - DOM 渲染完即可执行，此时图片、视频还没有加载完
-
-## 手写题
-
-### compose
-
-写法1
-
-```javascript
-const add1 = (str) => "1" + str;
-const add2 = (str) => "2" + str;
-const add3 = (str) => "3" + str;
-function compose(...funcs) {
-  // 返回一个函数，接收具体值
-  return function (args) {
-    // [add3,add2,add1] 倒着执行，并将结果作为下个一函数的入参
-    for (let i = funcs.length - 1; i >= 0; i--) {
-      args = funcs[i](args);
-    }
-    return args;
-  };
-}
-
-let fn = compose(add3, add2, add1);
-console.log(fn("lisi")); // 321lisi
-```
-
-写法2
-
-```javascript
-const add1 = (str) => "1" + str;
-const add2 = (str) => "2" + str;
-const add3 = (str) => "3" + str;
-
-function compose(...funcs) {
-  // reduce没有设默认值，所以a,b是前两个函数
-  return funcs.reduce((a, b) => (...args) => a(b(...args)));
-}
-
-/**
- *第一次 a=add3 b=add2 => (...args)=>add3(add2(...args))
- *第二次 a=(...args)=>add3(add2(...args)) b=add1 => (...args)=>add3(add2((add1(...args)))))
- */
-
-let fn = compose(add3, add2, add1);
-console.log(fn("lisi")); // 321lisi
-
-```
-
-### 实现call、apply、bind
-
-### 深拷贝
-
-### 手写深度比较，如 lodash isEqual
-
-```js
-// 手写深度比较，如 lodash isEqual
-
-const obj1 = {a: 10, b: { x: 100, y: 200 }}
-const obj2 = {a: 10, b: { x: 100, y: 200 }}
-
-// 判断是否是 object
-function isObject(obj) {
-  return typeof obj === 'object' && obj !== null
-}
-// 全相等
-function isEqual(obj1, obj2) {
-  if (!isObject(obj1) || !isObject(obj2)) {
-      // 值类型，不是对象或数组（注意，equal 时一般不会有函数，这里忽略）
-      return obj1 === obj2
-  }
-  if (obj1 === obj2) {
-      // 两个引用类型全相等（同一个地址）
-      return true
-  }
-  // 两个都是引用类型，不全相等
-  // 1. 先取出 obje2 obj2 的 keys，比较个数
-  const obj1Keys = Object.keys(obj1)
-  const obj2Keys = Object.keys(obj2)
-  if (obj1Keys.length !== obj2Keys.length) {
-      // keys 个数不相等，则不是全等
-      return false
-  }
-  // 2. 以 obj1 为基准，和 obj2 依次递归比较
-  for (let key in obj1) {
-      // 递归比较
-      const res = isEqual(obj1[key], obj2[key])
-      if (!res) {
-          // 遇到一个不相等的，则直接返回 false
-          return false
-      }
-  }
-  // 3. 都相等，则返回 true
-  return true
-}
-
-console.log(isEqual(obj1, obj2) === true); // true
-```
-
-### 手写 trim 函数，保证浏览器兼容性
-
-```js
-String.prototype.trim = function () {
-  // 知识点：原型，this，正则
-  this.replace(/^\s+/, "").replace(/\s+$/, "")
-}
-```
-
-### 实现一个request，可以在失败的时候重试，有interval和maxCount参数
-
-```js
-async function request(options, interval, maxCount) {     
-    let alreadyRetryCounts = 0     
-    let result      
-        
-    const fetchData = async () => {         
-        await fetch(options)         
-            .then(res => result = res)         
-            .catch(() => {             
-                alreadyRetryCounts++             
-                if (alredayRetryCounts <= maxCount) {                 
-                        setTimeout(fetchData, interval)             
-                   }         
-              })     
-      }          
-      
-      await fetchData()          
-      
-      return result 
-}
-```
-
-
 
 ## 输出题
 

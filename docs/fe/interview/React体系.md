@@ -51,7 +51,7 @@
     - memo，函数组件中的 PureComponent
     - 浅比较已适用大部分情况（尽量不要做深度比较）
   - 不可变值 immutable.js
-    - 彻底拥抱“不可变质”
+    - 彻底拥抱“不可变值”
     - 基于共享数据（不是深拷贝），速度好
     - 有一定的学习和迁移成本，按需使用
   - 总结
@@ -139,7 +139,7 @@ Effect Hooks
 - useRef
 - useContext
 - useReducer
-  - useReducer 和 redux的区别
+  - useReducer 和 redux 的区别
     - useReducer 是 useState 的替代方案，用于 state 复杂变化
     - useReducer 是单个组件状态管理，组件通讯还需要 props
     - redux 是全局的状态管理，多组件共享数据
