@@ -28,7 +28,7 @@ typeof s // 'symbol'
 - object(注意，typeof null === 'object')
 - function
 
-### 合适使用 === 何时使用 ==
+### 合适使用 === 何时使用 == ，区别
 
 除了 == null 之外，其他一律用 ===，例如
 
@@ -37,6 +37,10 @@ const obj = {x: 100}
 if (obj.a == null) {}
 // 相当于： if (obj.a === null || obj.a === undefined) {}
 ```
+
+- == 会尝试类型转换
+- === 严格相等
+- 哪些场景才用 == ?
 
 ### 列举强制类型转换和隐式类型转换
 
@@ -262,11 +266,99 @@ console.log(res) // [10, NaN, NaN]
 })
 ```
 
+### 如何捕获 JS 程序中的异常？
 
+![](http://cdn.wangtongmeng.com/20240731152724.png)
+
+### 什么是 JSON ？
+
+- json 是一种数据格式，本质是一段字符串。
+- json 格式和 JS 对象结构一致，对 JS 语言更友好
+- window.JSON 是一个全局对象：JSON.stringify JSON.parse
+
+### 获取当前页面 url 参数
+
+- 传统方式，查找 location.search
+- 新 API， URLSearchParams
+
+### 介绍 RAF requestAnimationFrame
+
+- 要想动画流畅，更新频率要 60帧/s，即 16.67ms 更新一次视图
+- setTimeout 要手动控制频率，而 RAF 浏览器会自动控制
+- 后台标签或隐藏 iframe 中，RAF 会暂停，而 setTimeout 依然会执行
+
+## Map 和 Set
+
+### 有序和无序
+
+- 有序：操作慢
+- 无序：操作快，但无序
+- 如何结合两者优点呢？---二叉树、及其变种
+
+### Map 和 Object 的区别
+
+- API 不同，Map 可以以任意类型为 key
+- Map 是有序结构（重要）
+- Map 操作同样很快
+
+### Set 和数组的区别
+
+- API 不同
+- Set 元素不能重复
+- Set 是无序结构，操作很快
+
+### WeakMap 和 WeakSet
+
+- 弱引用，防止内存泄露
+- WeakMap 只能用对象作为 key，WeakSet 只能用对象做 value
+- 没有 forEach 和 size (弱引用，随时可能销毁)，只能用 add delete has
+
+## 模块化
+
+### es module 和 commonjs 模块化的区别?
+
+```js
+ES Module (ESM) 和 CommonJS 是 JavaScript 中两种主要的模块化规范，它们在使用方式、加载时机和一些特性上有明显的区别：
+
+ES Module (ESM)
+静态解析： ES 模块是在编译时静态解析的，这意味着模块的依赖关系在代码静态分析阶段就能确定，使得工具可以进行更好的优化和分析。
+
+异步加载： ES 模块使用 import 和 export 关键字进行导入导出，这些语句是异步加载的，意味着它们不会阻塞后续代码的执行。
+
+单例模式： ES 模块在每个程序中只执行一次，且只初始化一次导出的内容。导出的内容是动态绑定的，即当模块内部发生变化时，外部导入的内容也会变化。
+
+浏览器支持： 现代浏览器和 Node.js 都原生支持 ES 模块，不需要额外的工具或者转换器。
+
+顶级作用域： 模块中的变量不会自动添加到全局作用域，每个模块都有自己的顶级作用域。
+
+静态导入： ES 模块只能在顶层作用域中使用 import 和 export，不能在条件语句或函数内部导入和导出。
+
+CommonJS
+运行时加载： CommonJS 模块使用 require() 来加载模块，这是一种同步的方式，导致所有的 require() 都会在模块加载阶段进行。
+
+多次初始化： 每次调用 require() 都会执行整个模块代码并初始化一次导出的内容，因此在同一个程序中可以多次初始化相同的模块。
+
+动态绑定： 导出的内容是动态绑定的，即导出变量的值是实时计算的，不同于 ES 模块的静态绑定。
+
+Node.js 支持： CommonJS 是 Node.js 的默认模块系统，也被广泛应用于前端开发的构建工具中（如Webpack）。
+
+全局作用域： 模块中的变量如果没有使用 var、let 或 const 声明，会自动添加到全局作用域中。
+
+动态导入： 可以在运行时根据条件动态地加载模块，使用 require() 方法可以在函数内部或条件语句中进行导入。
+
+总结
+ES Module 和 CommonJS 在设计和使用上有显著差异。ES Module 更适合用于现代 JavaScript 应用的开发和构建，因为它支持异步加载、静态解析和浏览器原生支持。CommonJS 则更适合于传统的服务器端 JavaScript 开发，因为它在 Node.js 中广泛使用，具有同步加载和动态特性。在现代前端开发中，通常会使用工具（如Webpack、Rollup等）来将这两种模块规范转换为浏览器可用的代码。
+```
 
 
 
 ## 作用域与作用域链
+
+### 函数声明和函数表达式的区别
+
+- 函数声明 function fn() {...}
+- 函数表达式 const fn = function() {...}
+- 函数声明会在代码执行前预加载，而函数表达式不会
 
 ### **var 和 let const 的区别**
 
@@ -289,7 +381,7 @@ for(i = 1; i <= 3; i++) {
 // 444
 ```
 
-
+### 
 
 ### 闭包
 
@@ -370,6 +462,8 @@ console.log( func() ) // what?
 // 第二个 undefined
 ```
 
+
+
 #### 2.call、apply、bind的区别
 
 ```js
@@ -426,7 +520,11 @@ btn1.addEventListener('click', () => {
 
 ## 原型与原型链
 
-考点
+### new Object() 和 Object.create() 的区别
+
+- {} 等同于 new Object()，原型 Object.prototype
+- Object.create(null) 没有原型
+- Object.create({...}) 可指定原型
 
 ### 如何判断一个变量是不是数组？
 
@@ -667,12 +765,12 @@ JS 内存泄露如何检测？场景有哪些？
 
 ### DOM
 
-### 如何阻止事件冒泡和默认行为？
+#### 如何阻止事件冒泡和默认行为？
 
 - event.stopPropagation()
 - event.preventDefault()
 
-### 如何减少 DOM 操作？
+#### 如何减少 DOM 操作？
 
 - 缓存 DOM 查询结果
 - 多次 DOM 操作，合并到一次插入
@@ -855,10 +953,12 @@ function bindEvent(elem, type, selector, fn) {
 
 - 浏览器得到返回内容
 
-#### **window.onload 和 DOMContentLoaded 的区别**
+#### **window.onload 和 DOMContentLoaded (ready) 的区别**
 
 - 页面的全部资源加载完才会执行，包括图片、视频等
 - DOM 渲染完即可执行，此时图片、视频还没有加载完
+
+![](http://cdn.wangtongmeng.com/20240731104211.png)
 
 ## 输出题
 

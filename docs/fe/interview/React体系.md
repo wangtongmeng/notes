@@ -664,7 +664,7 @@ fiber（fiberNode对象）是一个链表，它记录了父节点、兄弟节点
 - 1.调用this.setState(newState) 将newState存入pending队列
 - 2.判断当前是否处于批量更新的事务流中(通过isBatchingUpdate进行判断)
 - 3.如果命中则将当前更新的组件放入dirtyComponents队列中，等待更新的事务流结束后执行
-- 4.如果未命中则遍历所有的dirtyComponents,调用updateCompoent更新pending state or props;在更新的过程中会将多个state合并
+- 4.如果未命中则遍历所有的dirtyComponents,调用updateComponent更新pending state or props;在更新的过程中会将多个state合并
 
 #### 组件渲染和更新过程
 
