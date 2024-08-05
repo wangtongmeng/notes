@@ -10,6 +10,14 @@
 
 [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/) 双指针，滑动窗口
 
+[66. 加一](https://leetcode.cn/problems/plus-one/) 
+
+[88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) 双指针，后序遍历
+
+## 二分
+
+[35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)  闭区间 right  + 1
+
 ## 链表
 
 [203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/) 虚拟头结点
@@ -20,9 +28,19 @@
 
 [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/) 虚拟头结点 + 快慢双指针
 
-[面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/) 获取两个链表长度，长链表cur节点移动到和短链表相同，两个链表同时向后遍历
+[面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)  同160 获取两个链表长度，长链表cur节点移动到和短链表相同，两个链表同时向后遍历
 
 [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/) 利用map表(new Set)
+
+[21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/) 
+
+[83. 删除排序链表中的重复元素](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/) 
+
+[141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/) 快慢指针
+
+[234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/) 转数组+双指针
+
+[876. 链表的中间结点](https://leetcode.cn/problems/middle-of-the-linked-list/)  快慢指针，或遍历1.5遍链表
 
 ## 贪心算法
 

@@ -350,7 +350,107 @@ Node.js 支持： CommonJS 是 Node.js 的默认模块系统，也被广泛应�
 ES Module 和 CommonJS 在设计和使用上有显著差异。ES Module 更适合用于现代 JavaScript 应用的开发和构建，因为它支持异步加载、静态解析和浏览器原生支持。CommonJS 则更适合于传统的服务器端 JavaScript 开发，因为它在 Node.js 中广泛使用，具有同步加载和动态特性。在现代前端开发中，通常会使用工具（如Webpack、Rollup等）来将这两种模块规范转换为浏览器可用的代码。
 ```
 
+### AMD UMD commonjs es module 的区别
 
+这些术语都是关于 JavaScript 模块化的不同标准或风格，它们主要用于描述在不同环境或需求下如何组织和使用模块。下面是它们的主要区别：
+
+1. **AMD (Asynchronous Module Definition)**
+
+   - AMD 是一种用于浏览器环境的模块定义规范，它支持异步加载模块，适用于需要在页面加载过程中异步加载模块的场景。主要由 RequireJS 推广和实现。
+
+   - 特点
+
+     ：
+
+     - 支持异步加载模块，能够并行加载多个模块。
+     - 主要用于浏览器环境，不是标准的 ECMAScript 规范。
+
+   **示例**：
+
+   ```
+   javascriptCopy Codedefine(['module1', 'module2'], function(module1, module2) {
+       // 模块定义
+   });
+   ```
+
+2. **UMD (Universal Module Definition)**
+
+   - UMD 是一种通用的模块定义规范，兼容 AMD、CommonJS 和全局变量方式。它的目的是实现跨平台、跨环境的模块兼容性。
+
+   - 特点
+
+     ：
+
+     - 支持在多种环境中运行，既可以用于浏览器，也可以用于 Node.js 等环境。
+     - 能够根据当前环境动态选择使用 AMD、CommonJS 或全局变量方式加载模块。
+
+   **示例**：
+
+   ```
+   javascriptCopy Code(function (root, factory) {
+       if (typeof define === 'function' && define.amd) {
+           // AMD
+           define(['jquery'], factory);
+       } else if (typeof exports === 'object') {
+           // CommonJS
+           module.exports = factory(require('jquery'));
+       } else {
+           // 浏览器全局变量
+           root.myModule = factory(root.jQuery);
+       }
+   }(this, function ($) {
+       // 模块定义
+       return {};
+   }));
+   ```
+
+3. **CommonJS**
+
+   - CommonJS 是一种用于服务器端的模块定义规范，主要在 Node.js 中使用。它是同步加载模块的规范，适合于服务器端和本地构建工具环境。
+
+   - 特点
+
+     ：
+
+     - 使用 `require()` 同步加载模块，模块加载是阻塞的。
+     - 主要用于 Node.js 环境，但在浏览器端可以通过工具（如 Browserify、Webpack）转换使用。
+
+   **示例**：
+
+   ```
+   javascriptCopy Codeconst module1 = require('module1');
+   const module2 = require('module2');
+   
+   // 模块定义
+   ```
+
+4. **ES Module (ES6 Module)**
+
+   - ES Module 是 ECMAScript 6 引入的官方标准模块系统，支持静态加载、编译时优化等特性，适用于现代浏览器和 Node.js 等环境。
+
+   - 特点
+
+     ：
+
+     - 使用 `import` 和 `export` 关键字定义模块，支持静态解析和优化。
+     - 可以异步加载模块，但主要在编译时静态解析，因此不支持动态路径或变量作为模块的导入路径。
+
+   **示例**：
+
+   ```
+   javascriptCopy Codeimport module1 from 'module1';
+   import { func } from 'module2';
+   
+   // 模块定义
+   ```
+
+### 总结
+
+- **AMD** 和 **CommonJS** 是非标准的模块系统，主要用于浏览器和服务器端。
+- **UMD** 是为了兼容 AMD、CommonJS 和全局变量而设计的通用模块规范。
+- **ES Module** 是官方标准的 ECMAScript 6 模块系统，适用于现代浏览器和 Node.js。
+
+在实际应用中，可以根据项目需求和运行环境选择合适的模块规范或使用转换工具（如 Babel、Webpack）实现模块的兼容性和优化。
 
 ## 作用域与作用域链
 
