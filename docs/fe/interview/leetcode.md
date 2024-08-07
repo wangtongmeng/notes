@@ -14,9 +14,37 @@
 
 [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) 双指针，后序遍历
 
+## hash
+
+[242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/) 
+
+[349. 两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/) 使用 set 去重，遍历另一个，如果有则delete
+
+[202. 快乐数](https://leetcode.cn/problems/happy-number/) 使set，如果如果是1返回true，不是1存起来，如果重复出现返回false
+
+[1. 两数之和](https://leetcode.cn/problems/two-sum/)  map
+
+[454. 四数相加 II](https://leetcode.cn/problems/4sum-ii/) map
+
+[383. 赎金信](https://leetcode.cn/problems/ransom-note/) map
+
+[15. 三数之和](https://leetcode.cn/problems/3sum/)  一层遍历确定左节点，双指针收尾遍历，注意三个点的去重
+
+## 字符串 
+
+[344. 反转字符串](https://leetcode.cn/problems/reverse-string/) 双指针
+
+[541. 反转字符串 II](https://leetcode.cn/problems/reverse-string-ii/) 双指针，注意 i + k - 1 去比较
+
+[28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/) 暴力法，KMP？
+
+[459. 重复的子字符串](https://leetcode.cn/problems/repeated-substring-pattern/)  从小到大拼接子串，利用repeat方法，比较是否相等
+
 ## 二分
 
 [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)  闭区间 right  + 1
+
+## 栈
 
 ## 链表
 
