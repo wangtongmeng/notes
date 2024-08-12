@@ -136,9 +136,17 @@
 
 [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) 
 
+## 回溯
+
 
 
 ## 贪心算法
+
+[455. 分发饼干](https://leetcode.cn/problems/assign-cookies/)
+
+[376. 摆动序列](https://leetcode.cn/problems/wiggle-subsequence/)
+
+
 
 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)  暴力法（超时）、贪心
 
