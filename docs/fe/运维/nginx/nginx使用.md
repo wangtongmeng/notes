@@ -146,15 +146,27 @@ b
 
 
 
-## linux 乱码
+## xshell 连接 云服务器乱码
 
-https://blog.csdn.net/gahsfjshf/article/details/118712625
+工具栏设置语言为utf-8即可
 
-## 新建服务器 xshell 连接报错
+## 云服务器 xshell4 连接报错
 
 https://blog.csdn.net/jamesdodo/article/details/127781909
 
+```bash
+vi /etc/ssh/sshd_config
+
+# 添加 注释掉原来的
+KexAlgorithms +diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1
+!x
+# 重启
 sudo systemctl restart sshd
+```
+
+
+
+
 
 
 
@@ -178,7 +190,6 @@ sudo systemctl stop ntpd
 ```bash
 systemctl enable docker
 ```
-
 
 
 

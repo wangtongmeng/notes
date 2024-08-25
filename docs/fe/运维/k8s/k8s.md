@@ -177,7 +177,7 @@ vim init-kubeadm.conf
 + imageRepository: registry.cn-hangzhou.aliyuncs.com/google_containers
 - localAPIEndpointc，advertiseAddress为master ip ,port默认不修改
 localAPIEndpoint:
-+ advertiseAddress: 172.31.178.169  # 此处为master的IP
++ advertiseAddress: 49.233.179.182  # 此处为master的IP
   bindPort: 6443
 # 配置子网络
 networking:
@@ -217,11 +217,11 @@ kubeadm init --config init-kubeadm.conf
 - Master 节点需要执行的初始化命令
 - 将默认的 Kubernetes 认证文件拷贝进 .kube 文件夹内，才能默认使用该配置文件
 
-```js
+```bash
 Your Kubernetes control-plane has initialized successfully!
 
 To start using your cluster, you need to run the following as a regular user:
-
+  # 1. 在 master 执行
   mkdir -p $HOME/.kube
   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   sudo chown $(id -u):$(id -g) $HOME/.kube/config
@@ -235,7 +235,7 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
   https://kubernetes.io/docs/concepts/cluster-administration/addons/
 
 Then you can join any number of worker nodes by running the following on each as root:
-
+# 2.在node上执行
 kubeadm join 172.31.178.169:6443 --token abcdef.0123456789abcdef \
     --discovery-token-ca-cert-hash sha256:8aac19f4dbe68f1e15ba3d80e141acdc912e353f9757ad69187e8fb9780bc975 
 ```
