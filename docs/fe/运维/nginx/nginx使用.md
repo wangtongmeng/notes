@@ -164,14 +164,6 @@ KexAlgorithms +diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1
 sudo systemctl restart sshd
 ```
 
-
-
-
-
-
-
-
-
 ## 统一腾讯云时区
 
 ```bash
@@ -182,7 +174,7 @@ sudo systemctl status chronyd
 sudo systemctl stop ntpd
 sudo systemctl stop chronyd
 # 统一腾讯云时区
-sudo systemctl stop ntpd
+sudo ntpdate time.tencent.com
 ```
 
 ## 设置 docker 开机启动

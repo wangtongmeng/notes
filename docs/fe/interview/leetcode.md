@@ -146,8 +146,6 @@
 
 [376. 摆动序列](https://leetcode.cn/problems/wiggle-subsequence/)
 
-
-
 [121. 买卖股票的最佳时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)  暴力法（超时）、贪心
 
 ## 动态规划
@@ -160,17 +158,19 @@
 
 [746. 使用最小花费爬楼梯](https://leetcode.cn/problems/min-cost-climbing-stairs/)
 
-
-
-
-
 二维dp
 
 [62. 不同路径](https://leetcode.cn/problems/unique-paths/)
 
 [63. 不同路径 II](https://leetcode.cn/problems/unique-paths-ii/)
 
+[343. 整数拆分](https://leetcode.cn/problems/integer-break/)
 
+[96. 不同的二叉搜索树](https://leetcode.cn/problems/unique-binary-search-trees/)
+
+
+
+背包
 
 [416. 分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/) 01背包
 

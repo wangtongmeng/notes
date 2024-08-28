@@ -60,7 +60,9 @@ ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 bash -c "echo 'Asia/Shanghai' > /etc/timezone"
 
 # 统一使用阿里服务器进行时间更新
-ntpdate ntp1.aliyun.com
+# ntpdate ntp1.aliyun.com
+# sudo ntpdate time.tencent.com
+ntpdate time.windows.com
 ```
 
 ### 2.6 安装 Docker
@@ -74,19 +76,55 @@ yum install -y yum-utils device-mapper-persistent-data lvm2
 
 
 sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-yum install docker-ce -y
+# yum install docker-ce -y
+sudo yum install -y docker-ce-19.03.9-3.el7 docker-ce-cli-19.03.9-3.el7
+sudo yum remove docker*
+sudo yum install -y docker-ce-20.10.7 docker-ce-cli-20.10.7 containerd.io-1.4.6
+
 systemctl start docker
-systemctl enable docker
+systemctl enable docker # 开机启动
 
 sudo mkdir -p /etc/docker
+#sudo tee /etc/docker/daemon.json <<-'EOF'
+#{
+#  "registry-mirrors": ["https://fwvjnv59.mirror.aliyuncs.com"]
+#}
+#EOF
+
 sudo tee /etc/docker/daemon.json <<-'EOF'
-{
-  "registry-mirrors": ["https://fwvjnv59.mirror.aliyuncs.com"]
+{ 
+  "registry-mirrors" : 
+    [ 
+      "https://docker.m.daocloud.io", 
+      "https://noohub.ru", 
+      "https://huecker.io",
+      "https://dockerhub.timeweb.cloud" 
+    ] 
 }
 EOF
 
+
 sudo systemctl daemon-reload
 sudo systemctl restart docker.service
+
+docker --version
+```
+
+#### 检查是否禁用了 CRI （待定）
+
+检查 containerd 是否禁用了 CRI
+
+```bash
+vim /etc/containerd/config.toml
+# 如果有发现下面的配置，请注释掉
+disabled_plugins = ["cri"]
+```
+
+或
+
+```bash
+sed -i '/disabled_plugins = \["cri"\]/ s/^/# /'
+/etc/containerd/config.tomlsystemctl restart containerd
 ```
 
 ### 2.7 安装 Kubernetes 组件
@@ -113,7 +151,15 @@ EOF
 - kubeadm 则是用来初始化集群，子节点加入的工具
 
 ```js
-yum install -y kubelet kubeadm kubectl
+# 如果之前安装过 k8s，先卸载旧版本
+yum remove -y kubelet kubeadm kubectl
+
+# 查看可以安装的版本
+yum list kubelet --showduplicates | sort -r
+
+# yum install -y kubelet kubeadm kubectl
+# 指定版本
+sudo yum install -y kubelet-1.20.9 kubeadm-1.20.9 kubectl-1.20.9
 # 启动kubelet
 systemctl enable kubelet && systemctl start kubelet
 ```
@@ -127,6 +173,19 @@ systemctl enable kubelet && systemctl start kubelet
 
 ```js
 echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+
+# 允许 iptables 检查桥接流量
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/k8s/conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+EOF
+
+sudo sysctl --system
 ```
 
 ## 3. Master
@@ -139,6 +198,7 @@ echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
 hostnamectl set-hostname  k8smaster
 # 去 node节点，也改一下
 hostnamectl set-hostname  k8snode
+
 ```
 
 ### 3.2 配置hosts
@@ -199,17 +259,49 @@ networking:
 
 ![](http://cdn.wangtongmeng.com/20240824211546-cb7675.png)
 
-```js
+```bash
 // 查看缺少的组件
 kubeadm config images list --config init-kubeadm.conf
 // 拉取缺少的组件
 kubeadm config images pull --config init-kubeadm.conf
+
+# 通过脚本拉取镜像
+sudo tee ./images.sh <<-'EOF'
+#!/bin/bash
+images=(
+kube-apiserver: v1.20.9
+kube-proxy: v1.20.9
+kube-controller-manager: v1.20.9
+kube-scheduler: v1.20.9
+coredns: 1.7.0
+etcd:3.4.13-0
+pause: 3.2
+)
+for imageName in ${images[@]}; do
+docker pull registry.cn-hangzhou.aliyuncs.com/lfy_k8s_images/$imageName
+done
+EOF
+
+chmod +x ./images.sh && ./images.sh 
+
+# docker pull registry.cn-hangzhou.aliyuncs.com/lfy_k8s_images/$imageName
 ```
 
 ### 3.4 初始化 Kubernetes
 
-```js
+```bash
 kubeadm init --config init-kubeadm.conf
+
+# 或者
+kubeadm init \
+--apiserver-advertise-address=49.233.179.182 \
+--control-plane-endpoint=k8smaster \
+--image-repository registry.cn-hangzhou.aliyuncs.com/google_containers \
+--kubernetes-version v1.20.9 \
+--service-cidr=10.96.0.0/16 \
+--pod-network-cidr=10.244.0.0/16 
+
+
 ```
 
 - `kubeadm join` 可以快速将 Node 节点加入到 Master 集群内
