@@ -32,7 +32,7 @@
     - 6.在服务器根据getInitialProps得到的初始化状态创建新的仓库
   - 服务器端，执行 render函数
     - 7.通过使用仓库中的状态在服务器端渲染组件，获取 HTML 字符串
-  - 8.服务器把LayoutApp的props序列化成字符串（script标签包裹）和render渲染出来的html一起发给客户端
+  -  8.服务器把LayoutApp的props序列化成字符串（script标签包裹）和render渲染出来的html一起发给客户端
   - 9.客户端收到数据后，把props反序列化为JS对象传递给LayoutApp的constructor （next做的）
   - 在客户端的constructor中
     - 10.通过服务器返回的状态创建客户端的仓库 `this.store = getStore(props.initialState)`
