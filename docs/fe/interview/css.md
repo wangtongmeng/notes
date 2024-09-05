@@ -94,8 +94,6 @@ HTMLCollection 和 NodeList
 }
 ```
 
-
-
 ## 单行、多行文本溢出隐藏
 
 单号文本溢出
