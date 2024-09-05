@@ -20,6 +20,14 @@
 
 [189. 轮转数组](https://leetcode.cn/problems/rotate-array/) unshift+splice(-k, k)
 
+[274. H 指数](https://leetcode.cn/problems/h-index/) 先统计每层的数量(>len，等价于=len)，再倒序求和，判断是否>=i
+
+[380. O(1) 时间插入、删除和获取随机元素](https://leetcode.cn/problems/insert-delete-getrandom-o1/) 数组+Map，同时操作
+
+[238. 除自身以外数组的乘积](https://leetcode.cn/problems/product-of-array-except-self/) 先算出左右两边的所有乘积
+
+[134. 加油站](https://leetcode.cn/problems/gas-station/) 贪心，遍历记录临时差值和、总差值，如果临时差值和<0，则更新start，最后看总差值<0，则为-1，否则为start
+
 ## 双指针
 
 [125. 验证回文串](https://leetcode.cn/problems/valid-palindrome/) 正则+reverse，或者 正则+双指针
