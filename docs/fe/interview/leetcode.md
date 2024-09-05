@@ -14,6 +14,18 @@
 
 [88. 合并两个有序数组](https://leetcode.cn/problems/merge-sorted-array/) 双指针，后序遍历
 
+[80. 删除有序数组中的重复项 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-array-ii/)  双指针，快指针表示要加入的元素，和slow-2的元素比较是否重复
+
+[169. 多数元素](https://leetcode.cn/problems/majority-element/)  hash法，排序法
+
+[189. 轮转数组](https://leetcode.cn/problems/rotate-array/) unshift+splice(-k, k)
+
+## 双指针
+
+[125. 验证回文串](https://leetcode.cn/problems/valid-palindrome/) 正则+reverse，或者 正则+双指针
+
+[392. 判断子序列](https://leetcode.cn/problems/is-subsequence/) 双指针
+
 ## hash
 
 [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/) 
