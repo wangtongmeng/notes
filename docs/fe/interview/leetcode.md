@@ -156,9 +156,23 @@
 
 [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/) 
 
+[617. 合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/) 递归（一方没有返回另一方，都有就合并到一颗上）
+
+[700. 二叉搜索树中的搜索](https://leetcode.cn/problems/search-in-a-binary-search-tree/) 二分查找
+
+[98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/) 递归(转成有序数组，再遍历)
+
+[530. 二叉搜索树的最小绝对差 ](https://leetcode.cn/problems/minimum-absolute-difference-in-bst/)递归(转成有序数组，再遍历)
+
+[501. 二叉搜索树中的众数](https://leetcode.cn/problems/find-mode-in-binary-search-tree/) 利用 map
+
+
+
+
+
 ## 回溯
 
-
+[257. 二叉树的所有路径](https://leetcode.cn/problems/binary-tree-paths/)
 
 ## 贪心算法
 

@@ -1009,6 +1009,14 @@ React 的更新都是渐进式的更新，在 React18 中启用的新特性，�
 3. 自动批处理优化：批处理：react18，将**所有事件都进行批处理**，即**多次setState会被合并为1次执行**，提高了性能，在数据层，将多个状态更新合并成一次处理（在视图层，将多次渲染合并成一次渲染）；在react17中，只有react事件会进行批处理，原生js事件、promise，setTimeout、setInterval不会**，在 v18 中所有更新都将自动批处理**，包括 promise 链、setTimeout 、setInterval等异步代码以及原生js事件；
 4. startTransition：主动降低优先级。比如「搜索引擎的关键词联想」，用户在输入框中的输入希望是实时的，而联想词汇可以稍稍延迟一会儿。我们可以用 startTransition 来降低联想词汇更新的优先级；
 
+- Suspense 支持 SSR
+- startTransition
+- useTransition
+- useDeferredValue
+- useId
+
+支持流式SSR
+
 ### React18新增加的hooks有哪些
 
 

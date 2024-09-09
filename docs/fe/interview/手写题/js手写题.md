@@ -153,6 +153,61 @@ function flattenDeep2(arr) {
 console.log(flattenDeep2([1, [2, [3], 4], 5])); // [ 1, 2, 3, 4, 5 ]
 ```
 
+## 手写 convert 函数，将数组转为树
+
+```js
+function convert(arr) {
+  const map = new Map();
+  let root = null;
+
+  // 首先将所有节点映射到一个 Map 中
+  arr.forEach((item) => {
+    const { id, name, parentId } = item;
+    const treeNode = { id, name, children: [] };
+    map.set(id, treeNode);
+    if (parentId === 0) {
+      root = treeNode; // 记录根节点
+    }
+  });
+
+  // 然后遍历一次，将子节点添加到父节点的 children 中
+  arr.forEach((item) => {
+    const { id, parentId } = item;
+    if (parentId !== 0) {
+      const parentNode = map.get(parentId);
+      const currentNode = map.get(id);
+      if (parentNode) {
+        parentNode.children.push(currentNode);
+      }
+    }
+  });
+
+  return root;
+}
+
+const arr = [
+  { id: 1, name: "部门A", parentId: 0 },
+  { id: 2, name: "部门B", parentId: 1 },
+  { id: 3, name: "部门C", parentId: 1 },
+  { id: 4, name: "部门D", parentId: 2 },
+  { id: 5, name: "部门E", parentId: 2 },
+  { id: 6, name: "部门F", parentId: 3 },
+];
+
+// 测试不同的数组顺序
+const shuffledArr = [
+  { id: 4, name: "部门D", parentId: 2 },
+  { id: 1, name: "部门A", parentId: 0 },
+  { id: 5, name: "部门E", parentId: 2 },
+  { id: 2, name: "部门B", parentId: 1 },
+  { id: 6, name: "部门F", parentId: 3 },
+  { id: 3, name: "部门C", parentId: 1 },
+];
+
+const tree = convert(shuffledArr);
+console.info(JSON.stringify(tree, null, 2));
+```
+
 ## 请手写一个 LazyMan(实现 sleep 机制)
 
 ```js
@@ -205,7 +260,31 @@ me.eat("苹果")
 
 ```
 
+## 手写 sleep函数
 
+promise写法
+```js
+function sleep(seconds) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+sleep(2).then(() => console.log("2秒钟过去了"));
+```
+
+不用 promise
+
+```js
+function sleep(seconds) {
+  const start = Date.now();
+  while (Date.now() - start < seconds * 1000) {
+    // 空循环，直到时间到
+  }
+}
+
+console.log("开始");
+sleep(2); // 阻塞两秒
+console.log("2s过去了");
+```
 
 ## 请手写一个 EventBus(自定义事件)
 
@@ -286,63 +365,6 @@ e.off("key1", fn1);
 e.emit("key1", 100, 200); // 触发 fn2
 ```
 
-
-
-## 手写 convert 函数，将数组转为树
-
-```js
-function convert(arr) {
-  const map = new Map();
-  let root = null;
-
-  // 首先将所有节点映射到一个 Map 中
-  arr.forEach((item) => {
-    const { id, name, parentId } = item;
-    const treeNode = { id, name, children: [] };
-    map.set(id, treeNode);
-    if (parentId === 0) {
-      root = treeNode; // 记录根节点
-    }
-  });
-
-  // 然后遍历一次，将子节点添加到父节点的 children 中
-  arr.forEach((item) => {
-    const { id, parentId } = item;
-    if (parentId !== 0) {
-      const parentNode = map.get(parentId);
-      const currentNode = map.get(id);
-      if (parentNode) {
-        parentNode.children.push(currentNode);
-      }
-    }
-  });
-
-  return root;
-}
-
-const arr = [
-  { id: 1, name: "部门A", parentId: 0 },
-  { id: 2, name: "部门B", parentId: 1 },
-  { id: 3, name: "部门C", parentId: 1 },
-  { id: 4, name: "部门D", parentId: 2 },
-  { id: 5, name: "部门E", parentId: 2 },
-  { id: 6, name: "部门F", parentId: 3 },
-];
-
-// 测试不同的数组顺序
-const shuffledArr = [
-  { id: 4, name: "部门D", parentId: 2 },
-  { id: 1, name: "部门A", parentId: 0 },
-  { id: 5, name: "部门E", parentId: 2 },
-  { id: 2, name: "部门B", parentId: 1 },
-  { id: 6, name: "部门F", parentId: 3 },
-  { id: 3, name: "部门C", parentId: 1 },
-];
-
-const tree = convert(shuffledArr);
-console.info(JSON.stringify(tree, null, 2));
-```
-
 ## 如何用 JS 实现继承
 
 - class 继承（推荐）
@@ -352,7 +374,7 @@ console.info(JSON.stringify(tree, null, 2));
 
 ```js
 function myInstanceOf(left, right) {
-  if (left === null) return false; // null undefined
+  if (left == null) return false; // null undefined
   const type = typeof left;
   if (type !== "object" && type !== "function") {
     return false; // 值类型
@@ -388,9 +410,16 @@ function debounce(fn, delay) {
     }, delay)
   }
 }
+
+function fn1(a, b) {
+  console.log(a + b);
+}
+const debounceFn = debounce(fn1, 2000);
+
+debounceFn(1, 2);
+debounceFn(2, 2);
+// 4
 ```
-
-
 
 ## 节流 throttle
 
@@ -398,7 +427,7 @@ function debounce(fn, delay) {
 function throttle(fn, delay = 100) {
   let timer = null
   return function () {
-    if (timer) {
+    if (timer) {fun
       return // 如果timer有值，则等上次的执行完，中间间隔的不要
     }
     timer = setTimeout(() => {
@@ -407,6 +436,20 @@ function throttle(fn, delay = 100) {
     }, delay)
   }
 }
+
+function fn1(a, b) {
+  console.log(a + b);
+}
+
+const throttleFn = throttle(fn1, 1000);
+
+throttleFn(1, 2);
+throttleFn(1, 3);
+setTimeout(() => {
+  throttleFn(1, 4);
+  throttleFn(1, 5);
+}, 1000);
+// 3 5
 ```
 
 ## 手写深度比较，模拟 lodash isEqual
@@ -679,32 +722,68 @@ console.log("m1", m1.get("x"));
 ```js
 String.prototype.trim = function () {
   // 知识点：原型，this，正则
-  this.replace(/^\s+/, "").replace(/\s+$/, "")
+  return this.replace(/^\s+/, "").replace(/\s+$/, "");
 }
+
+let str = " sdfsf ";
+console.log("1" + str.myTrim() + "2"); // 1sdfsf2
 ```
 
-## 实现一个request，可以在失败的时候重试，有interval和maxCount参数
+## 实现一个retry函数，实现一个重试功能，当异步任务失败时，等待N秒后会自动重试直到成功或达到最大重试次数。
 
 ```js
-async function request(options, interval, maxCount) {     
-    let alreadyRetryCounts = 0     
-    let result      
-        
-    const fetchData = async () => {         
-        await fetch(options)         
-            .then(res => result = res)         
-            .catch(() => {             
-                alreadyRetryCounts++             
-                if (alredayRetryCounts <= maxCount) {                 
-                        setTimeout(fetchData, interval)             
-                   }         
-              })     
-      }          
-      
-      await fetchData()          
-      
-      return result 
+// 实现一个函数 实现一个重试功能，当异步任务失败时，等待N秒后会自动重试直到成功或达到最大重试次数。
+let count = 0;
+function httpReq() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // 第三次成功
+      if (count < 2) {
+        count++;
+        reject({ msg: "请求错误" });
+      } else {
+        resolve({ data: "xxx" });
+      }
+    }, 1000);
+  });
 }
+/**
+ *
+ * @param task  返回一个promise的异步任务
+ * @param maxCount 需要重试的次数
+ * @param time  每次重试间隔多久
+ * @returns 返回一个新promise
+ */
+const retry = (task, maxCount = 2, time = 3 * 1000) => {
+  return new Promise((resolve, reject) => {
+    let count = 0;
+    const run = () => {
+      console.log("请求");
+      task()
+        .then((data) => {
+          resolve(data);
+        })
+        .catch((err) => {
+          count++;
+          if (count > maxCount) {
+            reject(err);
+          } else {
+            setTimeout(run, time);
+          }
+        });
+    };
+    run();
+  });
+};
+
+retry(httpReq)
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    console.log("超过重连次数", err);
+  });
+
 ```
 
 ## 手写 Promise
@@ -996,60 +1075,6 @@ MyPromise.allSettled = function (pList = []) {
 }
 ```
 
-## 手写 Lazyman
-
-- 支持 sleep 和 eat 两个方法
-- 支持链式调用
-
-```js
-class LazyMan {
-  name;
-  tasks = [];
-  constructor(name) {
-    this.name = name;
-
-    // 等任务都加入队列后再执行第一个
-    setTimeout(() => {
-      this.next();
-    });
-  }
-  next() {
-    // 取出当前 tasks 的第一个任务
-    const task = this.tasks.shift();
-    if (task) task();
-  }
-  eat(food) {
-    debugger;
-    const task = () => {
-      console.log(`${this.name} eat ${food}`);
-      this.next(); // 立即执行下一个任务
-    };
-    this.tasks.push(task);
-    return this; // 链式调用
-  }
-  sleep(seconds) {
-    const task = () => {
-      console.log(`${this.name} 开始睡觉`);
-      setTimeout(() => {
-        console.log(`${this.name} 已经睡完了 ${seconds}，开始执行下一个任务`);
-        this.next(); // seconds 秒后执行下一个任务
-      }, seconds * 1000);
-    };
-    this.tasks.push(task);
-    return this; // 链式调用
-  }
-}
-
-const me = new LazyMan("lisi");
-me.eat("苹果")
-  .eat("香蕉")
-  .sleep(2)
-  .eat("葡萄")
-  .eat("西瓜")
-  .sleep(2)
-  .eat("橘子");
-```
-
 ## 异步任务调度器
 
 ```js
@@ -1102,12 +1127,6 @@ addTask(300, "3");
 addTask(400, "4");
 // 输出结果 2 3 1 4
 ```
-
-## 手写 EventBus 自定义事件
-
-- on once
-- emit
-- off
 
 ## 实现一个 LRU 缓存
 
