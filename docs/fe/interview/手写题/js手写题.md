@@ -652,8 +652,19 @@ function cloneDeep(obj, map = new WeakMap()) {
   const objFromMap = map.get(obj);
   if (objFromMap) return objFromMap;
 
-  let target = {};
-  map.set(obj, target);
+  let target;
+
+  if (obj instanceof Date) {
+    target = new Date(obj);
+    map.set(obj, target);
+    return target;
+  }
+
+  if (obj instanceof RegExp) {
+    target = new RegExp(obj);
+    map.set(obj, target);
+    return target;
+  }
 
   // Map
   if (obj instanceof Map) {
@@ -664,6 +675,7 @@ function cloneDeep(obj, map = new WeakMap()) {
       const k1 = cloneDeep(k, map);
       target.set(k1, v1);
     });
+    return target;
   }
 
   // Set
@@ -674,24 +686,30 @@ function cloneDeep(obj, map = new WeakMap()) {
       const v1 = cloneDeep(v, map);
       target.add(v1);
     });
+    return target;
   }
 
   // Array
-  if (obj instanceof Array) {
-    target = obj.map((item) => cloneDeep(item, map));
+  if (Array.isArray(obj)) {
+    target = [];
     map.set(obj, target);
+    obj.forEach((item, index) => {
+      target[index] = cloneDeep(item, map);
+    });
+    return target;
   }
 
   // Object
-  for (const key in obj) {
-    const val = obj[key];
-    const val1 = cloneDeep(val, map);
-    target[key] = val1;
-  }
+  target = {};
+  map.set(obj, target);
+  Object.keys(obj).forEach((key) => {
+    target[key] = cloneDeep(obj[key], map);
+  });
 
   return target;
 }
 
+// Example usage
 const a = {
   set: new Set([10, 20, 30]),
   map: new Map([
