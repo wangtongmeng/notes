@@ -46,7 +46,7 @@
 
 webpack4升级webpack5
 
-![image-20231014061832704](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014061832704.png)
+![image-20231014061832704](http://cdn.wangtongmeng.com/20240912191024.png)
 
 ## 基本配置
 
@@ -132,7 +132,7 @@ webpack4升级webpack5
     - 文件较大
     - 只有一部分功能，无需全部引入
     - 配置按需引入
-    - <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015074208334.png" alt="image-20231015074208334" style="zoom:25%;" />
+    - <img src="http://cdn.wangtongmeng.com/20240912191106.png" alt="image-20231015074208334" style="zoom:25%;" />
     - babel-polyfill 的问题
       - 会污染全局环境
       - 如果做一个独立的 web 系统，则无碍
@@ -184,7 +184,8 @@ Webpack 的构建流程可以分为以下三大阶段：
 
 ### 常用的Loader和Plugin
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015084025529.png" alt="image-20231015084025529" style="zoom:25%;" />
+- https://www.webpackjs.com/loaders/
+- https://www.webpackjs.com/plugins/
 
 常用的要答出来
 
@@ -320,11 +321,53 @@ Webpack 的热更新通过 WebSocket 实时通信，模块重新编译，和运�
 
 <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014191204868.png" alt="image-20231014191204868" style="zoom: 25%;" />
 
+```json
+{
+  test: /\.js$/,
+  use:['babel-loader?cacheDirectory'], // 开启缓存
+  include: path.resolve(__dirname, 'src'), // 明确范围
+  // 排除范围，include 和 exclude 两者选一个即可
+  // exclude: path.resolve(__dirname, 'node_modules')
+}
+```
+
+
+
 noParse 避免重复打包
 
 <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014192644213.png" alt="image-20231014192644213" style="zoom:25%;" />
 
+```js
+module.exports = {
+  module: {
+    // 完整的 react.min.js 文件就没有采用模块化
+    // 忽略对 react.min.js 文件的递归解析处理
+    noParse: [/react\.min\.js$/]
+  }
+}
+```
+
+
+
 自动刷新
+
+```js
+module.export = {
+  watch: true, // 开启监听，默认为 false
+  // 注意，开启监听后，webpack-dev-server 会自动开启刷新浏览器！！！
+  
+  // 监听配置
+  watchOptions: {
+    ignored: /node_modules/, // 忽略
+    // 监听到变化后会等 300 ms 再去执行动作，防止文件更新太快导致冲洗编译频率太高 
+    aggregateTimeout: 300,  // 默认为 300ms
+    // 判断文件是否发生变化是通过不停地去询问系统指定文件有没有变化实现的
+    pll: 1000
+  }
+}
+```
+
+
 
 <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014193856648.png" alt="image-20231014193856648" style="zoom:25%;" />
 
@@ -341,22 +384,32 @@ import str from './hello.js'
 conso.elog(str)
 ```
 
-![image-20231015070459001](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015070459001.png)
+![image-20231015070459001](http://cdn.wangtongmeng.com/20240912213056.png)
 
 两个文件对应两个函数，把两个函数合起来，所以当文件越多，代码体积越大，效果越好
 
-![image-20231015070615681](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015070615681.png)
+![image-20231015070615681](http://cdn.wangtongmeng.com/20240912213134.png)
 
 scope hosting配置
 
-![image-20231015070836502](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015070836502.png)
+![image-20231015070836502](http://cdn.wangtongmeng.com/20240912213302.png)
 
 ### 如何产出一个lib
 
 - 参考 webpack.dll.js
 - output.library
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231015084534908.png" alt="image-20231015084534908" style="zoom:25%;" />
+```js
+{
+  output: {
+  // lib 的文件名
+	filename: 'lodash.js',
+  // 输出 lib 到 dist 目录下
+  path: distPath,
+  // path
+	library: 'lodash'
+}
+```
 
 ### 除了 webpack 的新打包工具
 
