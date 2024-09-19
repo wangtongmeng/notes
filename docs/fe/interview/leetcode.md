@@ -90,7 +90,7 @@
 
 [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/) 虚拟头结点 + 快慢双指针
 
-[面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)  同160 获取两个链表长度，长链表cur节点移动到和短链表相同，两个链表同时向后遍历
+[面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)  同160 获取两个链表长度，1.长链表cur节点移动到和短链表相同，两个链表同时向后遍历2.精妙做法
 
 [142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/) 利用map表(new Set)
 

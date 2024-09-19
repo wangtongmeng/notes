@@ -228,7 +228,6 @@ class LazyMan {
     if (task) task();
   }
   eat(food) {
-    debugger;
     const task = () => {
       console.log(`${this.name} eat ${food}`);
       this.next(); // 立即执行下一个任务
