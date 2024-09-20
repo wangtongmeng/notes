@@ -60,6 +60,8 @@
 
 [459. 重复的子字符串](https://leetcode.cn/problems/repeated-substring-pattern/)  从小到大拼接子串，利用repeat方法，比较是否相等
 
+[5. 最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/) 
+
 ## 二分
 
 [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)  闭区间 right  + 1
