@@ -507,4 +507,312 @@ var productExceptSelf = function(nums) {
 思路
 
 - 单调队列（通用做法） 参考 https://www.acwing.com/problem/content/description/1090/
-- 贪心：先枚举（枚举每个起点），再优化
+- 贪心：先枚举（枚举每个起点），再优化；遍历节点，累计油记录右边界，如果<0，则直接更新遍历点为右边界
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int n = gas.size();
+        for (int i = 0, j; i < n;) { // i 是枚举起点
+            int left = 0; // 剩余油量
+            for (j = 0; j < n; j ++ ) { // j 表示从枚举起点向后走几步
+                int k = (i + j) % n; // 计算索引值
+                left += gas[k] - cost[k];
+                if (left < 0) break;
+            }
+            if (j == n) return i; // 说明够一圈了，此时的枚举起点i就是答案
+            i = i + j + 1; // j 表示走过几步后，油不够了，所以跳过中间的枚举起点
+        }
+        return -1;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} gas
+ * @param {number[]} cost
+ * @return {number}
+ */
+var canCompleteCircuit = function(gas, cost) {
+    const n = gas.length;
+    for (let i = 0, j; i < n;) { // i 是枚举的起点
+        let left = 0; // 剩余油量
+        for (j = 0; j < n; j++) {
+            let k = (i + j) % n; // 当前索引
+            left += gas[k] - cost[k];
+            if (left < 0) break;
+        }
+        if (j === n) return i;
+        i = i + j + 1; // 不是n说明不够一圈的，跳过中间枚举起点
+    }
+    return  -1;
+};
+```
+
+### [12. 整数转罗马数字](https://leetcode.cn/problems/integer-to-roman/)
+
+思路
+
+<img src="http://cdn.wangtongmeng.com/20240922082229-b702ae.png" style="zoom: 25%;" />
+
+找规律
+
+```bash
+2649 （选红圈的数字，保证操作一致）
+2649，大于等于 1000, 2649-1000=1649，结果M
+1649，大于等于 1000, 1649-1000=649，结果MM
+649， 大于等于 500，649-500=149，结果MMD
+129，大于等于100，149-100=49，结果MMDC
+49，大于等于40，49-40=9，结果MMDCXL
+9，大于等于9，结果MMDCXLIX
+```
+
+
+
+<img src="http://cdn.wangtongmeng.com/20240922082949-b864a0.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string intToRoman(int num) {
+        int values[] = {
+            1000,
+            900, 500, 400, 100,
+            90, 50, 40, 10,
+            9, 5, 4, 1
+        };
+        string reps[] = {
+            "M",
+            "CM", "D", "CD", "C",
+            "XC", "L", "XL", "X",
+            "IX", "V", "IV", "I",
+        };
+        string res;
+        for (int i = 0; i < 13; i ++ ) {
+            while (num >= values[i]) {
+                num -= values[i];
+                res += reps[i];
+            }
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number} num
+ * @return {string}
+ */
+var intToRoman = function(num) {
+    const values = [
+        1000,
+        900, 500, 400, 100,
+        90, 50, 40, 10,
+        9, 5, 4, 1
+    ]
+    const reps = [
+        "M",
+        "CM", "D", "CD", "C",
+        "XC", "L", "XL", "X",
+        "IX", "V", "IV", "I",
+    ]
+    let res = '';
+    for (let i = 0; i < 13; i++) {
+        while (num >= values[i]) {
+            num -= values[i];
+            res += reps[i];
+        }
+    }
+    return res;
+};
+```
+
+### [13. 罗马数字转整数](https://leetcode.cn/problems/roman-to-integer/)
+
+思路：我们发现除了绿圈的，其他都是加上罗马数字对应的数字，而绿圈例如4对应的IV可以拆成V-I（I在前小于V）=5-1=4
+
+```bash
+MMDCXLIX
+M 1000
+M 1000
+D 500
+C 100
+X 10 比后面小 -10
+L 50
+I 1 比后面小 -1
+X 10
+```
+
+
+
+<img src="http://cdn.wangtongmeng.com/20240922091350-0fcbd0.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map<char, int> hash;
+        hash['I'] = 1, hash['V'] = 5;
+        hash['X'] = 10, hash['L'] = 50;
+        hash['C'] = 100, hash['D'] = 500;
+        hash['M'] = 1000;
+
+        int res = 0;
+        for (int i = 0; i < s.size(); i ++ ) {
+            if (i + 1 < s.size() && hash[s[i]] < hash[s[i + 1]])
+                res -= hash[s[i]];
+            else
+                res += hash[s[i]];
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var romanToInt = function(s) {
+    const map = {
+        'I': 1,
+        'V': 5,
+        'X': 10,
+        'L': 50,
+        'C': 100,
+        'D': 500,
+        'M': 1000
+    }
+
+    let res = 0;
+    for (let i = 0; i < s.length; i++) {
+        if (i + 1 < s.length && map[s[i]] < map[s[i + 1]]) {
+            res -= map[s[i]];
+        }else {
+            res += map[s[i]];
+        }
+    }
+
+    return res;
+};
+```
+
+### [58. 最后一个单词的长度](https://leetcode.cn/problems/length-of-last-word/)
+
+cpp stringstream
+
+```cpp
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        stringstream ssin(s);
+        int res = 0;
+        string word;
+        while (ssin >> word) res = word.size();
+        return res;
+    }
+};
+```
+
+cpp 双指针
+
+```cpp
+class Solution {
+public:
+    int lengthOfLastWord(string s) {
+        for (int i = s.size() - 1; i >= 0; i --) {
+            if (s[i] == ' ') continue;
+            int j = i - 1;
+            while (j >= 0 && s[j] != ' ') j -- ;
+            return i - j;
+        }
+
+        return 0;
+    }
+};	
+```
+
+js 双指针
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLastWord = function(s) {
+    for (let i = s.length - 1; i >= 0; i--) {
+        if (s[i] === ' ') continue;
+        let j = i - 1;
+        while (j >= 0 && s[j] != ' ') j--;
+        return i - j;
+    }
+    return 0;
+};
+```
+
+### [14. 最长公共前缀](https://leetcode.cn/problems/longest-common-prefix/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        string res;
+        if (strs.empty()) return res;
+
+        for (int i = 0;;i ++) {
+            if (i >= strs[0].size()) return res;
+            char c = strs[0][i];
+            for (auto& str: strs)
+                if (str.size() <= i || str[i] != c)
+                    return res;
+            res += c;
+        }
+
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string[]} strs
+ * @return {string}
+ */
+var longestCommonPrefix = function(strs) {
+    let res = '';
+    if (!strs) return res;
+
+    for (let i = 0;; i++) { // 注意这里终止条件不是 i < strs.length
+        if (i >= strs[0].length) return res;
+        let c = strs[0][i];
+        for (let str of strs) {
+            if (str.length <= i || str[i] != c) {
+                return res;
+            }
+        }
+        res += c;
+    }
+    return res;
+};
+```
+
