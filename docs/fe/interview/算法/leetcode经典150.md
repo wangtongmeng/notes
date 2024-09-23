@@ -1300,3 +1300,815 @@ var threeSum = function(nums) {
 
 - 1.通过hash记录地址，看是否出现重复的
 - 2.快慢指针
+
+<img src="http://cdn.wangtongmeng.com/20240923093645-268e0f.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        if (!head || !head->next) return false;
+        auto s = head, f = head->next;
+        while (f) {
+            s = s->next, f = f->next; // 都走一步
+            if (!f) return false;
+            f = f->next; // 快指针再走一步
+            if (s == f) return true;
+        }
+        return false;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function(head) {
+    if (!head || !head.next) return false;
+    let s = head, f = head.next;
+    while (f) {
+        s= s.next, f = f.next;
+        if (!f) return false;
+        f = f.next;
+
+        if (s === f) return true;
+    }
+    return false;
+};
+```
+
+### [2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        auto dummy = new ListNode(-1), cur = dummy;
+        int t = 0; // 进位数
+        while (l1 || l2 || t) {
+            if (l1) t += l1->val, l1 = l1->next;
+            if (l2) t += l2->val, l2 = l2->next;
+            cur = cur->next = new ListNode(t % 10);
+            t /= 10;
+        }
+
+        return dummy->next;
+    }
+    
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var addTwoNumbers = function(l1, l2) {
+    const dummy = new ListNode(-1)
+    // cur 是链表尾节点，尾节点插入新节点
+    let cur = dummy, t = 0; // t 存储进位数
+    while (l1 || l2 || t) {
+        if (l1) t += l1.val, l1 = l1.next;
+        if (l2) t += l2.val, l2 = l2.next;
+        cur = cur.next = new ListNode(t % 10)
+        t = Math.floor(t / 10) // 进位数
+    }
+    return dummy.next
+};
+```
+
+### [21. 合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)
+
+思路：两个指针分别指向每个链表，比较头结点，把较小的节点加入新链表，最后将剩余的一个链表拼接即可
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        auto dummy = new ListNode(-1), tail = dummy; // tail是新链表的尾节点
+        while (l1 && l2) {
+            if (l1->val < l2->val) {
+                tail = tail->next = l1;
+                l1 = l1->next;
+            } else {
+                tail = tail->next = l2;
+                l2 = l2->next;
+            }
+        }
+
+        if (l1) tail->next = l1;
+        if (l2) tail->next = l2;
+        return dummy->next;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} list1
+ * @param {ListNode} list2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function(l1, l2) {
+    let dummy = new ListNode(-1), tail = dummy;
+    while (l1 && l2) {
+        if (l1.val < l2.val) {
+            tail = tail.next = l1;
+            l1 = l1.next;
+        } else {
+            tail = tail.next = l2;
+            l2 = l2.next;
+        }
+    }
+    if (l1) tail.next = l1;
+    if (l2) tail.next = l2;
+    return dummy.next;
+};
+```
+
+### [138. 随机链表的复制](https://leetcode.cn/problems/copy-list-with-random-pointer/) (暂跳过)
+
+思路：
+
+- 方法1.利用hash表
+- 方法2.取巧，避免开hash表，省O(n)的空间
+
+<img src="http://cdn.wangtongmeng.com/20240923101715-15f438.png" style="zoom:25%;" />
+
+方法2思路
+
+### [92. 反转链表 II](https://leetcode.cn/problems/reverse-linked-list-ii/)
+
+思路
+
+头结点有可能变，所以加个虚拟头结点
+
+<img src="http://cdn.wangtongmeng.com/20240923103837-28ff75.png" style="zoom:50%;" />
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+        auto a = dummy;
+        for (int i = 0; i < left - 1; i ++) a = a->next; // 找到left的前一个节点
+        auto b = a->next, c = b->next;
+        for (int i = 0; i < right - left; i ++ ) { // 翻转几次，看left和right之间有几条边，正好是right-left
+            auto d = c->next;
+            c->next = b;
+            b = c, c = d;
+        }
+        a->next->next = c;
+        a->next = b;
+        auto res = dummy->next; // 删除dummy，可以不写
+        delete dummy;
+        return res;
+
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} left
+ * @param {number} right
+ * @return {ListNode}
+ */
+var reverseBetween = function(head, left, right) {
+    const dummy = new ListNode(-1, head);
+    let a = dummy;
+    for (let i = 0; i < left - 1; i++) a = a.next;
+    let b = a.next, c = b.next;
+    for (let i = 0; i < right - left; i++) {
+        let d = c.next;
+        c.next = b;
+        b = c, c = d;
+    }
+    a.next.next = c;
+    a.next = b;
+
+    return dummy.next;
+};
+```
+
+### [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+
+思路
+
+```bash
+遍历的链表总长度n
+要删掉倒数第k个点，需要找到倒数第k+1个点
+n+1 - (k+1) = n-k
+n-k-1
+```
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int k) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+
+        int n = 0; // 链表总长度 包含虚拟头结点
+        for (auto p = dummy; p; p = p->next) n ++ ;
+
+        auto p = dummy; // 找到倒数第k+1个点
+        // 总共n个点，右边k+1个点，前面还有n-(k+1)个点，所以前面有n-k-1个点，需要跳过
+        for (int i = 0; i < n - k - 1; i ++ ) p = p->next; // 跳过n-k-1个点
+
+        // 删除倒数第k个点
+        p->next = p->next->next;
+
+        return dummy->next;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} n
+ * @return {ListNode}
+ */
+var removeNthFromEnd = function(head, k) {
+    const dummy = new ListNode(-1, head);
+    let n = 0; // 包含dummy的链表长度
+    for (let p = dummy; p; p = p.next) n++;
+    // 删除倒数第k个数，需要找到倒数第k+1个数
+    // 倒数第k+1个数前面还有n-(k+1)=n-k-1个数，所以需要跳过n-k-1次
+    let p = dummy; // 第倒数k+1个数
+    for (let i = 0; i < n - k - 1; i++) p = p.next;
+    p.next = p.next.next;
+    return dummy.next;
+};
+```
+
+### [82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)
+
+思路：
+
+```bash
+指针1 记录下一个下一段的第一个数是多少
+指针2 从指针1的下一个开始看，知道移动到指针2的数不能与指针1的数
+这样 [指针1，指针2) 就是相等的一段
+判断这段有几个元素，判断指针1的next是不是等于指针2的数，相等说明就一个数，不相等说明多个数
+
+分两种情况
+1.如果下一段只有一个数，只需要把cur指针移动到下一个
+2.下一段多余一个数
+
+我们发现指针是指向某一段的前一个数
+```
+
+<img src="http://cdn.wangtongmeng.com/20240923130013-77e2f8.png" style="zoom: 50%;" />
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        auto dummy = new ListNode(-1);
+        dummy->next = head;
+        auto p = dummy; // 当先遍历点
+        while (p->next) { // p->next 是下一段的起始点
+            auto q = p->next->next; // q 是下一段起始点的下一个点
+            while (q && q->val == p->next->val) q = q->next; // 找到不等于下一段起始点的q
+            if (p->next->next == q) p = p->next; // 说明只有一个元素
+            else p->next = q; // 说明多个相等元素，都删掉
+        }
+        return dummy->next;
+
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var deleteDuplicates = function(head) {
+    const dummy =  new ListNode(-1, head);
+    let p = dummy; // 遍历点
+    while (p.next) { // p.next 是下一段的起始点
+        let q = p.next.next; // 下一段的起始点后面的点
+        while (q && q.val === p.next.val) q = q.next; // 找到和下一段起始点不同的点
+        if (p.next.next === q) p = p.next; // 说明只有一个点相同
+        else p.next = q; // 下一段多个点相同，都删掉
+    }
+    return dummy.next;
+};
+```
+
+### [61. 旋转链表](https://leetcode.cn/problems/rotate-list/)
+
+思路
+
+<img src="http://cdn.wangtongmeng.com/20240923150050-3b1ced.png" style="zoom: 50%;" />
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* rotateRight(ListNode* head, int k) {
+        if (!head) return head;
+        int n = 0; // 链表长度
+        LitNode* tail; // 原链表的尾节点
+        for (auto p = head; p; p = p->next) {
+            tail = p;
+            n ++ ;
+        }
+        k %= n;
+        if (!k) return head;
+
+        auto p = head; // 遍历到新的尾节点，前面是n-k个节点，尾节点从head遍历只需要n-k-1步
+        for (int i = 0; i < n - k - 1; i ++ )  p = p->next;
+        tail->next = head; // 翻转段尾部执行原head
+        head = p->next; // 更新head
+        p->next = nullprt;
+        return head;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode}
+ */
+var rotateRight = function(head, k) {
+    if (!head) return head;
+    let n = 0; // 链表长度
+    let tail = null; // 原链表尾部
+    for (let p = head;p;p = p.next) {
+        tail = p;
+        n++;
+    }
+
+    k = k % n;
+    if (!k) return head; // 如果整除则不需要旋转
+
+    let p = head; // 找到旋转段的前一个节点
+    // 前面n-k个节点不需要动，从head遍历，只需要遍历n-k-1次
+    for (let i = 0; i < n - k - 1; i++) {
+        p = p.next;
+    }
+    tail.next = head; // 旋转段尾的next指向原链表head
+    head = p.next; // 新head的next指向旋转段头节点
+    p.next = null; // 新tail的next指向null
+    return head;
+};
+```
+
+### [86. 分隔链表](https://leetcode.cn/problems/partition-list/)
+
+思路：开两个链表，再连起来
+
+<img src="http://cdn.wangtongmeng.com/20240923151107-2ed731.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* partition(ListNode* head, int x) {
+        // 由于两个链表都有可能是空，这里设置两个虚拟头结点
+        auto lh = new ListNode(-1), rh = new ListNode(-1);
+        auto lt =lh, rt = rh; // 记录当前的链表尾节点
+
+        for (auto p = head; p; p = p->next) {
+            if (p->val < x) lt = lt->next = p; 
+            else rt = rt->next = p;
+        }
+
+        lt->next = rh->next;
+        rt->next = NULL;
+
+        return lh->next;
+
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @param {number} x
+ * @return {ListNode}
+ */
+var partition = function(head, x) {
+    let lh = new ListNode(-1), rh = new ListNode(-1);
+    let lt = lh, rt = rh;
+
+    for (let p = head; p;p = p.next) {
+        if (p.val < x) lt = lt.next = p;
+        else rt = rt.next = p;
+    }
+
+    lt.next = rh.next; // 让做链表尾部.next指向右链表头.next
+    rt.next = null;
+
+    return lh.next;
+
+};
+```
+
+### [146. LRU 缓存](https://leetcode.cn/problems/lru-cache/)（暂跳过）
+
+思路
+
+get put 利用 hash表 ，维护所有key value对；利用双链表维护时间戳
+
+<img src="http://cdn.wangtongmeng.com/20240923153437-497142.png" style="zoom:50%;" />
+
+## 二叉树
+
+### [104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
+
+思路：bfs、dfs
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxDepth = function(root) {
+    if (!root) return 0;
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+};
+```
+
+### [100. 相同的树](https://leetcode.cn/problems/same-tree/)
+
+思路：遍历时按照相同顺序即可
+
+cpp
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if (!p && !q) return true; // 如果两棵树都是空，是相等的
+        // 两棵树有一颗不为空，另一颗为空；或者都不为空时值不相等，则两棵树不相等
+        if (!p || !q || p->val != q->val) return false;
+        return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {boolean}
+ */
+var isSameTree = function(p, q) {
+   if (!p && !q) return true;
+   if (!p || !q || p.val !== q.val) return false;
+
+   return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+};
+```
+
+### [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)
+
+cpp
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return NULL;
+        swap(root->left, root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        return root;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var invertTree = function(root) {
+    if (!root) return null;
+    let tmp = root.left;
+    root.left = root.right;
+    root.right = tmp;
+    invertTree(root.left);
+    invertTree(root.right);
+    return root;
+};
+```
+
+### [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
+
+cpp
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if (!root) return true;
+        return dfs(root->left, root->right); // 看下左子树和右子树是否对称
+    }
+
+    bool dfs(TreeNode* p, TreeNode* q) {
+        if (!p && !q) return true;
+        // 如果两棵树一颗为空一颗不空 或者 不为空但值不相等，则为false
+        if (!p || !q || p->val != q->val) return false;
+        // 左节点的左边和右节点的右边，同理...
+        return dfs(p->left, q->right) && dfs(p->right, q->left);
+    }
+};
+```
+
+js
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetric = function(root) {
+   if (!root) return true;
+   return dfs(root.left, root.right); // 看下左右节点是否对称
+};
+function dfs(p, q) {
+    if (!p && !q) return true;
+    if (!p || !q || p.val !== q.val) return false;
+
+    return dfs(p.left, q.right) && dfs(p.right, q.left);
+}
+```
+
+### [105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)
+
+思路
+
+hash用来记录中序遍历每个数的位置
+
+![](http://cdn.wangtongmeng.com/20240923193914-32a633.png)
