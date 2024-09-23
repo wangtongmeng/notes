@@ -1292,6 +1292,205 @@ var threeSum = function(nums) {
 };
 ```
 
+## 滑动窗口
+
+## 矩阵
+
+### [36. 有效的数独](https://leetcode.cn/problems/valid-sudoku/)
+
+思路：每行、每列、每个九宫格内是不是有重复元素
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        bool st[9];
+
+        // 判断行
+        for (int i = 0; i < 9; i ++) {
+            memset(st, 0, sizeof st); // 清空数组
+            for (int j = 0; j < 9; j ++ ) {
+                if (board[i][j] != '.') {
+                    int t = board[i][j] - '1'; // 要把字符的1-9变成0-8
+                    if (st[t]) return false; // 如果出现过返回false
+                    st[t] = true;
+                }
+            }
+        }
+
+        // 判断列
+        for (int i = 0; i < 9; i ++) {
+            memset(st, 0, sizeof st); // 清空数组
+            for (int j = 0; j < 9; j ++ ) {
+                if (board[j][i] != '.') { // 交换i j 即可
+                    int t = board[j][i] - '1';
+                    if (st[t]) return false;
+                    st[t] = true;
+                }
+            }
+        }
+
+        // 判断小方格
+        for (int i = 0; i < 9; i += 3) {
+            for (int j = 0; j < 9; j += 3) {
+                // i j 是每个小方格的起点
+                memset(st, 0, sizeof st);
+                for (int x = 0; x < 3; x ++ )
+                    for (int y = 0; y < 3; y ++ ) {
+                        if (board[i + x][j + y] != '.') {
+                            int t = board[i + x][j + y] - '1';
+                            if (st[t]) return false;
+                            st[t] = true;
+                        }
+                    }
+            }
+        }
+
+        return true;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {character[][]} board
+ * @return {boolean}
+ */
+var isValidSudoku = function(board) {
+    // 检查每行、每列、每个九宫格是否有重复元素
+    let set = new Set(); // 记录数字是否出现过
+
+    // 检查行
+    for (let i = 0; i < 9; i++) {
+        set.clear(); // 清空set
+        for (let j = 0; j < 9; j++) {
+            if (board[i][j] !== '.') {
+                let t = Number(board[i][j]);
+                if (set.has(t)) return false;
+                set.add(t);
+            }
+        }
+    }
+
+    // 检查列
+    for (let i = 0; i < 9; i++) {
+        set.clear(); // 清空set
+        for (let j = 0; j < 9; j++) {
+            if (board[j][i] !== '.') {
+                let t = Number(board[j][i]);
+                if (set.has(t)) return false;
+                set.add(t);
+            }
+        }
+    }
+
+    // 检查九宫格
+    for (let i = 0; i < 9; i += 3) {
+        for (let j = 0; j < 9; j += 3) {
+            set.clear(); // 清空set
+            for (let x = 0; x < 3; x++) {
+                for (let y = 0; y < 3; y++) {
+                    if (board[i + x][j + y] !== '.') {
+                        let t = Number(board[i + x][j + y]);
+                        if (set.has(t)) return false;
+                        set.add(t);
+                    }
+                }
+            }
+        }
+    }
+    return true;
+};
+```
+
+### [54. 螺旋矩阵](https://leetcode.cn/problems/spiral-matrix/)
+
+思路：偏移量的做法
+
+定义四个方向
+
+<img src="http://cdn.wangtongmeng.com/20240923232015-56f080.png" style="zoom: 25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        int n = matrix.size(); // 行数
+        if (!n) return res;
+        int m = matrix[0].size(); // 列数
+
+        // x轴(向下)y轴(向右)偏移量
+        int dx[] = {0, 1,0, -1}, dy[] = {1, 0, -1, 0}; // 右 下 左 上
+        vector<vector<bool>> st(n, vector<bool>(m)); // 记录走过的坐标
+
+        // i < n * m 控制遍历总数量;x,y是数的坐标；d是方向
+        for (int i = 0, x = 0, y = 0, d = 0; i < n * m; i ++ ) {
+            res.push_back(matrix[x][y]);
+            st[x][y] = true;
+
+            int a = x + dx[d], b = y + dy[d]; // 下一个点的坐标
+            if (a < 0 || a >= n || b < 0 || b >= m || st[a][b]) {
+                // 若越界或者重复了，则改变方向
+                d = (d + 1) % 4;
+                a = x + dx[d], b = y + dy[d]; 
+            }
+
+            x = a, y = b;
+        }
+
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} matrix
+ * @return {number[]}
+ */
+var spiralOrder = function(matrix) {
+    let res = [];
+    let n = matrix.length; // 行数
+    if (!n) return res;
+    let m = matrix[0].length; // 列数
+    let st = Array.from({length: n}, () => Array(m).fill(false)); // 记录是否走过
+    // 偏移量 x轴朝下，y轴朝右
+    let dx = [0 , 1, 0, -1], dy = [1, 0, -1, 0];  // 右->下->左->上
+
+    for (let i = 0, x = 0, y = 0, d = 0; i < n * m; i++) {
+        res.push(matrix[x][y]);
+        st[x][y] = true;
+
+        let a = x + dx[d], b = y + dy[d];
+        if (a < 0 || a >= n || b < 0 || b >= m || st[a][b]) {
+            d = (d + 1) % 4;
+            a = x + dx[d], b = y + dy[d];
+        }
+        x = a, y = b;
+    }
+    return res;
+};
+```
+
+
+
+## 哈希表
+
+## 区间
+
+## 栈
+
+
+
 ## 链表
 
 ### [141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)
@@ -2112,3 +2311,32 @@ function dfs(p, q) {
 hash用来记录中序遍历每个数的位置
 
 ![](http://cdn.wangtongmeng.com/20240923193914-32a633.png)
+
+## 二叉树层序遍历
+
+## 二叉搜索树
+
+## 图
+
+## 图的广度优先搜索
+
+## 字典树
+
+## 回溯
+
+## 分治
+
+## Kadane 算法
+
+## 二分查找
+
+## 堆
+
+## 位运算
+
+## 数学
+
+## 一维动态规划
+
+## 多维动态规划
+
