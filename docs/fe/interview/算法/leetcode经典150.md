@@ -816,3 +816,487 @@ var longestCommonPrefix = function(strs) {
 };
 ```
 
+### [151. 反转字符串中的单词](https://leetcode.cn/problems/reverse-words-in-a-string/)
+
+思路
+
+- 先整体翻转，再局部翻转
+
+<img src="http://cdn.wangtongmeng.com/20240922145316-4958a1.png" style="zoom:25%;" />
+
+删空格
+
+<img src="http://cdn.wangtongmeng.com/20240922145423-b0a507.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string reverseWords(string s) {
+        int k = 0; // 当前单词的位置
+        for (int i  = 0; i < s.size(); i ++ ) {
+            if (s[i] == ' ') continue;
+            int j = i, t = k;
+            // 找到第一个单词，并挪到s的开头
+            while (j < s.size() && s[j] != ' ') s[t ++ ] = s[j ++ ];
+            reverse(s.begin() + k, s.begin() + t);
+            s[t ++ ] = ' '; // 补上空格
+            k = t, i = j;
+        }
+        if (k) k -- ; // 将最后的空格删掉（前面操作每挪动一个单词后面加个一个空格）
+        s.erase(s.begin() + k, s.end()); // 删掉k之后的部分
+        reverse(s.begin(), s.end()); // 翻转整个字符串
+        return s;
+
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @return {string}
+ */
+var reverseWords = function(s) {
+    let res = '';
+    
+    for (let i = 0; i < s.length;) {
+        let word = '';
+        let j = i;
+        while (s[j] != ' ' && j < s.length) {
+            word += s[j];
+            j++
+        }
+        if (word) {
+            if (res) {
+                res = word + ' ' + res;
+            } else {
+                res = word;
+            }
+            
+        }
+        i = j + 1;
+    }
+
+    return res;
+};
+```
+
+### [6. Z 字形变换](https://leetcode.cn/problems/zigzag-conversion/)
+
+思路
+
+<img src="http://cdn.wangtongmeng.com/20240920111932-c35ad5.png" style="zoom:50%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string convert(string s, int n) {
+        string res;
+        if (n == 1) return s;
+        for (int i = 0; i < n; i ++ ) {
+            // 第一行和最后一行是一个等差数列
+            if (i == 0 || i == n - 1) {
+                for (int j = i; j < s.size(); j += 2 * n - 2) {
+                    res += s[j];
+                }
+            } else {
+                // 中间行是两个等差数列
+                for (int j = i, k = 2 * n - 2 - i; j < s.size() || k < s.size(); j += 2 * n - 2, k += 2 * n - 2) {
+                    if (j < s.size()) res += s[j];
+                    if (k < s.size()) res += s[k];
+                }
+            }
+        }
+
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function(s, n) {
+    let res = '';
+    if (n === 1) return s;
+    let len = s.length;
+    for (let i = 0; i < n; i++) {
+        if (i === 0 || i === n - 1) {
+            for (let j = i; j < len; j += 2 * n - 2)
+                res += s[j];
+        } else {
+            for (let j = i, k = 2 * n - 2 - i; j < len || k < len; j += 2 * n - 2, k += 2 * n - 2) {
+                if (j < len) res += s[j];
+                if (k < len) res += s[k];
+            }
+        }
+    }
+    return res;
+};
+
+
+
+提取下变量
+/**
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function(s, n) {
+    let res = '', len = s.length, step = 2 * n - 2;
+    if (n === 1) return s;
+    for (let i = 0; i < n; i++) {
+        if (i === 0 || i === n - 1) {
+            for (let j = i; j < len; j += step) {
+                res += s[j];
+            }
+        } else {
+            for (let j = i, k = step - j; j < len || k < len; j += step, k += step) {
+                if (j < len) res += s[j];
+                if (k < len) res += s[k];
+            }
+        }
+    }
+    return res;
+};
+```
+
+### [28. 找出字符串中第一个匹配项的下标](https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/)
+
+思路：KMP
+
+next[1] = 0 ，需要特判一下，下标是从1开始的，自身不能算，所以是0。
+
+<img src="http://cdn.wangtongmeng.com/20240922214139-7b36ca.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int strStr(string s, string p) {
+        if (p.empty()) return 0;
+        int n = s.size(), m = p.size();
+        s = ' ' + s, p = ' ' + p; // 加空格是为了从1开始
+
+        vector<int> next(m + 1);
+        for (int i = 2, j = 0; i <= m; i ++ ) {
+            while (j && p[i] != p[j + 1]) j = next[j];
+            if (p[i] == p[j + 1]) j ++ ;
+            next[i] = j;
+        }
+
+        for (int i = 1, j = 0; i <= n; i ++ ) {
+            while (j && s[i] != p[j + 1]) j = next[j];
+            if (s[i] == p[j + 1]) j ++ ;
+            if (j == m) return i - m; // i - m + 1 - 1 结果是从0开始的所以-1
+        }
+        return -1;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} haystack
+ * @param {string} needle
+ * @return {number}
+ */
+var strStr = function(s, p) {
+    if (!p) return 0;
+    let n = s.length, m = p.length;
+    s = ' ' + s, p = ' ' + p;
+    let next = new Array(m + 1).fill(0);
+    for (let i = 2, j = 0; i <= m; i++) {
+        while (j && p[i] !== p[j+1]) j = next[j];
+        if (p[i] === p[j + 1]) j++;
+        next[i] = j;
+    }
+
+    for (let i = 1, j = 0; i <= n; i++) {
+        while (j && s[i] != p[j + 1]) j = next[j];
+        if (s[i] === p[j + 1]) j++;
+        if (j === m) return i - m;
+    }
+    return -1;
+};
+```
+
+## 双指针
+
+### [125. 验证回文串](https://leetcode.cn/problems/valid-palindrome/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool check(char c) {
+        return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9';
+    }
+
+    bool isPalindrome(string s) {
+        for (int i = 0, j = s.size() - 1; i < j; i ++, j -- ) {
+            while (i < j && !check(s[i])) i ++ ;
+            while (i < j && !check(s[j])) j -- ;
+            if (i < j && tolower(s[i]) != tolower(s[j])) return false;
+        }
+
+        return true;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isPalindrome = function(s) {
+
+    function check(c) {
+        return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9';
+        // return /^[a-zA-Z0-9]$/.test(c);
+    }
+
+
+    for (let i = 0, j = s.length - 1; i <j; i++, j--) {
+        while (i < j && !check(s[i])) i++;
+        while (i < j && !check(s[j])) j--;
+        if (i < j && s[i].toLowerCase() !== s[j].toLowerCase()) return false; 
+    }
+    return true;
+};
+```
+
+### [392. 判断子序列](https://leetcode.cn/problems/is-subsequence/)
+
+给定字符串 **s** 和 **t** ，判断 **s** 是否为 **t** 的子序列
+
+思路：遍历t，维护一个索引k，看t中字符是否是s最前面的字符，如果是k+1,看下一个字符，如果子序列则k===s.length
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+        int k = 0; // k 表示子序列的索引，查找索引对应字符是否在t中有
+        for (auto c: t)
+            if (k < s.size() && c == s[k])
+                k ++ ;
+        return k == s.size();
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isSubsequence = function(s, t) {
+    let k = 0;
+    for (let c of t) {
+        if (k < s.length && c === s[k]) {
+            k++;
+        }
+    }
+    return k === s.length;
+};
+```
+
+### [167. 两数之和 II - 输入有序数组](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)
+
+思路：经典的双指针算法，先暴力，再看有没有单调性做优化
+
+a[i]+a[j] = target，当i++时，j只能j--，有单调性
+
+当i=0时，找到a[i]+a[j] > target 的最小j
+
+当i++时，满足和等于target的j一定是更小的
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        for (int i = 0, j = numbers.size() - 1; i < j; i ++ ) {
+            while (i < j && numbers[i] + numbers[j] > target) j -- ; // 找到最小的j，满足和大于 target
+            if (i < j && numbers[i] + numbers[j] == target) return {i + 1, j + 1}; // 下标从1开始，这里+1
+        }
+        return {};
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} numbers
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(numbers, target) {
+    for (let i = 0, j = numbers.length -1; i < j; i++) {
+        while (i < j && numbers[i] + numbers[j] > target) j--;
+        if (i < j && numbers[i] + numbers[j] === target) return [i + 1, j + 1];
+    }
+    return {};
+};
+```
+
+### [11. 盛最多水的容器](https://leetcode.cn/problems/container-with-most-water/)
+
+思路
+
+```bash
+const values = [1,8,6,2,5,6,8,3,7]
+const index =  [0,1,2,3,4,5,6,7,8]
+l=0,r=8,area=min(1,7)*(8-0)=8
+1比较矮
+l=1,r=8,area=min(8,7)*(8-1)=49 最大值
+...
+```
+
+为什么这样可以
+
+<img src="http://cdn.wangtongmeng.com/20240923001042-77b476.png" style="zoom: 50%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int res = 0;
+        for (int i = 0, j = height.size() - 1; i < j;) {
+            res = max(res, min(height[i], height[j]) * (j - i));
+            // 假设左边是最大边界，那么右侧不断向左靠拢一定会找到右侧的最大边界
+            if (height[i] > height[j]) j --; // 如果左边大于右边，则右边一定不是最优解的边，所以j--
+            else i ++;
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} height
+ * @return {number}
+ */
+var maxArea = function(height) {
+    let res = 0, len = height.length;
+    for (let i = 0, j = len - 1; i < j;) {
+        res = Math.max(res, Math.min(height[i], height[j]) * (j - i));
+        if (height[i] > height[j]) j--;
+        else i++;
+    }
+    return res;
+};
+```
+
+### [15. 三数之和](https://leetcode.cn/problems/3sum/)
+
+思路
+
+- 双指针，先不考虑重复的问题，先排序
+- 要求指针 i<j<k，当i固定后，jk就可以做双指针了
+- 找到一个最小的j，使得nums[j]+nums[k]+nums[i]>=0
+- j越大，k越小，有单调性
+- i一层循环，加上jk的O(n)，时间复杂度是O(n^2)
+- 重复的问题
+
+```bash
+1 1 1 1 1 -2
+i
+  i
+如果num[i]和上一个num[i]相同说明相同，跳过
+```
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end()); // 排序
+        // 三个指针 i < j < k
+        for (int i = 0; i < nums.size(); i ++ ) {
+            if (i && nums[i] == nums[i - 1]) continue; // 去重
+            for (int j = i + 1, k = nums.size() - 1; j < k; j ++ ) { // j对应值有可能和i对应值相同的
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue; // 去重 j > i + 1 表示 j 不能是第一个数
+                // 在i固定的情况下，找到最小的j
+                while (j < k - 1 && nums[i] + nums[j] + nums[k - 1] >= 0) k -- ; // j < k - 1, k-1是k的下一个数，看下是否满足条件
+                if (nums[i] + nums[j] + nums[k] == 0) {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                }
+            }
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var threeSum = function(nums) {
+    const res = [], len = nums.length;
+
+    // 从小到大排序
+    nums.sort((a,b)=>a-b); // 注意：nums.sort()不行
+
+    for (let i = 0; i < len; i++) {
+        if (i && nums[i] === nums[i - 1]) continue; // 去重
+        for (j = i + 1, k =  len - 1; j < k; j++) { // 双指针算法
+            if (j > i + 1 && nums[j] === nums[j - 1]) continue; // 去重
+            // 找到最小的k满足条件，注意这里是k-1
+            while (j < k - 1 && nums[i] + nums[j] + nums[k - 1] >= 0) k--;
+
+            if (nums[i] + nums[j] + nums[k] === 0) {
+                res.push([nums[i], nums[j], nums[k]]);
+            }
+        }
+    }
+
+    return res;
+};
+```
+
+## 链表
+
+### [141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)
+
+思路：
+
+- 1.通过hash记录地址，看是否出现重复的
+- 2.快慢指针
