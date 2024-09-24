@@ -1481,6 +1481,305 @@ var spiralOrder = function(matrix) {
 };
 ```
 
+### [48. 旋转图像](https://leetcode.cn/problems/rotate-image/)
+
+思路：先沿对角线翻转，再左右翻转
+
+cpp
+
+```cpp
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        // 沿斜对角线翻转
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < i; j ++ )
+                swap(matrix[i][j], matrix[j][i]);
+        
+        // 左右翻转
+        for (int i = 0; i < n; i ++)
+            for (int j = 0, k = n - 1; j < k; j ++, k -- )
+                swap(matrix[i][j], matrix[i][k]);
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} matrix
+ * @return {void} Do not return anything, modify matrix in-place instead.
+ */
+var rotate = function(matrix) {
+    let n = matrix.length;
+
+    function swap(matrix, x1, y1, x2, y2) {
+        let tmp = matrix[x1][y1];
+        matrix[x1][y1] = matrix[x2][y2];
+        matrix[x2][y2] = tmp;
+    }
+
+    // 沿对角线翻转
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            swap(matrix, i, j, j, i);
+        }
+    }
+    // 左右翻转
+    for (let i = 0; i < n; i++) {
+        for (let j = 0, k = n - 1; j < k; j++, k--) {
+            swap(matrix, i, j, i, k);
+        }
+    }
+};
+```
+
+### [73. 矩阵置零](https://leetcode.cn/problems/set-matrix-zeroes/)
+
+思路
+
+- 方法1：暴力做法
+
+暴力做法
+
+<img src="http://cdn.wangtongmeng.com/20240924082737-213a7a.png"  />
+
+优化
+
+每列只用刷一次
+
+用数组记录下来需要刷的行和列
+
+![](http://cdn.wangtongmeng.com/20240924083047-081592.png)
+
+继续优化空间，空间能优化到O(1)
+
+![](http://cdn.wangtongmeng.com/20240924083532-1397c7.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) return; // 若行或列为空则不继续
+        int n = matrix.size(), m = matrix[0].size(); // n 行数 m 列数
+        int r0 = 1, c0 = 1; // r0 首行 c0 首列
+        // 首行是否需要设为0
+        for (int i = 0; i < m; i ++ ) {
+            if (!matrix[0][i])
+                r0 = 0;
+        }
+        // 首列是否需要设为0
+        for (int i = 0; i < n; i ++ ) {
+            if (!matrix[i][0])
+                c0 = 0;
+        }
+        // 除首行外的其他每行是否设为0
+        for (int i = 1; i < n; i ++ ) {
+            for (int j = 0; j < m; j ++ )
+                if (!matrix[i][j])
+                    matrix[i][0] = 0;
+        }
+        // 除首列外的其他每列是否设为0
+        for (int i = 1; i < m; i ++ )
+            for (int j = 0; j < n; j ++ )
+                if (!matrix[j][i])
+                    matrix[0][i] = 0;
+        // 把除首行外的所有标记的行设为0
+        for (int i = 1; i < n; i++) {
+            if (!matrix[i][0])
+                for (int j = 0; j < m; j ++ )
+                    matrix[i][j] = 0;
+        }  
+        // 把除首列外的所有标记的列设为0
+        for (int i = 1; i < m; i++) {
+            if (!matrix[0][i])
+                for (int j = 0; j < n; j ++ ) {
+                    matrix[j][i] = 0;
+                }
+        }
+        // 首行是否设为0
+        if (!r0)
+            for (int i = 0; i < m; i ++ ) 
+                matrix[0][i] = 0;
+        // 首列是否设为0
+        if (!c0)
+            for (int i = 0; i < n; i ++ )
+                matrix[i][0] = 0;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} matrix
+ * @return {void} Do not return anything, modify matrix in-place instead.
+ */
+var setZeroes = function(matrix) {
+    if (!matrix.length || !matrix[0].length) return;  // 若行或列为空则不继续
+    let n = matrix.length, m = matrix[0].length; // n 行数 m 列数
+    let r0 = 1, c0 = 1; // r0 首行是否设为0 c0 首列是否设为0
+    // 首行是否需要设为0
+    for (let i = 0; i < m; i++) {
+        if (!matrix[0][i]) {
+            r0 = 0;
+        }
+    }
+    // 首列是否需要设为0
+    for (let i = 0; i < n; i++) {
+        if (!matrix[i][0]) {
+            c0 = 0;
+        }
+    }
+    // 除首行外的其他每行是否设为0
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < m; j++){
+            if (!matrix[i][j]) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+    // 除首列外的其他每列是否设为0
+    for (let i = 1; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (!matrix[j][i]) {
+                matrix[0][i] = 0;
+            }
+        }
+    }
+    // 把除首行外的所有标记的行设为0
+    for (let i = 1; i < n; i++) {
+        if (!matrix[i][0]) {
+            for (let j = 0; j < m; j++) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+    // 把除首列外的所有标记的列设为0
+    for (let i = 1; i < m; i++) {
+        if (!matrix[0][i]) {
+            for (let j = 0; j < n; j++) {
+                matrix[j][i] = 0;
+            }
+        }
+    }
+    // 首行是否设为0
+    if (!r0) {
+        for (let i = 0; i < m; i++) {
+            matrix[0][i] = 0;
+        }
+    }
+    // 首列是否设为0
+    if (!c0) {
+        for (let i = 0; i < n; i++) {
+            matrix[i][0] = 0;
+        }
+    }
+};
+```
+
+### [289. 生命游戏](https://leetcode.cn/problems/game-of-life/)
+
+思路：
+
+每个细胞活的用1表示，死的用0表示
+
+当细胞是活的，周围或<2或者>3，它将死亡
+
+当细胞是死的，只有周围活细胞数=3，才会复活
+
+
+
+如果不影响老值的情况存储新值：利用位的前一位存储
+
+一个细胞只能是 0 或 1，对应二进制是00 01，那么左边的0是可以用来记录新值的
+
+若新结果是1，则 1 << 1的二进制就是 10，00 |= 00，10 这样同时存储了新值和老值
+
+这样当遍历下一个节点时，只需要判断 xx & 1，只是用右边一位进行判断就不影响老值的判断了
+
+<img src="http://cdn.wangtongmeng.com/20240924101008-1e871c.png" style="zoom: 25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    void gameOfLife(vector<vector<int>>& board) {
+        if (board.empty() || board[0].empty()) return;
+        int n = board.size(), m = board[0].size();
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++ ) {
+                int live = 0; // 记录细胞周围8个点的存活数
+                for (int x = max(0, i - 1); x <= min(n - 1, i + 1); x ++ )
+                    for (int y = max(0, j - 1); y <= min(m - 1, j + 1); y ++ )
+                        if ((x != i || y != j) && (board[x][y] & 1)) // x != i || y != j 表示要去掉自身
+                            live ++ ;
+                int cur = board[i][j] & 1, next; // cur 是自身细胞是否存活
+                if (cur) { // 自身是活的
+                    if (live < 2 || live > 3) next = 0;
+                    else next = 1;
+                } else { // 自身是死的，只有周围有三个活细胞时才能复活
+                    if (live == 3) next = 1;
+                    else next = 0;
+                }
+                board[i][j] |= next << 1; // 利用位左移一位记录(原数值还在原位的)
+            }
+
+        for (int i = 0; i < n; i ++ )
+            for (int j = 0; j < m; j ++ )
+                board[i][j] >>= 1; // 取每个网格的第二位，得到更新后状态
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} board
+ * @return {void} Do not return anything, modify board in-place instead.
+ */
+var gameOfLife = function(board) {
+   if (!board.length || !board[0].length) return;
+   let n = board.length; m = board[0].length; 
+   for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+        let live = 0; // 记录细胞周围8个点的存活数
+        for (let x = Math.max(0, i - 1); x <= Math.min(n - 1, i + 1); x++ ) {
+            for (let y = Math.max(0, j - 1); y <= Math.min(m - 1, j + 1); y++) {
+                 // x != i || y != j 表示要去掉自身 注意要用||！！
+                 // board[i][j] & 1 表示周围的这个点是存活的
+                if ((x !== i || y !== j) && board[x][y] & 1) {
+                    live++;
+                }
+            }
+        }
+        let cur = board[i][j] & 1, next; // cur 是自身细胞是否存活
+        if (cur) {
+            if (live < 2 || live > 3) next = 0;
+            else next = 1;
+        } else { // 自身是死的，只有周围有三个活细胞时才能复活
+            if (live === 3) next = 1;
+            else next = 0;
+        }
+        board[i][j] |= next << 1; // 利用位将新结果存储在老值位的左边
+    }
+   }
+
+   for (let i = 0; i < n; i++) {
+    for (let j = 0; j < m; j++) {
+        board[i][j] >>= 1; // 将值像右位移一位就是新的值
+    }
+   }
+};
+```
+
 
 
 ## 哈希表
@@ -2330,9 +2629,531 @@ hash用来记录中序遍历每个数的位置
 
 ## 二分查找
 
+### [35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/)
+
+思路：满足某种性质，找到第一个大于等于target的位置，用二分的模板做，特判下尾部插入即可
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        // 二分>=x的数中最小的一个，再特判下x比数组的最大值还大的情况
+        int n = nums.size();
+        if (target > nums[n - 1]) return n;
+        int l = 0, r = n - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] >= target) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function(nums, target) {
+    let n = nums.length;
+    if (target > nums[n - 1]) return n;
+    let l = 0; r = n - 1;
+    while (l < r) {
+        let mid = l + r >> 1;
+        if (nums[mid] >= target) r = mid;
+        else l = mid + 1;
+    }
+    return r;
+};
+```
+
+### [74. 搜索二维矩阵](https://leetcode.cn/problems/search-a-2d-matrix/)
+
+思路：二分，mid的一维坐标转成二维坐标的位置
+
+考察点：二分+矩阵坐标变换
+
+<img src="http://cdn.wangtongmeng.com/20240924113122-106964.png" style="zoom: 50%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        if (matrix.empty() || matrix[0].empty()) return false;
+        int n = matrix.size(), m = matrix[0].size();
+        int l = 0, r = n * m - 1;
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (matrix[mid / m][mid % m] >= target) r = mid;
+            else l = mid + 1;
+        }
+        return matrix[r / m][r % m] == target;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} matrix
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function(matrix, target) {
+    if (!matrix.length || !matrix[0].length) return false;
+    let n = matrix.length, m = matrix[0].length;
+    let l = 0, r = n * m - 1;
+    while (l < r) {
+        let mid = (l + r) >> 1;
+        if (matrix[Math.floor(mid / m)][mid % m] >= target) r = mid;
+        else l = mid + 1;
+    }
+    return matrix[Math.floor(r / m)][r % m] === target;
+    
+};
+```
+
+### [162. 寻找峰值](https://leetcode.cn/problems/find-peak-element/)
+
+思路：找个中间值s[mid]，如果s[mid] > s[mid+1]，则左边一定有峰值，反之也是
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int findPeakElement(vector<int>& nums) {
+        int l = 0, r = nums.size() - 1;
+        while (l < r) {
+            int mid = l + r >> 1; // 这里向下取整的，所以mid + 1 不会越界
+            if (nums[mid] > nums[mid + 1]) r = mid;
+            else l = mid + 1;
+        }
+        return r;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findPeakElement = function(nums) {
+    let l = 0, r = nums.length - 1;
+    while (l < r) {
+        let mid = r + l >> 1;
+        if (nums[mid] > nums[mid + 1]) r = mid;
+        else l = mid + 1;
+    }
+    return r;
+};
+```
+
+### [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
+
+思路
+
+先找到mid，也就是满足 x>=nums[0]的最后一个数
+
+![](http://cdn.wangtongmeng.com/20240924145351-ac92f8.png)
+
+分段后，
+
+我们再去找x>= target的最小的数，看是不是等于target
+
+![](http://cdn.wangtongmeng.com/20240924145610-28e62c.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int l = 0, r = nums.size() - 1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (nums[mid] >= nums[0]) l = mid;
+            else r = mid - 1;
+        }
+
+        if (target >= nums[0]) l = 0; // 在左段
+        else l = r + 1, r= nums.size() - 1; // 在右段
+
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] >= target) r = mid;
+            else l = mid + 1;
+        }
+
+        if (nums[r] == target) return r;
+        return -1;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function(nums, target) {
+    let l  = 0, r = nums.length - 1;
+    // 旋转后会有两段，左段的所有数都大于右段，找到左段的右侧的最大值
+    while (l < r) {
+        let mid = l + r + 1 >> 1;
+        if (nums[mid] >= nums[0]) l = mid;
+        else r = mid - 1;
+    }
+    // 此时r就是左段最右侧的值的索引
+
+    if (target >= nums[0]) l = 0; // 说明target在左段
+    else l = r + 1, r = nums.length -1;
+
+
+    // 找到>=target的最小值
+    while (l < r) {
+        let mid = l + r >> 1;
+        if (nums[mid] >= target) r = mid;
+        else l = mid + 1;
+    }
+
+    if (nums[r] === target) return r;
+    return -1;
+};
+```
+
+### [34. 在排序数组中查找元素的第一个和最后一个位置](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+思路
+
+找起点，满足性质这个点右侧的点都>=target
+
+<img src="http://cdn.wangtongmeng.com/20240924151242-e9269b.png" style="zoom:50%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& nums, int target) {
+        if (nums.empty()) return {-1, -1};
+
+        int l = 0, r = nums.size() - 1;
+        // 图形是上坡->平坡->上坡，平坡会有左右两个端点
+        // 先找平坡的左端点
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] >= target) r = mid; // 找到>=target的最小值
+            else l = mid + 1;
+        }
+
+        if (nums[r] != target) return {-1, -1};
+
+        int L = r; // 存储平坡的左端点
+        // 找平坡的右端点
+        l = 0, r = nums.size() -1;
+        while (l < r) {
+            int mid = l + r + 1 >> 1;
+            if (nums[mid] <= target) l = mid;
+            else r = mid - 1;
+        }
+
+        return {L, r};
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var searchRange = function(nums, target) {
+    if (!nums.length) return [-1, -1];
+
+    let l = 0, r= nums.length - 1;
+    // 图形是上坡->平坡->上坡，平坡会有左右两个端点
+    // 先找平坡的左端点
+    while (l < r) {
+        let mid = l + r >> 1;
+        if (nums[mid] >= target) r = mid;
+        else l = mid + 1;
+    }
+
+    if (nums[r] !== target) return [-1, -1];
+
+    let L = l; // 存储平坡的左端点
+    // 找平坡的右端点
+    l = 0, r = nums.length - 1;
+    while (l < r) {
+        let mid = l + r + 1 >> 1;
+        if (nums[mid] <= target) l = mid;
+        else r = mid - 1;
+    }
+
+    return [L, r];
+};
+```
+
+### [153. 寻找旋转排序数组中的最小值](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array/)
+
+思路：33题的第一步
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        int l = 0, r= nums.size() - 1;
+        if (nums[r] >= nums[l]) return nums[0]; // 有可能是递增的，第一个数最小
+        // 否则会有两段，前一段的第一个数>后一段的所有数，我们要找到后一段的第一个数
+        while (l < r) {
+            int mid = l + r >> 1;
+            if (nums[mid] < nums[0]) r = mid;
+            else l = mid + 1;
+        }
+        return nums[r];
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findMin = function(nums) {
+    let l = 0, r = nums.length - 1;
+    if (nums[r] > nums[0]) return nums[0];
+
+    while (l < r) {
+        let mid = l + r >> 1;
+        if (nums[mid] < nums[0]) r = mid;
+        else l = mid + 1;
+    }
+
+    return nums[r];
+};
+```
+
+### [4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/) (hard跳过)
+
 ## 堆
 
 ## 位运算
+
+### [67. 二进制求和](https://leetcode.cn/problems/add-binary/)
+
+思路：高精度加法
+
+![](http://cdn.wangtongmeng.com/20240924160037-626333.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string addBinary(string a, string b) {
+         //  让个位在前
+        reverse(a.begin(), a.end());
+        reverse(b.begin(), b.end());
+
+        string c;
+        for (int i = 0, t = 0; i < a.size() || i < b.size() || t; i ++ ) {
+            if (i < a.size()) t += a[i] - '0'; // -'0'可以转数字
+            if (i < b.size()) t += b[i] - '0';
+            c += to_string(t % 2);
+            t /= 2;
+        }
+        
+        reverse(c.begin(), c.end());
+        return c;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} a
+ * @param {string} b
+ * @return {string}
+ */
+var addBinary = function(a, b) {
+    // 让个位在前
+    a = a.split("").reverse().join("");
+    b = b.split("").reverse().join("");
+
+    let c = '';
+    for (let i = 0, t = 0; i < a.length || i < b.length || t; i++) {
+        if (i < a.length) t += Number(a[i]);
+        if (i < b.length) t += Number(b[i]);
+        c += '' + t % 2;
+        t = Math.floor(t / 2);
+    }
+    c = c.split("").reverse().join("");
+    return c;
+};
+```
+
+### [190. 颠倒二进制位](https://leetcode.cn/problems/reverse-bits/)
+
+思路
+
+![](http://cdn.wangtongmeng.com/20240924161857-0d59cf.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    uint32_t reverseBits(uint32_t n) {
+        uint32_t res = 0;
+        for (int i = 0; i < 32; i ++ )
+            res = res * 2 + (n >> i & 1); // res * 2 等价于二进制数的左移操作；n >> i & 1 取得二进制数的第k位
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number} n - a positive integer
+ * @return {number} - a positive integer
+ */
+var reverseBits = function(n) {
+   let res = 0;
+   for (let i = 0; i < 32; i++) {
+    res = res * 2 + (n >> i & 1);
+   } 
+   return res;
+};
+```
+
+### [191. 位1的个数](https://leetcode.cn/problems/number-of-1-bits/)
+
+思路
+
+<img src="http://cdn.wangtongmeng.com/20240924163221-719b70.png" style="zoom:50%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    uint32_t lowbit(uint32_t x) {
+        return x & -x;
+    }
+
+    int hammingWeight(uint32_t n) {
+        int cnt = 0;
+        while (n) n -= lowbit(n), cnt ++ ;
+        return cnt;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var hammingWeight = function(n) {
+    function lowbit(x) {
+        return x & -x;
+    }
+    let cnt = 0;
+    while (n) n -= lowbit(n), cnt++;
+    return cnt;
+};
+```
+
+### [136. 只出现一次的数字](https://leetcode.cn/problems/single-number/)
+
+思路：异或的性质
+
+<img src="http://cdn.wangtongmeng.com/20240924164205-a39e9c.png" style="zoom:25%;" />
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (auto x: nums) res ^= x;
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var singleNumber = function(nums) {
+    let res = 0;
+    for (let x of nums) res ^= x;
+    return res;
+};
+```
+
+### [137. 只出现一次的数字 II](https://leetcode.cn/problems/single-number-ii/) (暂跳过)
+
+### [201. 数字范围按位与](https://leetcode.cn/problems/bitwise-and-of-numbers-range/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int rangeBitwiseAnd(int m, int n) {
+        int res = 0;
+        for (int i = 30; i >= 0; i -- ) {
+            if ((m >> i & 1) != (n >> i & 1)) break;
+            if (m >> i & 1) res += 1 << i;
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+```
+
+
 
 ## 数学
 
@@ -2340,3 +3161,4 @@ hash用来记录中序遍历每个数的位置
 
 ## 多维动态规划
 
+20道+复习
