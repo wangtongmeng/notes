@@ -1784,6 +1784,96 @@ var gameOfLife = function(board) {
 
 ## 哈希表
 
+### [383. 赎金信](https://leetcode.cn/problems/ransom-note/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool canConstruct(string a, string b) {
+        unordered_map<char, int> hash;
+        for (auto c: b) hash[c] ++ ;
+        for (auto c: a)
+            if (!hash[c]) return false;
+            else hash[c] --;
+        return true;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} ransomNote
+ * @param {string} magazine
+ * @return {boolean}
+ */
+var canConstruct = function(a, b) {
+    if (b.length < a.length) return false;
+    let hash = {};
+    for (let c of b) hash[c] ? hash[c]++ : hash[c] = 1;
+    for (let c of a) {
+        if (!hash[c]) return false;
+        else hash[c]--;
+    }
+    return true;
+};
+```
+
+### [205. 同构字符串](https://leetcode.cn/problems/isomorphic-strings/)
+
+思路
+
+- 所有相同字符都映射到相同字符 s的t的映射
+- 不同字符不能映射到相同字符 t到s的映射
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool isIsomorphic(string s, string t) {
+        unordered_map<char, char> st, ts; // st s到t的映射，ts t到s的映射
+        for (int i = 0; i < s.size(); i ++ )
+        {
+            int a = s[i], b = t[i];
+            if (st.count(a) && st[a] != b) return false; // 若s到t的映射不是同一个字符，返回false
+            st[a] = b; // 存储s字符到t字符的映射
+            if (ts.count(b) && ts[b] != a) return false; // 不同字符不能映射到同一个字符上
+            ts[b] = a;
+        }
+        return true;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isIsomorphic = function(s, t) {
+    let st = {}, ts = {}; // 注意这里分开写，连等会出错
+    for (let i = 0; i < s.length; i++) {
+        let a = s[i], b = t[i];
+        if (st[a] && st[a] !== b) return false; // 说明s到t，相同字符映射的不是同一个字符，返回false
+        st[a] = b;
+        if (ts[b] && ts[b] !== a) return false; // 说明s到t,不同的字符映射到了同一个字符，返回false
+        ts[b] = a;
+    }
+    return true;
+};
+```
+
+### [290. 单词规律](https://leetcode.cn/problems/word-pattern/)
+
+
+
 ## 区间
 
 ## 栈
