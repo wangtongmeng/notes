@@ -1872,6 +1872,242 @@ var isIsomorphic = function(s, t) {
 
 ### [290. 单词规律](https://leetcode.cn/problems/word-pattern/)
 
+知识：离散数学
+
+思路：
+
+- 满射：patten的字符数=s的单词数
+- 单射：判断A里面是否有两个不同元素映射到B里相同元素
+
+<img src="http://cdn.wangtongmeng.com/20240926090345-896d0b.png" style="zoom:33%;" />
+
+
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool wordPattern(string pattern, string s) {
+        vector <string> words;
+        stringstream ssin(s);
+        string word;
+        while (ssin >> word) words.push_back(word);
+        if (pattern.size() != words.size()) return false;
+        unordered_map<char, string> pw;
+        unordered_map<string, char> wp;
+        for (int i = 0; i < pattern.size(); i ++ ) {
+            auto a= pattern[i];
+            auto b = words[i];
+            if (pw.count(a) && pw[a] != b) return false;
+            pw[a] = b;
+            if (wp.count(b) & wp[b] != a) return false;
+            wp[b] = a;
+        }
+        return true;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} pattern
+ * @param {string} s
+ * @return {boolean}
+ */
+var wordPattern = function(pattern, s) {
+    let words = s.split(' '); 
+    if (pattern.length !== words.length) return false;
+    let pw = {}, wp = {};
+    for (let i = 0; i < pattern.length; i++) {
+        let a = pattern[i];
+        let b = words[i];
+        //  "dog constructor constructor dog" 这个constructor如果用对象来保存的时候，拿出去判断空的时候，会判断原型中的constructor方法，这样导致结果出错。所以只能用hasOwnProperty去判断这个方法是不是属于该对象的自有属性。
+        if (pw.hasOwnProperty(a) && pw[a] !== b) return false;
+        pw[a] = b;
+        if (wp.hasOwnProperty(b) && wp[b] !== a) return false;
+        wp[b] = a;
+    }
+    return true;
+    
+};
+```
+
+### [242. 有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
+
+思路：hash表
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool isAnagram(string s, string t) {
+        unordered_map<char, int> a, b; // 如果输入字符串包含 unicode  可以unorderd_map<string, int>
+        for (auto c: s) a[c] ++ ;
+        for (auto c: t) b[c] ++ ;
+        return a == b; // c++中的容器都是支持比较运算的
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isAnagram = function(s, t) {
+    if (s.length !== t.length) return false;
+    let sHash = new Map(), tHash = new Map();
+    for (let c of s) {
+        if (sHash.get(c)) {
+            sHash.set(c, sHash.get(c) + 1);
+        } else {
+            sHash.set(c, 1);
+        }
+    }
+
+    for (let c of t) {
+        if (!sHash.get(c)) return false;
+        sHash.set(c, sHash.get(c) - 1);
+    }
+
+    return true;
+};
+```
+
+### [49. 字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
+
+思路：把每个单词排序，这样字母异或位词就相等了
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        unordered_map<string, vector<string>> hash;
+        for (auto& str: strs) {
+            string nstr = str;
+            sort(nstr.begin(), nstr.end()); // 将单词的字母排序，作为hash表的key
+            hash[nstr].push_back(str);
+        }
+
+        vector<vector<string>> res;
+        for (auto& item : hash) res.push_back(item.second);
+
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string[]} strs
+ * @return {string[][]}
+ */
+var groupAnagrams = function(strs) {
+    let hash = new Map();
+    for (let str of strs) {
+        let nstr = str.split("").sort().join(""); // 排过序的单词，作为hash表的key
+        let val = hash.get(nstr) ? hash.get(nstr) : [];
+        val.push(str);
+        hash.set(nstr, val); 
+    }
+    
+    let res = [];
+    hash.forEach((val) => {
+        res.push(val);
+    })
+    return res;
+};
+```
+
+### [1. 两数之和](https://leetcode.cn/problems/two-sum/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // map Olog(N) unordered map O(1)
+        unordered_map<int, int> heap;
+        for (int i  = 0; i < nums.size(); i ++ ) {
+            int r = target - nums[i];
+            if (heap.count(r)) return {heap[r], i};
+            heap[nums[i]]  = i;
+        }
+        return {};
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function(nums, target) {
+   let map = new Map()
+   for (let i = 0; i <= nums.length - 1; i++) {
+
+       let n = nums[i]
+       let n2 = target - n
+
+       if (!map.has(n2)) {
+           map.set(n, i)
+       } else {
+           return [i, map.get(n2)]
+       }
+   }
+};
+```
+
+### [202. 快乐数](https://leetcode.cn/problems/happy-number/)
+
+思路：双指针
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int get(int x) {
+        int res = 0;
+        while (x) {
+            res += (x % 10) * (x % 10);
+            x /= 10;
+        }
+        return res;
+    }
+
+    bool isHappy(int n) {
+        int fast = get(n), slow = n;
+        while (fast != slow) {
+            fast = get(get(fast));
+            slow = get(slow);
+        }
+        return fast == 1;
+    }
+};
+```
+
+js
+
+```js
+```
+
 
 
 ## 区间
