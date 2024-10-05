@@ -2112,7 +2112,290 @@ js
 
 ## 区间
 
+### [228. 汇总区间](https://leetcode.cn/problems/summary-ranges/)
+
+思路：双指针
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<string> summaryRanges(vector<int>& nums) {
+        vector<string> res;
+        for (int i = 0; i < nums.size(); i ++ ) {
+            int j = i + 1;
+            while (j < nums.size() && nums[j] == nums[j - 1] + 1) j ++ ;
+            if (j == i + 1) res.push_back(to_string(nums[i]));
+            else res.push_back(to_string(nums[i]) + "->" + to_string(nums[j - 1]));
+            i = j - 1;
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[]} nums
+ * @return {string[]}
+ */
+var summaryRanges = function(nums) {
+    const res = [], len = nums.length;
+    for (let i = 0; i < len; i++) {
+        let j = i + 1;
+        while (j < len && nums[j] === nums[j - 1] + 1) j++;
+        if (j === i + 1) res.push("" + nums[i]);
+        else res.push(`${nums[i]}->${nums[j - 1]}`);
+        i = j - 1; // 这里是 j - 1的原因是循环里有i++，这样就抵消了
+    }
+    return res;
+};
+```
+
+### [56. 合并区间](https://leetcode.cn/problems/merge-intervals/)
+
+思路
+
+![](http://cdn.wangtongmeng.com/20241004061238-28ee3f.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& a) {
+        vector<vector<int>> res;
+        if (a.empty()) return res;
+
+        sort(a.begin(), a.end());
+        int l = a[0][0], r = a[0][1];
+        for (int i = 1; i < a.size(); i ++ ) {
+            if (a[i][0] > r) { // 没交集
+                res.push_back({l, r});
+                l = a[i][0], r = a[i][1];
+            } else r = max(r, a[i][1]);
+        }
+        res.push_back({l, r});
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} intervals
+ * @return {number[][]}
+ */
+var merge = function(a) {
+    const res = [];
+    if (!a.length) return res;
+
+    a.sort((a,b) => a[0] - b[0]); // 按区间左端点排序
+    let l = a[0][0], r = a[0][1];
+    for (let i = 1; i < a.length; i++) {
+        if (a[i][0] > r) {
+            res.push([l, r]);
+            l = a[i][0], r = a[i][1];
+        } else r = Math.max(r, a[i][1]);
+    }
+
+    res.push([l, r])
+
+    return res;
+};
+```
+
+### [57. 插入区间](https://leetcode.cn/problems/insert-interval/)
+
+题意
+
+![](http://cdn.wangtongmeng.com/20241004090152-b7b245.png)
+
+思路：三部分，前后没交集的不用动，中间有交集的合并
+
+![](http://cdn.wangtongmeng.com/20241005081306-4c452a.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& a, vector<int>& b) {
+        vector<vector<int>> res;
+        int k = 0;
+        while (k < a.size() && a[k][1] < b[0]) res.push_back(a[k ++ ]); // 左边完全没交集的部分
+
+        if (k < a.size()) {
+            b[0] = min(b[0], a[k][0]); // 有交集的区间最左边
+            // a[k][0] <= b[1] 说明有交集，max(b[1], a[k ++ ][1]) 取两个区间右边最大值
+            while (k < a.size() && a[k][0] <= b[1]) b[1] = max(b[1], a[k ++ ][1]);
+        }
+        res.push_back(b);
+
+        while (k < a.size()) res.push_back(a[k ++ ]);
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} intervals
+ * @param {number[]} newInterval
+ * @return {number[][]}
+ */
+var insert = function(a, b) {
+    let res = [];
+    let k = 0;
+    while (k < a.length && a[k][1] < b[0]) res.push(a[k++]); // 左边没交集的区间
+
+    if (k < a.length) {
+        b[0] = Math.min(b[0], a[k][0]); // 有交集区间的最左段
+        while (k < a.length && a[k][0] <= b[1]) b[1] = Math.max(b[1], a[k++][1]); // 有交集区间的最右端
+    }
+    res.push(b);
+
+    while (k < a.length) res.push(a[k++]); // 右边没交集的区间
+    return res;
+};
+```
+
+### [452. 用最少数量的箭引爆气球](https://leetcode.cn/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+思路：转成一维的，贪心（区间选点，基础课里）
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int findMinArrowShots(vector<vector<int>>& points) {
+        if (points.empty()) return 0;
+        // 按区间的右端点从小到大排序
+        sort(points.begin(), points.end(), [](vector<int> a, vector<int> b) {
+            return a[1] < b[1];
+        });
+        int res = 1, r = points[0][1];
+        for (int i = 1; i < points.size(); i ++ )
+            if (points[i][0] > r) { // 如果选的点小于区间左端点，则更新选点为新区间的右端点
+                res ++ ;
+                r = points[i][1];
+            }
+        
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number[][]} points
+ * @return {number}
+ */
+var findMinArrowShots = function(points) {
+    if (!points.length) return 0;
+    // 区间按右端点从小到大排序
+    points.sort((a, b) => a[1] - b[1]); // 注意这里是 - 号，不能用 <
+    
+    let res = 1, r = points[0][1];
+    for (let i = 1; i < points.length; i++) {
+        if (points[i][0] > r) {
+            res++;
+            r = points[i][1];
+        }
+    }
+    return res;
+};
+```
+
+
+
 ## 栈
+
+### [20. 有效的括号](https://leetcode.cn/problems/valid-parentheses/)
+
+思路：利用栈
+
+括号的ascii码，如果是一对的话，差值不会大于2
+
+![](http://cdn.wangtongmeng.com/20241005094056-57b297.png)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> stk;
+
+        for (auto c : s) {
+            if (c == '(' || c == '[' || c == '{') stk.push(c);
+            else {
+                if (stk.size() && abs(stk.top() - c) <= 2) stk.pop();
+                else return false;
+            }
+        }
+
+        return stk.empty();
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+    let stk = [];
+    for (let c of s) {
+        if (c === '(' || c === '[' || c === '{') stk.push(c);
+        else {
+            if (stk.length && Math.abs(stk[stk.length - 1].charCodeAt(0) - c.charCodeAt(0)) <= 2) stk.pop();
+            else return false;
+        }
+    }
+    return !stk.length;
+};
+
+
+// var isValid = function(s) {
+//     const len = s.length
+//     if (len % 2 === 1) return false;
+
+//     const map = new Map()
+//     map.set('(', ')')
+//     map.set('{', '}')
+//     map.set('[', ']')
+    
+//     const stack = []
+//     for (let i = 0; i < len; i++) {
+//         const c = s[i]
+//         if (map.has(c)) {
+//             stack.push(c)
+//         } else {
+//             const t = stack[stack.length -1]
+//             if (map.get(t) === c) {
+//                 stack.pop()
+//             } else {
+//                 return false
+//             }
+//         }
+//     }
+//     return stack.length === 0
+// };
+```
 
 
 

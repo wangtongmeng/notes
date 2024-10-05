@@ -1388,7 +1388,7 @@ import { SharedModule } from './shared/shared.module';
 
 views/user/user-list.hbs
 
-```js
+```html
 <h1>用户列表</h1>
 <table class="table">
     <thead>
@@ -1440,7 +1440,7 @@ export class UserController {
 
 ### 9.1 安装
 
-```js
+```bash
 npm install bcrypt
 ```
 
@@ -1511,7 +1511,7 @@ export class AdminModule { }
 
 views/user/user-form.hbs
 
-```js
+```html
 <h1>添加用户</h1>
 <form action="/admin/users" method="POST">
     <div class="mb-3">
