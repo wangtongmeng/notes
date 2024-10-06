@@ -2397,6 +2397,112 @@ var isValid = function(s) {
 // };
 ```
 
+### [71. 简化路径](https://leetcode.cn/problems/simplify-path/)
+
+思路：利用栈的思路
+
+cpp
+
+```cpp
+class Solution {
+public:
+    string simplifyPath(string path) {
+        string res, name;
+        if (path.back() != '/') path += '/';
+        for (auto c: path) {
+            if (c != '/') name += c;
+            else {
+                if (name == "..") {
+                    while (res.size() && res.back() != '/') res.pop_back();
+                    if (res.size()) res.pop_back(); // 去掉/
+                } else if (name != "." && name != "") {
+                    res += '/' + name;
+                }
+                name.clear();
+            }
+        }
+
+        if (res.empty()) res = "/";
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} path
+ * @return {string}
+ */
+var simplifyPath = function(path) {
+    let arr = path.split("/");
+    let res = [];
+    for (let str of arr) {
+        if (str === '.. ') {
+            res.pop();
+        } else if (str && (str != "/" && str != ".")) {
+            res.push(str);
+        }
+    }
+    return '/' + res.join("/");
+};
+```
+
+### [155. 最小栈](https://leetcode.cn/problems/min-stack/)
+
+思路：维护一个前缀最小值的栈，值单调递减的，但是是dp思想，不是单调栈
+
+cpp 
+
+```cpp
+// 空间优化版
+class MinStack {
+public:
+    stack<int> stk, f;
+    MinStack() {
+
+    }
+    
+    void push(int x) {
+        stk.push(x);
+        if (f.empty() || f.top() >= x) f.push(x);
+    }
+    
+    void pop() {
+        if (stk.top() <= f.top()) f.pop();
+        stk.pop();
+    }
+    
+    int top() {
+        return  stk.top();
+
+    }
+    
+    int getMin() {
+        return f.top();
+    }
+};
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack* obj = new MinStack();
+ * obj->push(val);
+ * obj->pop();
+ * int param_3 = obj->top();
+ * int param_4 = obj->getMin();
+ */
+```
+
+cpp
+
+```cpp
+```
+
+
+
+
+
 
 
 ## 链表
