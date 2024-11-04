@@ -122,7 +122,17 @@ CSS3
 
 ## 第四章
 
-### 4.1
+盒尺寸中的四个盒子 content box、padding box、border box 和 margin box 分别对应 content、padding、border和margin属性。
+
+### 4.1 content
+
+替换元素：根据是否具有替换内容，把元素分为替换元素(通过修改某个属性值呈现的内容)和非替换元素。`<img>`、`<object>`、`<video>`、`<iframe>`或表单元素`<textarea>`和`<input>`都是替换元素。
+
+特征：
+
+- 
+
+
 
 
 
