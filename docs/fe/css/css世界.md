@@ -118,15 +118,26 @@ CSS3
 - 指元素可以有的最大宽度（等同于“包裹性”元素设置`white-space:nowrap`后的宽度）
 - 如果内部没有块级元素或块级元素没有设定宽度值，则“最大宽度”实际上是最大的连续内联盒子的宽度ßß
 
-### 3.22-3.4
+### 3.2.2-3.4
+
+**width 值作用的细节**
+
+width 是作用在“内在盒子”上的，这个“内在盒子”是由很多部分构成的，内在盒子”又被分成了 4 个盒子，分别是 content box、padding box、border box 和 margin box。
+
+问题：width:100px 是如何作用到`<div>`元素上的?
+
+- content box 环绕着 width 和 height 给定 的矩形
+- width:100px 作用在了 content box 上，当 padding、border 和 margin 都是 0，因此，该`<div>` 宽度就是 100 px，否则不是。
+
+**CSS 流体布局下的宽度分离原则**
+
+所谓“宽度分离原则”，就是 CSS 中的 width 属性不与影响宽度的 padding/border(有时候包括 margin)属性共存
 
 ## 第四章
 
 盒尺寸中的四个盒子 content box、padding box、border box 和 margin box 分别对应 content、padding、border和margin属性。
 
-### 4.1 content
-
-#### content与替换元素
+### 4.1.1 content与替换元素
 
 **1.替换元素**
 
@@ -146,7 +157,7 @@ CSS3
 
 所有的替换元素都是**内联水平元素**，也就是替换元素和替换元素、替换元素和文字都是可 以在一行显示的。但是，替换元素默认的 display 值却是不一样的，见表 4-1。
 
-![image-20241105064419157](/Users/wangtongmeng/Library/Application Support/typora-user-images/image-20241105064419157.png)
+<img src="/Users/wangtongmeng/Library/Application Support/typora-user-images/image-20241105064419157.png" alt="image-20241105064419157" style="zoom:50%;" />
 
 在Firefox下，input和button默认属性值不同，前者是inline，后者是inline-block，区别在于两种按钮默认的 white-space 值不一样，前者是 pre，后者是 normal，所表示出来的 现象差异就是:当按钮文字足够多的时候，`<input>`按钮不会自动换行，`<button>`按钮则会。
 
@@ -193,11 +204,24 @@ CSS3
 
 把 content 属性生成的对象称为“匿名替换元素”，content 属性生成的内容就是替换元素!
 
-#### content 内容生成技术
+### 4.1.2 content 内容生成技术
+
+在实际项目中，content 属性几乎都是用在::before/::after 这两个伪元素中， 因此，“content 内容生成技术”有时候也称为“::before/::after 伪元素技术”。
 
 1.content 辅助元素生成
 
 - 核心点不在于 content 生成的内容，而是伪元素本身。通常，我们会把 content 的属性值设置为空字符串`.element:before {content: '';}`利用其他 CSS 代码来生成辅助元素，或实现图形效果，或实现特定布局。
+- 辅助元素在布局中的应用，最常见的应用之一就是清除浮动带来的影响
+
+```css
+.clear:after {
+	content: '';
+	display: table; /* 也可以是'block' */ 
+  clear: both;
+}
+```
+
+- 另外一个很具有代表性的应用就是辅助实现“两端对齐”以及“垂直 居中/上边缘/下边缘对齐”效果。
 
 2.content 字符内容生成
 
@@ -217,7 +241,13 @@ CSS3
 
 6.深入理解 content 计数器
 
+ content 部分的重中之重，因为此功能非常强大、实用，且不具有 可替代性，甚至可以实现连 JavaScript 都不好实现的效果。
+
+ CSS 计数器的两个属性(counter-reset 和 counter- increment)和一个方法(counter()/counters())
+
 7.content 内容生成的混合特性
+
+指的是各种 content 内容生成语法是可以混合在 一起使用的
 
 
 
