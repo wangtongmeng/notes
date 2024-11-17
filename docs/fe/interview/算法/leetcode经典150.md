@@ -1294,6 +1294,101 @@ var threeSum = function(nums) {
 
 ## 滑动窗口
 
+### [209. 长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
+
+思路：有单调性，使用双指针算法
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int res = INT_MAX;
+        for (int i = 0, j = 0, sum = 0; i < nums.size(); i ++ ) {
+            sum += nums[i];
+            while (sum - nums[j] >= s) sum -= nums[j ++ ];
+            if (sum >= s) res = min(res, i - j + 1);
+        }
+        if (res == INT_MAX) res = 0;
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {number} target
+ * @param {number[]} nums
+ * @return {number}
+ */
+var minSubArrayLen = function(s, nums) {
+    let res = Infinity;
+    for (let i = 0, j = 0, sum = 0; i < nums.length; i++) {
+        sum += nums[i];
+        while (sum - nums[j] >= s) sum -= nums[j++];
+        if (sum >= s) res = Math.min(res, i - j + 1);
+    }
+    if (res === Infinity) res = 0;
+    return res;
+
+};
+```
+
+### [3. 无重复字符的最长子串](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+
+cpp
+
+```cpp
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        // 以i为尾端的子串，找到一个最靠左j，使中间不重复
+        // i+1，j也只能>=j
+        // 维护一个map，存储 j到i的元素，i+1加入map，如果重复，则j需要移动到i+1对应的元素后面
+
+        unordered_map<char, int> heap;
+        int res = 0;
+        for (int i = 0, j = 0; i < s.size(); i ++ ) {
+            heap[s[i]] ++ ;
+            while (heap[s[i]] > 1) heap[s[j ++]] -- ;
+            res = max (res, i - j + 1);
+        }
+        return res;
+    }
+};
+```
+
+js
+
+```js
+/**
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLongestSubstring = function(s) {
+    // 以i为尾端的子串，找到一个最靠左j，使中间不重复
+    // i+1，j也只能>=j
+    // 维护一个map，存储 j到i的元素，i+1加入map，如果重复，则j需要移动到i+1对应的元素后面
+    const map = {};
+    let  res  = 0;
+    for (let i = 0, j = 0; i < s.length; i++) {
+        if (map[s[i]] == null) {
+            map[s[i]] = 0;
+        }
+        map[s[i]]++;
+
+        while (map[s[i]] > 1) map[s[j++]]--;
+        res = Math.max(res, i - j + 1);
+    }
+    return res;
+};
+```
+
+
+
 ## 矩阵
 
 ### [36. 有效的数独](https://leetcode.cn/problems/valid-sudoku/)
@@ -2449,7 +2544,7 @@ var simplifyPath = function(path) {
 };
 ```
 
-### [155. 最小栈](https://leetcode.cn/problems/min-stack/)
+### [155. 最小栈](https://leetcode.cn/problems/min-stack/)(没做完)
 
 思路：维护一个前缀最小值的栈，值单调递减的，但是是dp思想，不是单调栈
 
@@ -2499,7 +2594,7 @@ cpp
 ```cpp
 ```
 
-
+### [150. 逆波兰表达式求值](https://leetcode.cn/problems/evaluate-reverse-polish-notation/)
 
 
 
