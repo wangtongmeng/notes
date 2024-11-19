@@ -249,7 +249,228 @@ width 是作用在“内在盒子”上的，这个“内在盒子”是由很�
 
 指的是各种 content 内容生成语法是可以混合在 一起使用的
 
+### 4.2 padding
 
+#### padding 与元素尺寸
+
+- 块级元素
+
+  - `box-sizing: content-box`时，使用 padding 会增加元素的尺寸。例如，`.box{width:80px;padding:20px;}`此时宽度尺寸是120px
+
+  - 不推荐`* { box-sizing: border-box; }`，尽量采用**无宽度以及宽度分离准则**
+
+  - `box-sizing:border-box`时，当padding足够大时也会改变元素尺寸。例如，`.box{width:80px;padding:20px 60px;box-sizing:border-box}`，此时的 width 会无效，最终宽度为 120 像素(60px×2)，而里面的内容则表现为“首选最 小宽度”。
+
+- 内联元素(不包括图片等替换元素)
+
+  - 内联元素 的 padding 会影响水平方向，也会影响垂直方向
+
+  - 内联元素的 padding 在垂直方向同样会影响布局，影响视觉表现，只是因为内联元素没有可视宽度和可视高度的说法(clientHeight 和 clientWidth 永远是 0)，垂直方向的行为表现完全受 line-height 和 vertical-align 的影响，视觉上并没有改变和上一行下一行内容的间距，也就是**视觉上不影响垂直方向布**局。
+
+  - 例如：`a{padding:50px;background-color: #cd0000;}`，尺寸虽有效，但是对上下元素的原本布局却没有任何影响，仅仅是垂直方 向发生了层叠<img src="http://cdn.wangtongmeng.com/20241119071558.png" style="width:100px;display:inline-block;" />
+
+  - 
+
+  - **实际上，对于非替换元素的内联元素，不仅 padding 不会加入行盒高度的计算，margin**
+
+    **和 border 也都是如此，都是不计算高度，但实际上在内联盒周围发生了渲染**
+
+很多其他场景或属性会出现这种不影响其他元素布局而是出现层叠效果的现象
+
+- 纯视觉层叠，不影响外部尺寸：box-shadow 以及 outline
+- 会影响外部尺寸：inline 元素的 padding
+- 区分的方式：如果父容器 overflow:auto，层叠区域超出父 容器的时候，没有滚动条出现，则是纯视觉的;如果出现滚动条，则会影响尺寸、影响布局
+
+**内联元素 padding具体使用案例**
+
+- 实现高度可控的分隔线，<img src="http://cdn.wangtongmeng.com/20241119073004.png" style="zoom:50%;" />
+
+```html
+ a + a:before {
+       content: "";
+       font-size: 0;
+       padding: 10px 3px 1px; // 通过pading控制高度
+       margin-left: 6px;
+   		 border-left: 1px solid gray;
+}
+<a href="">登录</a><a href="">注册</a>
+```
+
+- 锚点位置，使标题距离页面的顶部有一段距离（标题就会定位在这个固定导航的下面）
+
+```html
+<h3><span id="hash">标题</span></h3> 
+h3 {
+  line-height: 30px;
+  font-size: 14px;
+}
+h3 > span {
+  padding-top: 58px; // 內联元素的padding-top不会影响布局
+}
+```
+
+#### padding 的百分比值
+
+padding 属 性是不支持负值的，padding 支持百分比值，但和 height 等属性的百分比计算规则 有些差异，padding 百分比值无论是水平方向还是垂直方向均是**相对于宽度计算的**!
+
+块级元素
+
+- 实现自适应的等比例矩形效果
+  - 正方形`div { padding: 50%; }`，宽高比为 2:1 的矩形`div { padding: 25% 50%; }`
+
+- 实现了一个宽高比为 5:1 的比例固定的头图
+
+  - ```css
+    .box {
+           padding: 10% 50%; // 宽高比
+           position: relative;
+    }
+    .box > img {
+           position: absolute;
+           width: 100%; height: 100%;
+           left: 0; top: 0;
+    }
+    ```
+
+  - 上述方法包括 IE6 在内的浏览器都兼容
+
+padding百分比与內联元素
+
+- 同样相对于宽度计算
+
+- 默认的高度和宽度细节有差异
+- padding 会断行
+
+#### 标签元素内置的 padding
+
+- ol/ul 列表内置 padding-left，当 font-size 是 12px 至 14px 时，22px 是比较好的一个 padding- left 设定值，所有浏览器都能正常显示，且非常贴近边缘。`ol, ul {padding-left: 22px;}`，如果视觉要求比较高，使用 content 计数器模拟
+
+- 很多表单元素都内置 padding
+
+  - 所有浏览器`<input>/<textarea>`输入框内置 padding;
+  - 所有浏览器`<button>`按钮内置 padding;
+  - 部分浏览器`<select>`下拉内置 padding，如 Firefox、IE8 及以上版本浏览器可以设置 padding;
+
+  - 所有浏览器`<radio>/<chexkbox>`单复选框无内置 padding;
+  - `<button>`按钮元素的 padding 最难控制!
+
+一个既语义良好行为保留，同时 UI 效果棒兼容效果好的实现小技巧，那就是使用`<label>`元素
+
+```html
+<button id="btn"></button> <label for="btn">按钮</label>
+    button {
+      position: absolute;
+      clip: rect(0 0 0 0);
+}
+label {
+      display: inline-block;
+      line-height: 20px;
+      padding: 10px;
+}
+```
+
+`<label>`元素的 for 属性值和`<button>`元素的 id 值对应即可。此时，所有浏览器下的按钮高度都是 40 像素，而且`<button>`元素的行为也都保留了，是非常不错的实践技巧。
+
+#### padding 与图形绘制
+
+padding 属性和 background-clip 属性配合，可以在有限的标签下实现一些 CSS 图形 绘制效果
+
+不使用伪元素，仅一层标签实现大队长的“三道杠”分类图标效
+
+- ```css
+  .icon-menu {
+         display: inline-block;
+         width: 140px; height: 10px;
+         padding: 35px 0;
+         border-top: 10px solid;
+         border-bottom: 10px solid;
+         background-color: currentColor;
+         background-clip: content-box; // 这样背景色之应用在content-box上
+  }
+  ```
+
+- <img src="http://cdn.wangtongmeng.com/20241119075412.png" style="zoom:70%;display:inline-block" />
+
+不使用伪元素，仅一层标签实现双层圆点效果
+
+- ```css
+   .icon-dot {
+         display: inline-block;
+         width: 100px; height: 100px;
+         padding: 10px;
+         border: 10px solid;
+         border-radius: 50%;
+         background-color: currentColor;
+         background-clip: content-box;
+  }
+  ```
+
+- <img src="http://cdn.wangtongmeng.com/20241119075631.png" style="zoom:25%;display:inline-block" />
+
+### 4.3.1 margin 与元素尺寸以及相关布局
+
+**元素尺寸的相关概念**
+
+- **元素尺寸**，包括 padding 和 border，也就是元素的 border box 的尺寸，offsetWidth 和 offsetHeight
+- **元素内部尺寸**，表示元素的内部区域尺寸，包括 padding 但不包括 border，也就是元素的 padding box 的尺寸。clientWidth 和 clientHeight
+- **元素外部尺寸**，表示元素的外部尺寸，不仅包括 padding 和 border，还包括 margin，也就是元素的 margin box 的尺寸，没有相对应的原生的 DOM API。
+
+外部尺寸（**元素占据的空间尺寸**）”有个很不一样的特性，就是尺寸的大小有可能是负数。
+
+**margin 与元素的内部尺寸**
+
+只要宽度设定，margin 就无法改变元素尺寸，`.father {width: 300px;margin: 0 -20px;}`
+
+只要元素的尺寸表现符合“充分利用可用空间”，无论是垂直方向还是水 平方向，都可以通过 margin 改变尺寸。
+
+对于普通流体元素，margin 只能改变元素水平方向尺寸;但是，对于具有拉伸特性的绝对定位元素，则水平或垂直方向都可以，因为此时 的尺寸表现符合“充分利用可用空间”。
+
+```html
+<div class="father">
+       <div class="son"></div>
+</div>
+.father { width: 300px; } .son { margin: 0 -20px; }
+```
+
+实现流体布局，一侧定宽的两栏自适应布局效果
+
+- 图片在左侧
+
+  - ```html
+    .box { overflow: hidden; }
+    .box > img { float: left; }
+    .box > p { margin-left: 140px; }
+    <div class="box">
+      <img src="1.jpg">
+    	<p>文字内容...</p> 
+    </div>
+    ```
+
+- 图片右侧定位
+
+  - ```html
+    .box { overflow: hidden; }
+    .box > img { float: right; }
+    .box > p { margin-right: 140px; }
+    ```
+
+- 图片右侧定位，同时顺序一致
+
+  - ```html
+    .box { overflow: hidden; }
+    .full { width: 100%; float: left; }
+    .box > img { float: left; margin-left: -128px; }
+    .full > p { margin-right: 140px; }
+    <div class="box">
+    	<div class="full"> <p>文字内容...</p>
+    	</div>
+      <img src="1.jpg">
+    </div>
+    ```
+
+    
+
+**margin 与元素的外部尺寸**
 
 
 
