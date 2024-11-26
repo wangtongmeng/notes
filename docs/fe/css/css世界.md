@@ -262,18 +262,11 @@ width 是作用在“内在盒子”上的，这个“内在盒子”是由很�
   - `box-sizing:border-box`时，当padding足够大时也会改变元素尺寸。例如，`.box{width:80px;padding:20px 60px;box-sizing:border-box}`，此时的 width 会无效，最终宽度为 120 像素(60px×2)，而里面的内容则表现为“首选最 小宽度”。
 
 - 内联元素(不包括图片等替换元素)
-
   - 内联元素 的 padding 会影响水平方向，也会影响垂直方向
-
   - 内联元素的 padding 在垂直方向同样会影响布局，影响视觉表现，只是因为内联元素没有可视宽度和可视高度的说法(clientHeight 和 clientWidth 永远是 0)，垂直方向的行为表现完全受 line-height 和 vertical-align 的影响，视觉上并没有改变和上一行下一行内容的间距，也就是**视觉上不影响垂直方向布**局。
-
-  - 例如：`a{padding:50px;background-color: #cd0000;}`，尺寸虽有效，但是对上下元素的原本布局却没有任何影响，仅仅是垂直方 向发生了层叠<img src="http://cdn.wangtongmeng.com/20241119071558.png" style="width:100px;display:inline-block;" />
-
+  - 例如：`a{padding:50px;background-color: #cd0000;}`，尺寸虽有效，但是对上下元素的原本布局却没有任何影响，仅仅是垂直方向发生了层叠<img src="http://cdn.wangtongmeng.com/20241119071558.png" style="width:100px;display:inline-block;" />
   - 
-
-  - **实际上，对于非替换元素的内联元素，不仅 padding 不会加入行盒高度的计算，margin**
-
-    **和 border 也都是如此，都是不计算高度，但实际上在内联盒周围发生了渲染**
+  - **实际上，对于非替换元素的内联元素，不仅 padding 不会加入行盒高度的计算，margin和 border 也都是如此，都是不计算高度，但实际上在内联盒周围发生了渲染**
 
 很多其他场景或属性会出现这种不影响其他元素布局而是出现层叠效果的现象
 
@@ -311,7 +304,7 @@ h3 > span {
 
 #### padding 的百分比值
 
-padding 属 性是不支持负值的，padding 支持百分比值，但和 height 等属性的百分比计算规则 有些差异，padding 百分比值无论是水平方向还是垂直方向均是**相对于宽度计算的**!
+padding 属性是不支持负值的，padding 支持百分比值，但和 height 等属性的百分比计算规则有些差异，padding 百分比值无论是水平方向还是垂直方向均是**相对于宽度计算的**!
 
 块级元素
 
@@ -352,7 +345,7 @@ padding百分比与內联元素
   - 部分浏览器`<select>`下拉内置 padding，如 Firefox、IE8 及以上版本浏览器可以设置 padding;
 
   - 所有浏览器`<radio>/<chexkbox>`单复选框无内置 padding;
-  - `<button>`按钮元素的 padding 最难控制!
+  - **`<button>`按钮元素的 padding 最难控制**!
 
 一个既语义良好行为保留，同时 UI 效果棒兼容效果好的实现小技巧，那就是使用`<label>`元素
 
@@ -432,7 +425,7 @@ padding 属性和 background-clip 属性配合，可以在有限的标签下实�
 .father { width: 300px; } .son { margin: 0 -20px; }
 ```
 
-实现流体布局，一侧定宽的两栏自适应布局效果
+实现流体布局，一侧定宽的**两栏自适应布局**效果
 
 - 图片在左侧
 
@@ -470,13 +463,410 @@ padding 属性和 background-clip 属性配合，可以在有限的标签下实�
 
     
 
+利用 margin 改变元素尺寸的特性来实现**两端对齐布局**效果
+
+- 不考虑 IE8
+
+  - ```html
+     li {
+      float: left;
+      width: 100px;
+      margin-right: 20px;
+    }
+    li:nth-of-type(3n) {
+           margin-right: 0;
+    }
+    ```
+
+- 兼容 IE8 
+
+  - 要么专门使用 JavaScript 打个补丁，要么列表 HTML 输出的时候给符合 3n 的<li>标签加个类名`.li-third {margin-right: 0;}`
+
+  - 通过给父容器添加 margin 属性，增加容器的可用宽度来实现
+
+    - ```css
+      ul {
+             margin-right: -20px;
+      }
+      ul > li {
+             float: left;
+             width: 100px;
+             margin-right: 20px;
+      }
+      ```
+
+    - 时`<ul>`的宽度就相当于 100%+20px，于是，第 3n 的`<li>`标签的 margin-right: 20px 就多了 20 像素的使用空间，正好列表的右边缘就是父级`<ul>`容器 100%宽度位置
+
 **margin 与元素的外部尺寸**
 
+- 对于普通**块状元素**，在默认的水平流下，margin 只能改变左右方向的内部尺寸，垂直方 向则无法改变。
+- 使用 writing-mode 改变流向为垂直流，但水平流又不行了
 
+滚动容器底部留白使用 padding 是不推荐的， 有兼容性问题；**使用子元素的 margin-bottom 来实现滚动容器的底部留白**
 
+```css
+.column-box {
+  overflow: hidden;
+}
+.column-left,
+.column-right {
+  margin-bottom: -9999px;
+  padding-bottom: 9999px;
+}
+```
 
+margin 负值实现等高布局不足之处：
 
+- 有子元素定位到容器之 外，父级的 overflow:hidden 是一个棘手的限制
+- 当触发锚点定位或者使用DOM.scrollIntoview()方法的时候，可能就会出现奇怪的定位问题
 
+使用 border 和 table-cell 的优缺点：
 
+- 前者优势在于兼容性好，没有锚点定 位的隐患，不足之处在于最多 3 栏，且由于 border 不支持百分比宽度，因此只能实现至少一 侧定宽的布局
+- table-cell 的优点是天然等高，不足在于 IE8 及以上版本浏览器才支持，所以，**如果项目无须兼容 IE6、IE7，则推荐使用 table-cell 实现等高布局**
 
+> 上述 margin 对尺寸的影响是针对具有块状特性的元素而言的，对于纯内联元素则不适用。
+>
+> 和 padding 不同，内联元素垂直方向的 margin 是没有任何影响的，既不会影响外部尺寸， 也不会影响内部尺寸。对于水平方向，由于内联元素宽度表现为“包裹 性”，也不会影响内部尺寸。
+
+### 4.3.2 margin 的百分比值
+
+和 padding 属性一样，margin 的百分比值无论是**水平方向还是垂直方向都是相对于宽度计算**的。
+
+元素设置 margin 在垂直方向上无法改变元素自身的内部尺寸，往往需要父元素作为载体，此外，由于 **margin合并**的存在，垂直方向往往需要**双倍尺寸**才能和 padding 表现一致。
+
+```html
+.box { background-color: olive; overflow: hidden;}
+.box > div { margin: 50%; }
+<-- .box 是一个宽高比为 2:1 的橄榄绿长方形 -->
+<div class="box">
+  <div></div>
+</div>
+```
+
+### 4.3.3 margin 合并
+
+**什么是 margin 合并**
+
+块级元素的上外边距(margin-top)与下外边距(margin-bottom)有时会合并为单个外边距，这样的现象称为“margin 合并”。
+
+- **块级元素**，但不包括浮动和绝对定位元素，尽管浮动和绝对定位可以让元素块状化。
+- 只发生在**垂直方向**（不考虑 writing-mode 的情况下，认文档流 是水平流，因此发生 margin 合并的就是垂直方向）
+
+**margin 合并的 3 种场景**
+
+- 1.相邻兄弟元素 margin 合并。
+
+  - 例子：第一行和第二行之间的间距还是 1em
+
+    - ```html
+      p{margin: 1em 0;}
+      <p>第一行</p>
+      <p>第二行</p>
+      ```
+
+- 2.父级和第一个/最后一个子元素。
+
+  - 例子，在默认状态下，下面 3 种设置是等效的
+
+    - ```html
+       <div class="father">
+             <div class="son" style="margin-top:80px;"></div>
+      </div>
+          <div class="father" style="margin-top:80px;">
+             <div class="son"></div>
+      </div>
+          <div class="father" style="margin-top:80px;">
+             <div class="son" style="margin-top:80px;"></div>
+      </div>
+      ```
+
+- 3.空块级元素的 margin 合并。
+
+  - 例子1，.father 所在的这个父级`<div>`元素高度仅仅是 1em，因为.son 这个空`<div>`元 素的上下margin合并了。
+
+    - ```html
+      .father { overflow: hidden; }
+      .son { margin: 1em 0; }
+      <div class="father">
+        <div class="son"></div>
+      </div>
+      ```
+
+    - 例子2，空块级元素的 margin 合并特性即使自身没有设置 margin 也是会发生的。此时第一行和第二行之间的距离还是 1em。
+
+      - ```html
+        p { margin: 1em 0; }
+        <p>第一行</p>
+        <div></div>
+        <p>第二行</p>
+        ```
+
+      - 发生了 3 次 margin 合并：`<div>`和第一行`<p>` 的 margin-bottom 合并，然后和第二行`<p>`的 margin-top 合并，这两次合并是相邻兄弟合 并。由于自身是空`<div>`，于是前两次合并的 margin-bottom 和 margin-top 再次合并， 这次合并是空块级元素合并，于是最终间距还是 1em。
+
+**阻止父级和第一个/最后一个子元素的合并**
+
+- 对于 margin-top 合并，可以进行如下操作(满足一个条件即可):
+
+  - 父元素设置为**块状格式化上下文元素**;
+
+  - 父元素设置 border-top 值;
+
+  - 父元素设置 padding-top 值;
+
+  - 父元素和第一个子元素之间添加内联元素进行分隔。
+
+- 对于 margin-bottom 合并，可以进行如下操作(满足一个条件即可):
+
+  - 父元素设置为块状格式化上下文元素;
+  - 父元素设置 border-bottom 值;
+  - 父元素设置 padding-bottom 值;
+  - 父元素和最后一个子元素之间添加内联元素进行分隔;
+  - 父元素设置 height、min-height 或 max-height。
+
+**阻止空`<div>`元素有 margin 合并（通常不需要）**
+
+- 设置垂直方向的 border;
+- 设置垂直方向的 padding;
+- 里面添加内联元素(直接 Space 键空格是没用的);
+- 设置 height 或者 min-height。
+
+**margin 合并的计算规则**
+
+margin 合并的计算规则总结为“正正取大值”“正负值相加”“负负最负值”3 句话。
+
+- 正正取大值
+
+  - 例1，相邻兄弟合并，.a 和.b 两个`<div>`之间的间距是 50px
+
+    - ```html
+      .a { margin-bottom: 50px; }
+      .b { margin-top: 20px; }
+      <div class="a"></a>
+      <div class="b"></a>
+      ```
+
+  - 例2，父子合并，.father 元素等同于设置了 margin-top:50px
+
+    - ```html
+      .father { margin-top: 20px; }
+      .son { margin-top: 50px; }
+      <div class="father">
+        <div class="son"></div>
+      </div>
+      ```
+
+  - 例3，自身合并，.a 元素的外部尺寸是 50px，取大的那个值。
+
+    - ```html
+      .a {
+        margin-top: 20px;
+        margin-bottom: 50px;
+      }
+      <div class="a"></div>
+      ```
+
+- 正负值相加
+
+  - 例1，相邻兄弟合并，.a 和.b 两个`<div>`之间的间距是 30px，是-20px+50px 的计算值。
+
+    - ```html
+      .a { margin-bottom: 50px; }
+      .b { margin-top: -20px; }
+      <div class="a"></a>
+      <div class="b"></a>
+      ```
+
+  - 例2，父子合并，.father 元素等同于设置了 margin-top:30px，是-20px+50px 的计算值。
+
+    - ```html
+      .father { margin-top: -20px; }
+      .son { margin-top: 50px; }
+      <div class="father">
+        <div class="son"></div>
+      </div>
+      ```
+
+  - 例3，自身合并，.a 元素的外部尺寸是 30px，是-20px+50px 的计算值。
+
+    - ```html
+      .a {
+        margin-top: -20px;
+        margin-bottom: 50px;
+      }
+      <div class="a"></div>
+      ```
+
+- 负负最负值
+
+  - 例1，相邻兄弟合并，.a 和.b 两个`<div>`之间的间距是-50px，取绝对负值最大的值。
+
+    - ```html
+      .a { margin-bottom: -50px; }
+      .b { margin-top: -20px; }
+      <div class="a"></a>
+      <div class="b"></a>
+      ```
+
+  - 例2，父子合并，.father 元素等同于设置了 margin-top:-50px，取绝对负值最大的值。
+
+    - ```html
+      .father { margin-top: -20px; }
+      .son { margin-top: -50px; }
+      <div class="father">
+             <div class="son"></div>
+      </div>
+      ```
+
+  - 例3，自身合并，.a 元素的外部尺寸是-50px，取绝对负值最大的值。
+
+    - ```html
+      .a {
+        margin-top: -20px;
+        margin-bottom: -50px;
+      }
+      <div class="a"></div>
+      ```
+
+**margin 合并的意义**
+
+“margin-top 合并”这种特性是故意这么设计的，在实际内容呈现的时候是有着重要意义的。
+
+- 对于兄弟元素的 margin 合并其作用和 em 类似，都是让图文信息的排版更加舒服自然。
+- 父子 margin 合并的意义在于:在页面中任何地方嵌套或直接放入任何裸`<div>`，都不会影响原来的块状布局。
+- 自身 margin 合并的意义在于可以避免不小心遗落或者生成的空标签影响排版和布局。
+
+### 4.3.4 深入理解 CSS 中的 margin:auto
+
+一些事实
+
+- 有时候元素就算没有设置 width 或 height，也会自动填充。
+  - 例如，`<div><div>`，`<div>`宽度就会自动填满容器
+- 有时候元素就算没有设置 width 或 height，也会自动填充对应的方位。
+  - 例如，`div{position: absolute;left: 0; right: 0;}`，此时`<div>`宽度就会自动填满包含块容器。
+
+margin:auto 的作用机制
+
+- 如果一侧定值，一侧 auto，则 auto 为剩余空间大小。
+
+  - 例1，.son 的左右边距计算值是20px
+
+    - ```css
+      .father { width: 300px; }
+      .son {
+        width: 200px;
+        margin-right: 80px;
+        margin-left: auto;
+      }
+      ```
+
+    - <img src="http://cdn.wangtongmeng.com/20241125225918.png" style="zoom:50%;" />
+
+  - 例2，实现**块级元素的右对齐**效果
+
+    - ```css
+      .son { width: 200px; margin-left: auto; }
+      ```
+
+    - <img src="http://cdn.wangtongmeng.com/20241125230017.png" style="zoom:50%;" />
+
+- 如果两侧均是 auto，则平分剩余空间。
+
+  - 例，左右居中
+
+    - ```css
+      .son {
+        width: 200px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      ```
+
+margin:auto实现垂直居中
+
+- 第一种方法是使用 writing-mode 改变文档流的方向，带来另外的问题，就是水平方向无法 auto 居中
+
+  - ```css
+    .father { height: 200px; writing-mode: vertical-lr; }
+    .son { height: 100px; margin: auto; }
+    ```
+
+- 第二种方法，绝对定位元素的 margin:auto 居中。
+
+  - ```css
+    .father {
+      width: 300px; height:150px;
+      position: relative;
+    }
+    // 水平方向和垂直方向同时居中
+    .son {
+    	position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      width: 200px; height: 100px;
+      margin: auto;
+    }
+    ```
+
+  - 绝对定位元素的格式化高度即使父元素 height:auto 也是支持的，因此，其应用场 景可以相当广泛，可能唯一的不足就是此居中计算 IE8 及以上版本浏览器才支持。
+
+  - 如果项目无须兼容 IE7 浏览器，绝对定位下的 margin:auto块级元素垂直居中比 top:50%然后 margin 负一半元素高度的方法要好使得多。
+
+如果里面元素尺寸大，说明剩余可用空间都没有了，会被当作 0 来处理，也就是 auto 会被计算成 0，其实就等于没有设置 margin 属性值，因为 margin 的初始值就是 0。
+
+另外，对于替换元素，如果我们设置 display:block，则 margin:auto 的计算规则同样适合。
+
+### 4.3.5 margin 无效情形解析
+
+- display 计算值 inline 的非替换元素的垂直 margin 是无效的。对于内联替换元素， 垂直 margin 有效，并且没有 margin 合并的问题，所以图片永远不会发生 margin 合并。
+
+- 表格中的`<tr>`和`<td>`元素或者设置 display 计算值是 table-cell 或 table-row 的元素的 margin 都是无效的。但是，如果计算值是 table-caption、table 或者 inline-table 则没有此问题，可以通过 margin 控制外间距，甚至::first-letter 伪元素也可以解析 margin。
+
+- margin 合并的时候，更改 margin 值可能是没有效果的。例如父子 margin 重叠时，正正取大值，改较小的那个。
+
+- 绝对定位元素非定位方位的 margin 值“无效”。
+
+- 定高容器的子元素的 margin-bottom 或者宽度定死的子元素的 margin-right 的 定位“失效”。
+
+  - ```html
+     <div class="box">
+       <div class="child"></div>
+    </div> 
+    .box {
+      height: 100px;
+    }
+    .child {
+      height: 80px;
+      margin-bottom: 100px;
+    }
+    ```
+
+- 鞭长莫及导致的 margin 无效。
+
+  - ```html
+    <div class="box">
+      <img src="mm1.jpg">
+      <p>内容</p>
+    </div>
+        .box > img {
+           float: left;
+           width: 256px;
+        }
+        .box > p {
+           overflow: hidden;
+           margin-left: 200px;
+    }
+    ```
+
+  - 此时的`<p>`的 margin-left 从负无穷到 256px 都是没有任何效果的。要解释这里为何会无效，需要对 float 和 overflow 深入理解， 而这两个属性都是后面的内容
+
+- 内联特性导致的 margin 无效。
+
+  - ```html
+    <div class="box"><img src="mm1.jpg"></div>
+    .box > img { height: 96px; margin-top: -200px;}
+    ```
+
+  - 随着我们的负值越来越负，结果达到某一个具体负值的时候，图 片不再往上偏移了。
+
+  - 需要对 vertical-align 和内联盒模型有深入的理解，而这 vertical-align 是后面的内容，因此，深入原因分析我们将在 5.3 节介绍。
 
