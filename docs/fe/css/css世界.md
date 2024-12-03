@@ -870,3 +870,220 @@ margin:auto实现垂直居中
 
   - 需要对 vertical-align 和内联盒模型有深入的理解，而这 vertical-align 是后面的内容，因此，深入原因分析我们将在 5.3 节介绍。
 
+### 4.4-4.4.5
+
+### 4.4.1 **为什么 border-width 不支持百分比值**
+
+是语义和使用场景决定的，1.所谓“边框”，是不会因为设备大就按比例变大的 2.为图文展示服务的给这张图片套个 1px 灰色边框，区域就明显。综合这两点，造成了 border-width 不支持百 分比值。
+
+outline、box-shadow、text-shadow 等，都是不支持 百分比值的，原因也与此类似。
+
+border-width 还支持若干关键字，包括 thin、medium(默认值) 和 thick，对应的尺寸大小具体如下。
+
+- thin:薄薄的，等同于 1px。
+- medium(默认值):薄厚均匀，等同于 3px。
+- thick:厚厚的，等同于 4px。
+
+> - 为什么 border 属性的默认宽度大小是 medium，也就是 3px，明明 thin(1px)宽度更常用吧? 为什么呢?因为......border-style:double 至少 3px 才有效果!
+
+### 4.4.2 **了解各种 border-style 类型**
+
+- 1.border-style:none（默认值）
+
+  - `div { border: 10px; } /* 无边框出现 */`
+
+  - `div { border: red; } /* 无边框出现 */`
+
+  - `div { border: solid; } /* 有边框出现 */`3像素边框
+
+  - 实现一个没有下边框的边框效果
+
+    - ```css
+      div {
+            border: 1px solid;
+            border-bottom: none;
+      }
+      ```
+
+  - 也可以通过直接设置边框宽度为 0 进行重置
+
+    - ```css
+      div {
+            border: 1px solid;
+            border-bottom: 0;
+      }
+      ```
+
+  - 两个一起写渲染性能最高
+
+    - ```css
+      div {
+            border: 1px solid;
+            border-bottom: 0 none;
+      }
+      ```
+
+- 2.border-style:solid 实线边框
+
+- 3.border-style:dashed
+
+  - 这虚线颜色区的宽高比以及颜色区和透明区的宽度比例在不同浏 览器下是有差异的。例如，在 Chrome 和 Firefox 浏览器下，颜色区的宽高比是 3:1，颜色区和 透明区的宽度比例是 1:1，如图 4-59 所示;而 IE 浏览器则是另外的数据，颜色区的宽高比是 2:1， 颜色区和透明区的宽度比例也是 2:1如图 4-60 所示。
+  - <img src="http://cdn.wangtongmeng.com/20241202231555.png" style="zoom:50%;" />
+
+- 4.border-style:dotted
+
+  - 虚点边框在表现上同样有兼容性差异，虽然规范上明确表示是个圆点，但是 Chrome 以及 Firefox 浏览器下虚点实际上是个小方点，如图 4-61 所示;而 IE 浏览器下则是小圆点，如图 4-62 所示。
+  - <img src="http://cdn.wangtongmeng.com/20241202231641.png" style="zoom:50%;" />
+
+  - 在 IE8 浏览器下实现圆角效果
+
+    - ```css
+      
+      .box {
+      	width: 150px; height: 150px; /* 超出区域隐藏，只显示一个圆 */ overflow: hidden;
+      }
+      .dotted {
+        width: 100%; height: 100%;
+        border: 149px dotted #cd0000;
+      }
+      ```
+
+    - <img src="http://cdn.wangtongmeng.com/20241202231801.png" style="zoom:50%;" />
+
+- 5.border-style:double
+
+  - 双线边框，即两根线且为实线，兼容性非常好
+
+  - <img src="http://cdn.wangtongmeng.com/20241202231901.png" style="zoom:67%;" />
+
+  - 规律：border-style:double 的表现规则:双线宽 度永远相等，中间间隔±1（ 除以3均分，剩下的给中间）
+
+  - 实现三道杠
+
+    - ```css
+      .icon-menu {
+             width: 120px;
+             height: 20px;
+             border-top: 60px double;
+             border-bottom: 20px solid;
+      }
+      ```
+
+    - <img src="http://cdn.wangtongmeng.com/20241202232113.png" style="zoom:50%;" />
+
+- 6.其他 border-style 类型
+
+  - inset(内凹)、outset(外凸)、groove(沟槽)、ridge (山脊)风格老土过时，且兼容性惨不忍睹。因此，它们没有任何实用价值。但是，对于 solid 类型边框，各个浏览器却像是约定好了，连接表现一致，背后起作用 的恰恰是这几个看上去没有任何作用的 border-style 类型。
+
+### 4.4.3 **border-color 和 color**
+
+“border-color 默认颜色就是 color 色值”。
+
+具有类似特性的 CSS 属性还有 outline、box-shadow 和 text-shadow 等。
+
+使用 border 来 绘制加号
+
+```css
+.add {
+  color: #ccc;
+  border: 2px dashed;
+}
+.add:before {
+  border-top: 10px solid;
+}
+.add:after {
+  border-left: 10px solid;
+}
+/* hover 变色 */ .add:hover {
+  color: #06C;
+}
+```
+
+![](http://cdn.wangtongmeng.com/20241202232406.png)
+
+### 4.4.4 border 与透明边框技巧
+
+border-color: transparent 在 IE7 浏览器就开始支持了
+
+**1.右下方 background 定位的技巧**
+
+默认 background 背景图片是相对于 padding box 定位的，也就是说，background-position:100%的位置计算默认是不会把 border-width 计算在内的。
+
+```css
+.box {
+      border-right: 50px solid transparent;
+      background-position: 100% 50%;
+}
+```
+
+**2.优雅地增加点击区域大小**
+
+```css
+.icon-clear {
+      width: 16px;
+      height: 16px;
+      border: 11px solid transparent; // 使用透明 border 增加点击区域
+      ...
+}
+```
+
+### 4.4.5 border 与图形构建
+
+border 属性可以轻松实现兼容性非常好的三角图形效果
+
+<img src="http://cdn.wangtongmeng.com/20241202232845.png" style="zoom:50%;" />
+
+```css
+div {
+       width: 10px; height: 10px;
+       border: 10px solid;
+       border-color: #f30 #00f #396 #0f0;
+}
+```
+
+
+
+梯形<img src="http://cdn.wangtongmeng.com/20241202232929.png" style="zoom:50%;" />
+
+
+
+```css
+div {
+       width: 10px; height: 10px;
+       border: 10px solid;
+       border-color: #f30 transparent transparent;
+}
+```
+
+三角形<img src="http://cdn.wangtongmeng.com/20241202233027.png" style="zoom:50%;" />
+
+```css
+ div {
+       width: 0;
+       border: 10px solid;
+       border-color: #f30 transparent transparent;
+    }
+```
+
+让垂直方向的边框宽度更宽一点，这样三角形就会更加狭长<img src="http://cdn.wangtongmeng.com/20241202233106.png" style="zoom:50%;" />
+
+```css
+div {
+       width: 0;
+       border-width: 10px 20px;
+       border-style: solid;
+       border-color: #f30 transparent transparent;
+}
+```
+
+仅仅让两个方向的边框透明，形成尖角<img src="http://cdn.wangtongmeng.com/20241202233247.png" style="zoom:50%;" />
+
+```css
+div {
+       width: 0;
+       border-width: 10px 20px;
+       border-style: solid;
+       border-color: #f30 #f30 transparent transparent;
+}
+```
+
