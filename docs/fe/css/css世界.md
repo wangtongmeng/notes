@@ -1087,3 +1087,141 @@ div {
 }
 ```
 
+### **4.4.6~5.2.1**
+
+### 4.4.6 border 等高布局技术
+
+margin+padding 可以实现等高布局，同样，border 属性也可以实现等高布局。
+
+```css
+.box {
+  border-left: 150px solid #333; // 左侧深色背景区域是由 border-left 属性生成的。元素边框高度总是和元素 自身高度保持一致，因此可以巧妙地实现等高布局效果
+  background-color: #f0f3f9;
+}
+.box > nav {
+  width: 150px;
+  margin-left: -150px;
+  float: left;
+}
+.box > section {
+   overflow: hidden;
+}
+```
+
+注意：父级容器不能使用 overflow:hidden 清除浮动影响，因为溢出隐藏是基于 padding box 的，如果设置了 overflow:hidden，则左浮动的导航列表元素就会被隐藏掉，这显然不是我们想要的效果。
+
+此方法与用 margin+padding 实现的等高布局相比更加稳健，**不会出现锚点定位带来的问题**，但同样它也是有局限性的。
+
+首先，由于 border **不支持百分比宽度**，因此，适合至少一栏是定宽的布局。当然，如果不考虑 IE8 浏览器，可以试试使用 vw 单位，其可实现近似的百分比宽度效果。其次，等高布局的**栏目有限制**。因为一个元素的边框数目是有限的，基本上，border 等高布局只能满足 2~3 栏的情况，除非正好是等比例的，那还可以使用 border-style:double 实现最多 7 栏布局，但这只是理论上而已。所以，一旦**等高布局栏目过多，则建议使用 table-cell 等高布局或者 margin 负值等高布局**。
+
+## 第五章
+
+### 5.1 字母 x——CSS 世界中隐匿的举足轻重的角色
+
+#### 5.1.1 字母 x 与 CSS 世界的基线
+
+字母 x 的下边缘(线)就是我们的基线。
+
+<img src="http://cdn.wangtongmeng.com/20241209203043.png" style="zoom:50%;" />
+
+
+
+#### 5.1.2 字母 x 与 CSS 中的 x-height
+
+CSS 中有一个概念叫作 x-height，x-height 指的就是小写字母 x 的高度， 术语描述就是基线和等分线(mean line)(也称作中线，midline)之间的距离。
+
+![](http://cdn.wangtongmeng.com/20241209203218.png)
+
+vertical-align:middle。这里的 middle 是中间的意思。注意，跟上面的 median(中线)不是一个 意思。在 CSS 世界中，middle 指的是基线往上 1/2 x-height 高度。我们可以近似理解为字 母 x 交叉点那个位置。vertical-align:middle 并不是绝对的垂直居中对齐，我们平常看到的 middle 效果只是一种近似效果。
+
+**对于内联元素垂直居中应该是对文字**，而非居外部的块 级容器所言。
+
+#### 5.1.3 字母x与CSS中的ex
+
+ex 是 CSS 中的一个相对单位，指的是小写字母 x 的高度，就是指 x-height。
+
+由于字母 x 受字体等 CSS 属性影响大，不稳定，因此 ex 不太适合用来限定元素的尺寸。ex 的价值就在其副业上— **不受字体和字号影响的内联元素的垂直居中对齐**效果。
+
+让该图标和文字中间位置对齐
+
+vertical-align:middle，但啰嗦
+
+```css
+ .icon-arrow {
+      display: inline-block;
+      width: 20px;
+      height: 1ex;
+      background: url(arrow.png) no-repeat center;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20241209204202.png" style="zoom:50%;" />
+
+### 5.2 内联元素的基石 line-height
+
+#### 5.2.1 内联元素的高度之本— line-height
+
+`<div>`高度是由行高决定的，而非文字。
+
+**对于非替换元素的纯内联元素，其可视高度完全由 line-height 决定。**
+
+line-height 的高度作用细节都是使用**“行距”和“半行距”**来解释的。
+
+内联元素的高度由**固定高度**和**不固定高度**组成，这个不固定的部分就是这里的“行距”。换句话说，line-height 之所以起作用，就是**通过改变“行距”来实现**的。
+
+在 CSS 中，“行距”分散在当前文字的上方和下方，也就是即使是第一行文字，其上方也 是有“行距”的，只不过这个“行距”的高度仅仅是完整“行距”高度的一半，因此，也被称为“半 行距”。
+
+**行距 = line-height - font-size，有了“行距”，我们一分为二， 就有了“半行距”**
+
+在本书中，内容区域(content area)可以近似理解为 Firefox/IE 浏览器下文本选中带背景色的区域。这么理解的重要原因之一就是**可见**，这对于我们深入理解 内联元素知识非常有帮助。
+
+大多数场景下，内容区域和 em-box 是不一样的，内容区域高度受 font-family 和 font-size 双重影响，而 em-box 仅受 font-size 影响，通常内容区域高度要更高一些。当我们的字体是宋体的时候，内容区域和 em-box 是等同的。
+
+```html
+.test {
+	font-family: simsun;
+	font-size: 24px;
+	line-height: 36px;
+	background-color: yellow;
+}
+.test > span {
+	background-color: white;
+}
+<div class="test">
+  <span>sphinx</span>
+</div>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241209205003.png" style="zoom: 67%;" />
+
+理解了半行距，结合我们网页中的设置的 line-height 大小，就能根据 标注获取准确的间距值。举个例子，假设 line-height 是 1.5，font-size 大小是 14px， 那么我们的半行距大小就是(套用上面的行距公式再除以 2):(14px * 1.5 - 14px) / 2 = 14px * 0.25 = 3.5px。border 以及 line-height 等传统 CSS 属性并没有小数像素 的概念(从 CSS3 动画的细腻程度可以看出)，因此，这里的 3.5px 需要取整处理，如果标注 的是文字上边距，则向下取整;如果是文字下边距，则向上取整，因为绝大多数的字体在内容 区域中都是偏下的。所以，假设设计师标注了文字字形上边缘到图片下边缘间距 20px，则我 们实际的 margin-top 值应该是 17px，因为 3.5px 向下取整是 3px。
+
+line-height 如何通过改变行距实现文字排版?当 line-height 设为 2 的时候，半行距是一半的文字大小，两行文字中间的间隙差不多一个文字尺寸大小;如 果 line-height 大小是 1 倍文字大小，则根据计算，半行距是 0，也就是两行文字会紧密依 偎在一起;如果 line-height 值是 0.5，则此时的行距就是负值，虽然 line-height 不支 持负值，但是行距可以为负值，此时，两行文字就是重叠纠缠在一起。
+
+**对于替换元素**
+
+- line-height 可以影响替换元素(如图片的高度)吗?答案是，不可以!
+
+```html
+.box {
+	line-height: 256px; // 此时.box 元素高度却是 256px
+}
+<div class="box">
+  <img src="1.jpg" height="128">
+</div>
+```
+
+> 是 line-height 把图片占据高度变高了，而是把“幽灵空白节点”的高度变 高了。图片为内联元素，会构成一个“行框盒子”，而在 HTML5 文档模式下，每一个“行框盒 子”的前面都有一个宽度为 0 的“幽灵空白节点”，其内联特性表现和普通字符一模一样，所以， 这里的容器高度会等于 line-height 设置的属性值 256px。
+
+内联替换元素和内联非替换元素在一起时的高度表现
+
+- 由于同属内联元素，因此，会共同形成一个“行框盒子”，line-height 在这个混合元素 的“行框盒子”中扮演的角色是决定这个行盒的最小高度
+
+- 原因：一是替换元素的高度不受 line-height 影响，二是 vertical-align 属性在背后作祟。
+
+- > 明明文字设置了 line-height 为 20px，但是，如果文字后面有小图标，最后“行 框盒子”高度却是 21px 或是 22px。这种现象背后最大的黑手其实是 vertical-align 属性， 我们会在下一章好好深入剖析为什么会有这样的表现。
+
+**对于块级元素**
+
+- line-height 对其本身是没有任何作用的
+- 平时改变 line-height， 块级元素的高度跟着变化实际上是通过改变块级元素里面内联级别元素占据的高度实现的
