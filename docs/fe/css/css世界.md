@@ -1225,3 +1225,190 @@ line-height 如何通过改变行距实现文字排版?当 line-height 设为 2 
 
 - line-height 对其本身是没有任何作用的
 - 平时改变 line-height， 块级元素的高度跟着变化实际上是通过改变块级元素里面内联级别元素占据的高度实现的
+
+### 5.2.2-5.3.1
+
+#### 5.2.2 为什么 line-height 可以让内联元素“垂直居中”
+
+让line-height 等于height ，可以让内联元素垂直居中。行高可以实现“垂直居中”原因在于 CSS 中“行距的上下等分机制”
+
+- 误区一：要让单行文字垂直居中，只需要 line-height 这一个属性就可以
+
+- 误区二:行高控制文字**近似**垂直居中，不仅适用于单行，多行也是可以的
+
+“近似”是因为文字字形的垂直中线位置普遍要比真正的“行框盒子”的垂直中线位置低
+
+由于我们平时使用的 font-size 都比较小，12px~16px 很多，因此，虽然微软雅黑字体有下沉，但也就 1 像素的样子，看上去像是垂直居中罢了。这也是我总是称line-height 实现的**单行文本垂直居中**为“近似垂直居 中”的原因。
+
+```html
+p{
+  font-size: 80px;
+  line-height: 120px;
+  background-color: #666;
+  font-family: 'microsoft yahei';
+  color: #fff;
+}
+
+<p>微软雅黑</p>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241215203745.png" style="zoom:50%;" />
+
+行高实现**多行文本或者图片等替换元素的近似垂直居中**效果实现
+
+```html
+ .box {
+       line-height: 120px;
+       background-color: #f0f3f9;
+}
+.content {
+       display: inline-block;
+       line-height: 20px;
+       margin: 0 20px;
+       vertical-align: middle;
+     }
+     <div class="box">
+<div class="content">基于行高实现的...</div> </div>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241215203727.png" style="zoom:50%;" />
+
+> 实现的原理大致如下。
+>  (1)多行文字使用一个标签包裹，然后设置 display 为 inline-block。好处在于既能重置外部的 line-height 为正常的大小，又能保持内联元素特性，从而可以设置vertical-align 属性，以及产生一个非常关键的“**行框盒子**”。我们需要的其实并不是这个 “行框盒子”，而是每个“行框盒子”都会附带的一个产物— “**幽灵空白节点**”，即一个宽度为 0、表现如同普通字符的看不见的“节点”。有了这个“幽灵空白节点”，我们的 line-height:120px 就有了作用的对象，从而相当于在.content 元素前面撑起了一个高度为120px 的宽度为 0 的内联元素。
+>
+> (2)因为内联元素默认都是基线对齐的，所以我们通过对.content 元素设置 vertical- align:middle 来调整多行文本的垂直位置，从而实现我们想要的“垂直居中”效果。如果是 要借助 line-height 实现图片垂直居中效果，也是类似的原理和做法。
+
+  <img src="http://cdn.wangtongmeng.com/20241215204057.png" style="zoom:50%;" />
+
+
+
+
+
+不垂直居中与 line-height 无关，而是 vertical-align 导致的
+
+#### 5.2.3 深入 line-height 的各类属性值
+
+line-height 的默认值是 normal，还支持数值、百分比值以及长度值。
+
+- 数值，如 line-height:1.5，其最终的计算值是和当前 font-size 相乘后的值。
+
+- 百分比值，如 line-height:150%，其最终的计算值是和当前 font-size 相乘后的值。
+
+- 长度值，也就是带单位的值，如 line-height:21px 或者 line-height:1.5em等，此处 em 是一个相对于 font-size 的相对单位，因此，line-height:1.5em 最终的计算值也是和当前 font-size 相乘后的值。
+
+- 区别：如果使用数值作为 line-height 的属性值， 那么所有的**子元素继承的都是这个值**;但是，如果使用百分比值或者长度值作为属性值，那么所有的子元素**继承的是最终的计算值**。
+
+- 让百分比实现类似 line-height:1.5 的继承效果`*{line-height:150%};`
+
+  - HTML 中的很多替换元素，尤其表单类的替换元素，如输入框、 按钮之类的，很多具有继承特性的 CSS 属性其自己也有一套，如 font-family、font-size 以及这里的 line-height。**由于继承是属于最弱的权重，因此 body 中设置的 line-height 是无法影 响到这些替换元素的**。
+  - *作为一个选择器会直接重置这些替换元素默认的 line-height，这其实是我们需要的。
+
+- 又考虑到*的性能以及利用继承的特性，我们可以折中使用下面的方法：
+
+  - ```css
+    body {
+      line-height: 1.5;
+    }
+    input, button {
+      line-height: inherit;
+    }
+    ```
+
+这个 normal 实际上是一个变量。normal 实际上是一个和 font-family 有着密切关联的变量值。只要字体确定，各个浏览器下的默认 line-height 解析值基本上都是一样的。关键问题是，不同的浏览器所使用的默认中英文字体并不是一样的，并且不同操作系统的默认字体也不一样，换句话说，就是**不同系统不同浏览器的默认 line-height 都是有差异的**。因此，在实际开发的时候，**对 line-height 的默认值进行重置**是势在必行的。
+
+**line-height 应该重置为多大的值**
+
+- **重图文内容展示**的网页或者网站，如博客、论坛、 公众号之类的，那一定要使用**数值**作为单位，考虑到文章阅读的舒适度，line-height 值可以设置在 1.6~1.8。
+
+- **偏重布局**结构精致的网站，则在我看来使用**长度值或者数值**都是可以的，因为，第一，我们的目的是为了兼容;第二，无论使用哪种类型值，都存在需要局部重置的场景。不过，根据我的统计，基本上各大站点都是使用数值作为全局的 line-height 值。不过，这并不表示使用数值就一定是最好的，如果网站内容的样式不是动态不可控的， 有时候，固定的长度值反而更利于精确布局。因此，不要盲目跟风。那具体设置的值应该是多大呢?
+
+  - 如果使用的是长度值，我建议直接 line-height:20px，排版时候计算很方便。
+
+  - 如果随大流使用的是数值，我建议最好使用方便计算的行高值，一种是 **line-height 属性值本身方便计算**，另一种是 **line-height 的默认计算值方便计算**。
+
+    - 比方说，1.3、1.4、1.5 都有大型网站使用，我们就不妨使用 1.5，因为心算` 1.4*16px` 要比 `1.5*16px `难多了，这就是第一种“属性值本身方便计算”;
+    - 而另外一种“默认计算值方便计算”是我们先得到方便计算 的 line-height 计算值，然后倒推 line-height 应该使用的数值是多大，例如 20px 是一个 非常方便的计算值，如果`<body>`默认重置的 font-size 是 14px，则 line-height 数值应该 是 20px/14px≈1.4285714285714286 四舍五入的结果。注意，在 CSS 中，计算行高的时候，行高值一定不要向下舍 入，而要**向上舍入**。`body {line-height: 1.42858;font-size: 14px;}`
+
+    
+
+#### 5.2.4 内联元素 line-height 的“大值特性”
+
+.box 元素的高度全都是 96px 高!
+
+```html
+<div class="box">
+  <span>内容...</span>
+</div>
+<style>
+.box {
+	line-height: 96px;
+}
+.box span {
+	line-height: 20px;
+}
+和
+.box {
+	line-height: 20px;
+}
+.box span {
+	line-height: 96px;
+}
+</style>
+
+```
+
+级元素的高度都是由数值大的 那个 line-height 决定的，我称之为“内联元素 line-height 的大值特性”。
+
+内联元素是支持 line-height 的`<span>`元素上的 line-height。也确实覆盖了.box 元素，但是，在内联盒模型中，存在一些你看不到的东西，没错，就是多 次提到的“幽灵空白节点”。
+
+只要有“内联盒子”在，就 一定会有“行框盒子”，就是每一行内联元素外面包裹的一层 看不见的盒子。然后，重点来了，在每个“行框盒子”前面有一个宽度为 0 的具有该元素的字体和行高属性的看不见的“幽灵空白节点”。
+
+<img src="http://cdn.wangtongmeng.com/20241215210306.png" style="zoom:50%;" />
+
+​    当.box 元素设置 line-height:96px 时，**“字符”高度 96px**;当设置 line-height:20px 时，`<span>`元素的高度则变成了 96px，而**行框盒子的高度是由高度最高的那个“内联盒子”决定的**，这就是.box 元素高度永远都是最大的那个 line-height 的原因。
+
+要**避免“幽灵空白节点”的干扰**，例如，设置`<span>`元 素 display:inline-block，创建一个独立的“行框盒子”，这样`<span>`元素设置的 line-height:20px 就可以生效了，**这也是多行文字垂直居中示例中这么设置的原因**。
+
+### 5.3 line-height 的好朋友 vertical-align
+
+凡是 line-height 起作用的地方 vertical-align 也一定起作用，只是很多时候， vertical-align 默默地在背后起作用，你没有感觉到而已。
+
+```html
+.box { line-height: 32px; }
+.box > span { font-size: 24px; }
+<div class="box">
+	<span>文字</span>
+</div>
+```
+
+高度并不是 32px，而是要大那么几像素(受不同字体影响，增加高度也不一样 )
+
+之所以最终.box 元素的高度并不等于 line-height，就是因为行高的朋友属性 vertical-align 在背后默默地下了黑手。
+
+<img src="http://cdn.wangtongmeng.com/20241215210734.png" style="zoom:50%;" />
+
+#### 5.3.1 vertical-align 家族基本认识
+
+抛开 inherit 这类全局属性值不谈，我把 vertical-align 属性值分为以下 4 类:
+
+- 线类，如 baseline(默认值)、top、middle、bottom;
+- 文本类，如 text-top、text-bottom;
+- 上标下标类，如 sub、super;
+- 数值百分比类，如 20px、2em、20%等。
+  - 根据计算值的不同，相对于基线往上或往下偏移，到底是往上还是往下取决于 vertical- align 的计算值是正值还是负值，如果是负值，往下偏 移，如果是正值，往上偏移。
+  - 负值全部都是往下偏移，正值全部都是往上偏移，而且数值大小全部都是相对于基线位置计算的，因此，从这一点来看，vertical-align:baseline 等同于 vertical-align:0。
+
+vertical-align 的数值属性值在实际开发的时候实用性非常强。
+
+- 一是其兼容性非常好。实际上，vertical-align 有一些属性值的渲染一直都很兼容，一个是默认的基线对齐，另一个就是相对于基线的“数值百分比类” 属性值偏移定位。也就是说，如果我们使用类似 vertical-align:10px 这样的定位，是不 会有任何兼容性问题的，也不需要写 CSS hack。
+- 二是其可以精确控制内联元素的垂直对齐位置。
+- 例子：有一个 display 值为 inline-block 的尺寸为 20 像素×20 像素的小图标，默认状 态下，文字是明显偏下的。vertical- align:middle 控制图标的垂直位置，然而，由于 middle 并不是真正意义上的垂直居中，因 此还是会有像素级别的误差，误差大小与字体和字号均有关。在本例中，图标往下多偏移了 1 像素而导致容器的可视高度变成了 **21 像素**
+  - <img src="http://cdn.wangtongmeng.com/20241215211504.png" style="zoom:50%;" />
+  - 设置 vertical-align: -5px，此时，图标和文字实现了真正意义的垂直居中，此时容器的可视高度和当前行高 20 像素保持了一致。
+  - <img src="http://cdn.wangtongmeng.com/20241215211518.png" style="zoom:50%;" />
+
+使用并不多的“百分比类”属性值。
+
+- vertical- align 属性的百分比值则是相对于 line-height 的计算值计算的。
+- 假设某元素的 line-height 是 20px，那么此时 vertical-align:-25%相当于设置 vertical-align:-5px。
+- 在如今的网页布局中，line-height 的计算值都是相对固定并且已知的， 因此，直接使用具体的数值反而更方便。
