@@ -1412,3 +1412,268 @@ vertical-align 的数值属性值在实际开发的时候实用性非常强。
 - vertical- align 属性的百分比值则是相对于 line-height 的计算值计算的。
 - 假设某元素的 line-height 是 20px，那么此时 vertical-align:-25%相当于设置 vertical-align:-5px。
 - 在如今的网页布局中，line-height 的计算值都是相对固定并且已知的， 因此，直接使用具体的数值反而更方便。
+
+#### **5.3.2-5.3.4**
+
+行框盒子：每一行就是一个“行框盒子”(实线框标注)，每个“行框盒子”又是由一个一个“内联盒子” 组成的。
+
+<img src="http://cdn.wangtongmeng.com/20241224073002.png" style="zoom:50%;" />
+
+#### 5.3.2 vertical-align 作用的前提
+
+vertical-align 起作用的前提:只能应用于**内联元素**以及 **display 值为 table-cell 的元素**。换句话说，vertical-align 属性只能作用在 display 计算值为 inline、inline- block，inline-table 或 table-cell 的元素上。因此，默认情况下，`<span>`、`<strong>`、 `<em>`等内联元素，`<img>`、`<button>`、`<input>`等替换元素，非 HTML 规范的自定义标签 元素，以及`<td>`单元格，都是支持 vertical-align 属性的，其他块级元素则不支持。
+
+有一些 CSS 属性值会在背后默默地改变元素 display 属性的计算值，从而导致 vertical-align 不起作用。例如，**浮动和绝对定位会让元素块状化**。
+
+**一些看起来vertical-align 不起作用的情况**
+
+- img不生效，图片顶着.box 元素的上边缘显示，根本没垂直居中
+
+  - 看上去是 vertical-align:middle 没起作用，实际上，vertical-align 是在努力地渲染的，只是行框盒子前面的“幽灵空白节点”高度太小，如果我们通过设置一个足够大的行高让“幽灵空白节点”高度足够，就会看到 vertical-align:middle 起作用了
+
+  - ```css
+    .box {
+      height: 128px;
+      line-height: 128px; /* 关键 CSS 属性 */
+    }
+    .box > img {
+      height: 96px;
+      vertical-align: middle;
+    }
+    ```
+
+- <img src="http://cdn.wangtongmeng.com/20241224073626.png" style="zoom:50%;" />
+
+- display:table-cell 无视行高，图片并没有要垂直居中的迹象，还是紧贴着父元素的上边缘
+
+  - ```css
+    .cell {
+          height: 128px;
+          display: table-cell;
+        	vertical-align: middle;  /* 关键 CSS 属性 */
+    }
+    .cell > img {
+      		height: 96px;
+    }
+    ```
+
+  - table-cell 元素设置 vertical-align 垂直对齐的是子元素，但是其作用的并不是子元素，而是 table-cell 元素自身。
+
+  - <img src="http://cdn.wangtongmeng.com/20241224074027.png" style="zoom:50%;" />
+
+#### 5.3.3 vertical-align 和 line-height 之间的关系
+
+**只要出现内联元素，vertical-align 和 line-height 一定会同时出现**。vertical-align 的百分比值是相对于 line-height 计算的。
+
+**容器高度不等于行高的例子**
+
+- ```html
+  .box { line-height: 32px; }
+  .box > span { font-size: 24px; }
+  <div class="box">
+    x<span>文字x</span>
+  </div>
+  ```
+
+- <img src="http://cdn.wangtongmeng.com/20241223212434.png" style="zoom:50%;" />
+
+- 一处是字母 x 构成了一个“匿名内联盒子”，另一处是“文字 x”所在的`<span>`元素，构成了一个“内联盒子”。由于都受 line- height:32px 影响，因此，这两个“内联盒子”的高度都是 32px。对字符而言，font-size 越大字符的基线位置越往下，因为文字默认全部都是基线对齐，所以**当字号大小不一样的两个文字**在一起的时候，彼此就会**发生上下位移**，如果位移距离足够大，就会超过行高的限制，而导致出现意料之外的高度。
+
+- 解决方案
+
+  - 让“幽灵空白节点”和后面`<span> `元素字号一样大
+
+    - ```
+       .box {
+       	line-height: 32px;
+       	font-size: 24px;
+       }
+       .box > span { }
+      ```
+
+  - 改变垂直对齐方式，如顶部对齐
+
+    - ```css
+      .box { line-height: 32px; }
+      .box > span {
+        font-size: 24px;
+        vertical-align: top;
+      }
+      ```
+
+**图片底部留有间隙的问题**
+
+- 现象:任意一个块级元素，里面若有图片，则块级元素高度基本上都要比图片的高度高
+
+- ```html
+  .box {
+  	width: 280px;
+  	outline: 1px solid #aaa;
+  	text-align: center;
+  }
+  .box > img {
+  	height: 96px;
+  }
+  <div class="box">
+    <img src="1.jpg">
+  </div>
+  ```
+
+- <img src="http://cdn.wangtongmeng.com/20241223213936.png" style="zoom:50%;" />
+
+- 原理：当前 line-height 计算值是 20px，而 font-size 只有 14px，因此，字母 x 往下一定 有至少 3px 的半行间距(具体大小与字体有关)，而**图片作为替换元素其基线是自身的下边缘**。 根据定义，默认和基线(也就是这里字母 x 的下边缘)对齐，**字母 x 往下的行高产生的多余的间隙**就嫁祸到图片下面，让人以为是图片产生的间隙，实际上，是“幽灵空白节点”、 line-height 和 vertical-align 属性共同作用的结果。
+
+- 解决方案：
+
+  - **图片块状化**。可以一口气干掉“幽灵空白节点”、line-height 和 vertical-align。
+  - **容器 line-height 足够小**。例如，容器设置 line-height:0。
+  - **容器 font-size 足够小**。此方法要想生效，需要容器的 line-height 属性值和当 前 font-size 相关，如 line-height:1.5 或者 line-height:150%之类。
+  - **图片设置其他 vertical-align 属性值**。间隙的产生原因之一就 是基线对齐，所以我们设置 vertical-align 的值为 top、middle、bottom 中的任意一个都是可以的。
+
+**内联特性导致的 margin 无效”的案例**
+
+- ```
+  <div class="box">
+  	<img src="mm1.jpg">
+  </div>
+  .box > img {
+  	height: 96px;
+    margin-top: -200px;
+  }
+  ```
+
+- 图片的前面有个“幽灵空白节点”，而在 CSS 世界中，非主动触发位移的内联元素是不可能跑到计算容器外面的， 导致图片的位置被“幽灵空白节点”的 vertical-align:baseline 给限死了。
+
+- <img src="http://cdn.wangtongmeng.com/20241223214756.png" style="zoom:50%;" />
+
+- 因为字符 x 下边缘和图片下边缘对齐，字符 x 非主动定位，不可能跑到容器外面，所以图片就被限死在此问题，margin-top 失效。
+
+#### 5.3.4 深入理解 vertical-align 线性类属性值
+
+**1.inline-block 与 baseline**
+
+- vertical-align 属性的默认值 baseline。
+- 在文本之类的内联元素那里就是**字符 x 的下边缘**。
+- 对于替换元素则是**替换元素的下边缘**。
+- 如果是 inline-block 元素
+  - 如果里面没有内联元素，或者 overflow 不是 visible， 则该元素的基线就是其 **margin 底边缘**;
+  - 否则其基线就是元素里面**最后一行内联元素的基线**。
+
+```html
+.dib-baseline {
+	display: inline-block;
+	width: 150px; height: 150px;
+	border: 1px solid #cad5eb;
+	background-color: #f0f3f9;
+}
+<span class="dib-baseline"></span>
+<span class="dib-baseline">x-baseline</span>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241223215712.png" style="zoom:50%;" />
+
+设置右边框的 line-height 值为 0。当 line-height 变成 0 的时候， 字符占据的高度也是 0，此时，高度的起始位置就变成了**字符内容区域的垂直中心位置**，于是文字就有一半落在框的外面了。由于文字字符上移了，自然基线位置(字母 x 的底边缘)也往上移动了。
+
+<img src="http://cdn.wangtongmeng.com/20241223215757.png" style="zoom:50%;" />
+
+**复杂案例**：text-align:jusitfy 声明可以帮助我们实现兼容的列表两端对齐效果，但是 text-align:jusitfy 两端对齐需要内容超过一行，同时为了让任意个数的列表最后一行也是左对齐排列，我们需要在列表最后辅助和列表宽度一样的空标签元素来占位
+
+```html
+.box {
+	text-align: justify;
+}
+.justify-fix {
+	display: inline-block;
+	width: 96px;
+}
+<div class="box">
+  <img src="1.jpg" width="96">
+  <img src="1.jpg" width="96">
+  <img src="1.jpg" width="96">
+  <img src="1.jpg" width="96">
+  <i class="justify-fix"></i>
+  <i class="justify-fix"></i>
+  <i class="justify-fix"></i>
+</div>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241223221132.png" style="zoom:50%;" />
+
+给.box 元素来个 line-height:0
+
+<img src="http://cdn.wangtongmeng.com/20241223221201.png" style="zoom:50%;" />
+
+在最后一个占位的`<i>`元素后面新增同样的 x-baseline 字符
+
+> 现在行高 line-height 是 0，则字符 x-baseline 行间距就是-1em，也就是高度为 0，由于 CSS 世界中的行间距是上下等分的， 因此，此时字符 x-baseline 的对齐点就是当前内容区域(可以看成文字选中背景区域，如图 5-35 所示，截自 Firefox 浏览器)的垂直中心位置。由于图 5-34 中的 x-baseline 使用的是微 软雅黑字体，字形下沉明显，因此，内**容区域的垂直中心位置大约在字符 x 的上面 1/4 处**，而 这个位置就是字符 x-baseline 和最后一行图片下边缘交汇的地方。
+
+由于前面的`<i class= "justify-fix"></i>`是一个 inline-block 的空元素，因此基线就是自身的底部，于是下 移了差不多 3/4 个 x 的高度，这个下移的高度就是上面产生的间隙高度。
+
+<img src="http://cdn.wangtongmeng.com/20241223221752.png" style="zoom:50%;" />
+
+解决方案：
+
+- **改变占位`<i>`	元素的基线**，例如，塞一个空格&nbsp。此时`<i>`元素的基线是里面字符的基线，此基线也正好和外面的“幽灵空白节点”的基线位置一致，没有了错位
+
+- **改造“幽灵空白节点”的基线位置**，`.box {text-align: justify;font-size: 0;}`
+
+- **使用其他 vertical-align 对齐方式**，就是让`<i>`z占位元素 vertical-align:top/bottom 之类， 当前，前提还是先让容器 line-height:0
+
+  - ```css
+    .box {
+          text-align: justify;
+          line-height: 0;
+      }
+        .justify-fix {
+    	vertical-align: bottom; /* top、middle 都可以 */
+    }
+    ```
+
+**案例：背景小图标和文字对齐的问题**
+
+如果图标和后面的文字高度一致，同时图标的基线和文字基线一样，使图标和文字天然对齐
+
+一套基于 20px 图标对齐的处理技巧
+
+- (1)图标高度和当前行高都是 20px。
+- (2)图标标签里面永远有字符。借助:before 或:after 伪元素生成一个空格字符
+- (3)图标 CSS 不使用 overflow:hidden 保证基线为里面字符的基线，但是要让里面潜在的字符不可见。
+
+```css
+.icon {
+      display: inline-block;
+      width: 20px; height: 20px; /* 图标高度和当前行高都是 20px */
+   		background: url(sprite.png) no-repeat;
+      white-space: nowrap;
+      letter-spacing: -1em;
+      text-indent: -999em; /* 让里面潜在的字符不可见 */
+    }
+    .icon:before {
+      content: '\3000'; /* 图标标签里面永远有字符 */
+    }
+/* 具体图标 */
+.icon-xxx {
+      background-position: 0 -20px;
+    }
+...
+```
+
+<img src="http://cdn.wangtongmeng.com/20241223224105.png" style="zoom:50%;" />
+
+**2.了解 vertial-align:top/bottom**
+
+vertial-align:top 就是垂直上边缘对齐
+
+- 内联元素:如果是内联元素，则和这一行位置最高的内联元素的顶部对齐。
+- table-cell 元素:元素底 padding 边缘和表格行的顶部对齐。
+
+**3.vertial-align:middle 与近似垂直居中**
+
+vertial- align:middle。
+
+- 内联元素:元素的垂直中心点和行框盒子基线往上 1/2 x-height 处对齐。
+- table-cell 元素:单元格填充盒子相对于外面的表格行居中对齐。
+
+vertial-align:middle 可以让内联元素的真正意义上的**垂直中心位置和字符 x 的交叉点对齐**。font-size: 0 实现真正垂直居中对齐。
+
+<img src="http://cdn.wangtongmeng.com/20241223223357.png" style="zoom:50%;" />
