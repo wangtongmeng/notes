@@ -1677,3 +1677,627 @@ vertial- align:middle。
 vertial-align:middle 可以让内联元素的真正意义上的**垂直中心位置和字符 x 的交叉点对齐**。font-size: 0 实现真正垂直居中对齐。
 
 <img src="http://cdn.wangtongmeng.com/20241223223357.png" style="zoom:50%;" />
+
+#### 5.3.5-6.1.1
+
+#### 5.3.5 深入理解 vertical-align 文本类属性值
+
+文本类属性值指的就是 text-top 和 text-bottom，定义如下。
+
+- vertical-align:text-top:盒子的顶部和父级内容区域的顶部对齐。
+- vertical-align:text-bottom:盒子的底部和父级内容区域的底部对齐。
+
+> 其和其他垂直定位属性相比没有任何的优势
+
+所谓“父级内容区域”指的就是在父级 元素当前 font-size 和 font-family 下应有的内容区域大小。
+
+可以理解为(以 text-top 举例):假设元素后面有一个和父元素 font- size、font-family 一模一样的文字内容，则 vertical-align:text-top 表示元素和这 个文字的内容区域的上边缘对齐。
+
+<img src="http://cdn.wangtongmeng.com/20241229154123.png" style="zoom:50%;" />
+
+vertical-align 的文本类属性值不常用的原因
+
+- (1)使用场景缺乏
+- (2)文本类垂直对齐理解成本高
+- (3)内容区域不直观且易变。内容区域默认是看不见的；易变，内容区域的大小是和字体 font-family 密切相关的。
+
+#### 5.3.6 简单了解 vertical-align 上标下标类属性值
+
+vertical-align 上标下标类属性值指的就是 sub 和 super 两个值，分别表示下标和上 标。在 HTML 代码中，有两个标签语义就是下标和上标，分别是上标`<sup>`和下标`<sub>`
+
+```HTML
+zhangxinxu<sup>[1]</sup>
+NH<sub>4</sub>HCO<sub>3</sub>
+```
+
+<img src="http://cdn.wangtongmeng.com/20241229160100.png" style="zoom:50%;" />
+
+需要注意，vertical-align 上标下标类属性值并不会改变当前元素的文字大小，千万不要被 HTML 标签中的`<sup>`和`<sub>`误导，因为这两个 HTML 标签默认 font-size 是 smaller
+
+#### 5.3.7 无处不在的 vertical-align
+
+遇到不太好理解的现象， 请一定要意识到，有个“幽灵空白节点”以及无处不在的 vertical-align 属性。
+
+虽然同属线性类属性值，但是 top/bottom 和 baseline/middle 却是完全不同的两个 帮派，前者对齐看边缘看行框盒子，而后者是和字符 x 打交道。
+
+在分析复杂场景的时候，仅需要套用定义分析当前 vertical-align 值的作用就可以了。
+
+#### 5.3.8 基于 vertical-align 属性的水平垂直居中弹框
+
+```HTML
+ <div class="container">
+      <div class="dialog"></dialog>
+</div>
+.container {
+      position: fixed;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background-color: rgba(0,0,0,.5);
+      text-align: center;
+      font-size: 0;
+      white-space: nowrap;
+      overflow: auto;
+    }
+    .container:after {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+}
+.dialog {
+      display: inline-block;
+      vertical-align: middle;
+      text-align: left;
+      font-size: 14px;
+      white-space: normal;
+}
+```
+
+## 第6章 流的破坏与保护
+
+### 6.1 魔鬼属性 float
+
+#### 6.1.1 float 的本质与特性
+
+浮动的本质就是为了实现文字环绕效果。
+
+float 的特性：
+
+- 包裹性;
+- 块状化并格式化上下文;
+- 破坏文档流;
+- 没有任何 margin 合并;
+
+包裹性（3.2.1 节），由“包裹”和“自适应性”两部分组成。
+
+(1)包裹。假设浮动元素父元素宽度 200px，浮动元素子元素是一个 128px 宽度的图片， 则此时浮动元素宽度表现为“包裹”，就是里面图片的宽度 128px，代码如下:
+
+```html
+ .father { width: 200px; }
+    .float { float: left; }
+    .float img { width: 128px; }
+    <div class="father">
+      <div class="float">
+        <img src="1.jpg">
+      </div>
+    </div>
+```
+
+(2)自适应性。如果浮动元素的子元素不只是一张 128px 宽度的图片，还有一大波普通 的文字，例如:
+
+```HTML
+<div class="father">
+      <div class="float">
+<img src="1.jpg">我是帅哥，好巧啊，我也是帅哥，原来看这本书的人都是帅哥~ </div>
+</div>
+```
+
+则此时浮动元素宽度就自适应父元素的 200px 宽度，最终的宽度表现也是 200px。
+
+块状化的意思是，元素一旦 float 的属性值不为 none，则其 display 计算值就是 block 或者 table。
+
+<img src="http://cdn.wangtongmeng.com/20241229234920.png" style="zoom:50%;" />
+
+
+
+
+
+### 6.1.2-6.2
+
+#### 6.1.2 float 的作用机制
+
+float 属性的原本作用“只是为了实现文字环绕效果“。“文字环绕效果” 是由两个特性(即“父级高度塌陷”和“行框盒子区域限制”)共同作用的结果。
+
+- 条件一：让父元素高度塌陷，让跟随的内容可以和浮动元素在一个水平线上
+
+- 条件二：“行框盒子和浮动元素的不可重叠性”，也就是“行框盒子如果和浮动元素的垂直高度有 重叠，则行框盒子在正常定位状态下只会跟随浮动元素，而不会发生重叠”。
+
+**定高**只能解决“父级高度塌陷”带来的影响，但是对“行框盒子区域限制”却没有任何效果，结果导致的问题 是浮动元素垂直区域一旦超出高度范围，或者下面元素 margin-top 负值上偏移，就很容易使 后面的元素发生“环绕效果”
+
+```html
+<div class="father">
+  <div class="float">
+    <img src="zxx.jpg">
+  </div>
+  我是帅哥，好巧啊，我也是帅哥，原来看这本书的人都是帅哥~ </div>
+<div>虽然你很帅，但是我对你不感兴趣。</div>
+.father {
+  height: 64px;
+  border: 1px solid #444;
+}
+.float {
+  float:left;
+}
+.float img {
+	width: 60px; height: 64px;
+}
+```
+
+从这段代码可以看出父级元素.father 高度设置的和图片高度一模一样，都是 64px。按道理，下面的“虽然你很帅，但是我对你不感兴趣。”这些 文字应该居左显示，但最后的结果却是下图所示的这样。
+
+内联状态下的图片底部是有间隙的，也就是.float 这个浮动元素的实际高度 并不是 64px，而是要比 64px 高几像素，带来的问题就是浮动元素的高度超出.father 几像素。
+
+<img src="http://cdn.wangtongmeng.com/20250104170529.png" style="zoom:50%;" />
+
+**当使用浮动元素的时候，比较稳妥的做法还是采用一些手段干净地清除浮动带来的影响**。
+
+#### 6.1.3 float 更深入的作用机制
+
+<img src="http://cdn.wangtongmeng.com/20250104171201.png" style="zoom:50%;" />
+
+- **浮动锚点**是 float 元素所在的“流”中的一个点，这个点本身并不浮动，就表现而言 更像一个没有 margin、border 和 padding 的空的内联元素。
+- **浮动参考**指的是浮动元素对齐参考的实体。
+
+在 CSS 世界中，float 元素的“浮动参考”是“行框盒子”，也就是 float 元素在当前 “行框盒子”内定位。正是因为 float 定位参考的是“行框盒子”，所以“更多”才会在第二行显示。每一行内联元素都有一个“行框盒子”，这个例子中标题文字比较多，两行显示了，因此**有上下两个“行框盒子**”**，而“更多”所在的<a>元素是在标题文字后面，位于第 二行，因此，这里设置了 float:right 的<a>元素是相对于第二行的“行框盒子”对齐的。
+
+如果 float 元素前后全是块元素，那根本没有“行框盒子”， 此时，就需要上面提到的“**浮动锚点**”出马了。“其作用就是**产生“行框盒子”**，因为“浮动锚点”表现如同一个空的内联元素，有内联元素自然就有“行框盒子”，于是， float 元素对齐的参考实体“行框盒子”对于块状元素也同样适用了，只不过这个“行框盒子” 由于没有任何内容，所以无尺寸，看不见也摸不着罢了。
+
+#### 6.1.4 float 与流体布局
+
+float实现两栏或多栏的自适应布局
+
+一侧定宽的两栏自适应布局。
+
+```html
+<div class="father">
+<img src="me.jpg">
+<p class="animal">小猫1，小猫2，...</p>
+    </div>
+.father {
+	overflow: hidden;
+}
+.father > img {
+	width: 60px; height: 64px;
+	float: left;
+}
+.animal {
+	margin-left: 70px;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250104171836.png" style="zoom:50%;" />
+
+百分比宽度布局
+
+```css
+.left {
+  float: left;
+  width: 50%;
+}
+.right {
+  margin-left: 50%;
+}
+```
+
+多栏布局
+
+```html
+<div class="box">
+	<a href class="prev">&laquo; 上一章</a>
+  <a href class="next">下一章 &raquo;</a>
+  <h3 class="title">第 112 章 动物环绕</h3>
+</div>
+.prev {
+      float: left;
+}
+.next {
+      float: right;
+    }
+    .title {
+      margin: 0 70px;
+      text-align: center;
+}
+```
+
+### 6.2 float 的天然克星 clear
+
+#### 6.2.1 什么是 clear 属性
+
+用来处理 float 属性带来的 高度塌陷等问题的属性，这个属性就是 clear。其语法如下:
+
+```
+ clear: none | left | right | both
+```
+
+官方对 clear 属性的解释是:“元素盒子的边不能和**前面的**浮动元素相邻。”
+
+就是设置了 clear 属性的元素自身如何如何，而不是让 float 元素如何如何。
+
+clear 属性值
+
+- none:默认值，左右浮动来就来。
+- left:左侧抗浮动。
+- right:右侧抗浮动。
+- both:两侧抗浮动。（可代替left、right）
+
+```css
+li {
+   width: 20px; height: 20px;
+   margin: 5px;
+   float: left;
+}
+li:nth-of-type(3) {
+  clear: both;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250104172405.png" style="zoom:50%;" />
+
+原因在于，clear 属性是让自身不能和前面的浮动元素相邻，注意这里“前面的”3 个字， 也就是 clear 属性对“后面的”浮动元素是不闻不问的，因此才 2 行显示而非 3 行。
+
+#### 6.2.2 成事不足败事有余的 clear
+
+clear 属性只有块级元素才有效的，而::after 等伪元素默认都是内联水平，这就是借助伪元素清除浮动影响时需要设置 display 属性值的原因。
+
+```css
+.clear:after {
+  content: '';
+  display: table; // 也可以是'block'，或者是'list-item' clear: both;
+}
+```
+
+clear:both 只能在一定程度上消除浮动的影响，要想完美地去除浮动元素的影响，还需要使用其他 CSS 声明。
+
+### **6.3~6.4.4**
+
+### 6.3 CSS 世界的结界——BFC
+
+#### 6.3.1 BFC 的定义
+
+BFC 全称为 block formatting context，中文为“块级格式化上下文”。
+
+BFC规则：
+
+如果一个元素具有 BFC，内部子元素不会影响外部的元素。所以，BFC 元素是不可能发生 margin 重叠的，因为 margin 重叠是会影响外面的元素的;BFC 元素也可以用来清除浮动的影响，因为如果不清除，子元素浮动则父元素高度塌陷，必然会影响后面元素布局和定位，这显然有违 BFC 元素的子元素不会 影响外部元素的设定。
+
+触发 BFC ：
+
+- `<html>`根元素;
+- float 的值不为 none;
+- overflow 的值为 auto、scroll 或 hidden;
+- display 的值为 table-cell、table-caption 和 inline-block 中的任何一个;
+- position 的值不为 relative 和 static。
+
+- 只要元素符合上面任意一个条件，就无须使用 clear:both 属性去清除浮动的影响了。
+
+#### 6.3.2 BFC 与流体布局
+
+BFC 的结界特性最重要的用途其实不是去 margin 重叠或者是清除 float 影响，而是实现更健壮、更智能的**自适应布局**。
+
+```html
+<div class="father">
+  <img src="me.jpg">
+  <p class="animal">小猫1，小猫2，...</p>
+</div>
+img { float: left; }
+.animal { overflow: hidden; }
+```
+
+<img src="http://cdn.wangtongmeng.com/20250112161751.png" style="zoom:50%;" />
+
+增加10px间隙
+
+```css
+// 这几种写法都是可以的
+img { margin-right: 10px; }
+img { border-right: 10px solid transparent; }
+img { padding-right: 10px; }
+.animal { border-left: 10px solid transparent; }
+.animal { padding-right: 10px; }
+```
+
+<img src="http://cdn.wangtongmeng.com/20250112162033.png" style="zoom:50%;" />
+
+和基于纯流体特性实现的两栏或多栏自适应布局相比，基于 **BFC 特性的自适应布局有如下优点**：
+
+- 自适应内容由于封闭而更健壮，容错性更强。
+- 自适应内容自动填满浮动以外区域，无须关心浮动元素宽度，可以整站大规模应用。
+
+> 纯流体布局需要大小不确定的 margin 或 padding 等值撑开合适间距，无法 CSS 组件 化。例如，前面出现的 70px，其他类似布局可能就是 90px，无法大规模复用
+>
+> ```
+>  .animal { margin-left: 70px; }
+> ```
+
+理论上，任何 BFC 元素和 float 元素相遇的时候，都可以实现自动填充的自适应布局。 但是，由于绝大多数的触发 BFC 的属性自身有一些古怪的特性，所以，实际操作的时候，能兼 顾流体特性和 BFC 特性来实现无敌自适应布局的属性并不多。
+
+**两套 IE7 及以上版本浏览器适配的自适应解决方案**
+
+(1)借助 overflow 属性，如下:
+
+```css
+.lbf-content { overflow: hidden; }
+```
+
+(2)融合 display:table-cell 和 display:inline-block，如下:
+
+```css
+.lbf-content {
+	display: table-cell; width: 9999px;
+  /* 如果不需要兼容 IE7，下面样式可以省略 */
+  *display: inline-block; *width: auto;
+}
+```
+
+这两种基于 BFC 的自适应方案均**支持无限嵌套**，因此，多栏自适应可以通过嵌套方式实现。这两种方案均有一点不足，前**者如果子元素要定位到父元素的外面可能会被隐藏**， **后者无法直接让连续英文字符换行**。所以，大家可以根据实际的项目场景选择合适的技术方案。
+
+**解决display:table-cell 元素内连续英文字符无法换行的问题**
+
+```css
+ .word-break {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      word-break: break-all;
+}
+```
+
+### 6.4 最佳结界 overflow
+
+要想**彻底清除浮动**的影响，最适合的属性不是 clear 而是 overflow。**一般使用 overflow:hidden**，利用 BFC 的“结界”特性彻底解决浮动对外部或兄弟元素的影响。
+
+overflow 属性原本的作用指定了块容器元素的内容溢出时是否需要裁剪，也就是“结界”只是其衍生出来的特性，“剪裁”才是其本职工作。
+
+#### 6.4.1 overflow 剪裁界线 border box
+
+一个设置了 overflow:hidden 声明的元素，假设同时存在 border 属性和 padding 属性。则当**子元素内容超出容器宽度高度限制的时候，剪裁的边界是 border box 的内边缘**，而非 padding box 的内边缘。
+
+```css
+.box {
+      width: 200px; height: 80px;
+      padding: 10px;
+      border: 10px solid;
+      overflow: hidden;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250112163019.png" style="zoom:50%;" />
+
+如果想实现元素剪裁同时四周留有间隙的效果的话，可以试试使用透明边框，此时内间距 padding 属性是无能为力的。
+
+ overflow 属性的一个很经典的**不兼容问题**，即 Chrome 浏览器下，如果容 器可滚动(假设是垂直滚动)，则 padding-bottom 也算在滚动尺寸之内，IE 和 Firefox 浏览器 忽略 padding-bottom。
+
+<img src="http://cdn.wangtongmeng.com/20250112165119.png" style="zoom:50%;" />
+
+在实际项目开发的时候，要尽量**避免滚动容器设置 padding-bottom 值**，除 了样式表现不一致外，还会导致 scrollHeight 值不一样，这往往会给开发带来难以察觉的 麻烦，需要引起注意。
+
+#### 6.4.2 了解 overflow-x 和 overflow-y
+
+ overflow-x 和 overflow-y，分别表示单独控制水平或垂直方向上的剪裁规则。
+
+支持的属性值和 overflow 属性一模一样。
+
+- visible:默认值。
+- hidden:剪裁。
+- scroll:滚动条区域一直在。
+- auto:不足以滚动时没有滚动条，可以滚动时滚动条出现。
+
+overflow-x 和 overflow-y 的表现规则 ：
+
+- 如果 overflow-x 和 overflow-y 属性中的一个值设置为 visible 而另外一个设置为 scroll、auto 或 hidden，则 visible 的样式表现会如同 auto。
+
+- 也就是说， 除非 overflow-x 和 overflow-y 的属性值都是 visible，否则 visible 会当成 auto 来 解析。
+- 换句话说，永远不可能实现一个方向溢出剪裁或滚动，另一方向内容溢出显示的效果。
+
+因此，下面 CSS 代码中的 overflow-y:auto 是多余的:
+
+```css
+html {
+ overflow-x: hidden; overflow-y: auto; /* 多余 */
+
+}
+```
+
+ 但是，scroll、auto 和 hidden 这 3 个属性值是可以共存的。
+
+#### 6.4.3 overflow 与滚动条
+
+HTML 中有两个标签是默认可以产生滚动条的，一个是根元素`<html>`，另一个是文本域 `<textarea>`。从 IE8 浏览器开始，都使用 auto 作为默认的属性值。
+
+浏览器的滚动条
+
+- 在 PC 端，无论是什么浏览器，默认滚动条均来自`<html>`，而不是`<body>`标签。
+
+  - 要去除页面默认滚动条，只需要`html { overflow: hidden; }`
+  - 注意，上述规则只对 PC 端有效，对于移动端并不一定适用。例如，在 PC 端，对`<html> `标签设置 overflow:hidden 可以隐藏滚动条禁止滚动，但是在移动端基本上无效。在 PC 端， 窗体滚动高度可以使用 document.documentElement.scrollTop 获取，但是在移动端， 可能就要使用 document.body.scrollTop 获取。
+
+- 滚动条会占用容器的可用宽度或高度。
+
+  - 知道自己浏览器的滚动栏宽度是多少
+
+    - ```
+      .box { width: 400px; overflow: scroll; }
+          <div class="box">
+            <div id="in" class="in"></div>
+          </div>
+      console.log(400 - document.getElementById("in").clientWidth);
+      ```
+
+  - 解决方案
+
+    - 一种是`<table>`元素使用固定的宽度值，但是距离右侧留有 17px 的间隙，这样即使滚动条出现，也不会产生任何的宽度影响;
+    - 另一种就是表格的最后一列不设定宽度(文字最好左对齐)，前面每一列都定死宽度，这样最后一列就是自适应结构，就算滚动条出现，也只是自身有一些宽度变小，对整体对齐并无多大影响。
+
+- 滚动栏占据宽度的特性最大的问题就是页面加载的时候水平居中的布局可能会产生晃动
+
+  - 让页面滚动条不发生晃动的小技巧
+
+  - ```css
+    html {
+      overflow-y: scroll; /* for IE8 */
+    }
+    :root {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    :root body {
+      position: absolute;
+    }
+    body {
+      width: 100vw;
+      overflow: hidden;
+    }
+    
+    ```
+
+滚动条是可以自定义的
+
+对于 Chrome 浏览器:
+
+- 整体部分，::-webkit-scrollbar;
+- 两端按钮，::-webkit-scrollbar-button;
+- 外层轨道，::-webkit-scrollbar-track;
+
+- 内层轨道，::-webkit-scrollbar-track-piece;
+- 滚动滑块，::-webkit-scrollbar-thumb;
+- 边角，::-webkit-scrollbar-corner。
+
+但是我们平时开发中只用下面 3 个属性:
+
+```css
+::-webkit-scrollbar { /* 血槽宽度 */ width: 8px; height: 8px;
+}
+::-webkit-scrollbar-thumb { /* 拖动条 */
+  background-color: rgba(0,0,0,.3);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background-color: #ddd;
+  border-radius: 6px;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250112170954.png" style="zoom:50%;" />
+
+#### 6.4.4 依赖 overflow 的样式表现
+
+单行文字溢出点点点效果。虽然效果的核心是 text- overflow:ellipsis，效果实现必需的 3 个声明如下:
+
+```css
+.ell {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+}
+```
+
+对-webkit-私有前缀支持良好的浏览器还可以实现多行文字打点效果，但是却无 须依赖 overflow:hidden。
+
+```css
+.ell-rows-2 {
+       display: -webkit-box;
+       -webkit-box-orient: vertical;
+       -webkit-line-clamp: 2;
+}
+```
+
+#### 6.4.5 overflow 与锚点定位
+
+基于 URL 地址的锚链(如上面的#1，可以使用 location.hash 获取)实现 锚点跳转的方法有两种
+
+- 一种是`<a>`标签以及 name 属性。百度百科就是使用`<a>`标签的 name 属性实现锚点跳转的
+- 还有一种就是使用标签的 id 属性。
+
+```html
+<a href="#1">发展历程></a>
+<a name="1"></a>
+
+利用标签的 id 属性，HTML 会显得更干净一些，也不存在任何兼容性问题
+<a href="#1">发展历程></a>
+<h2 id="1">发展历程</h2>
+```
+
+**锚点定位行为的触发条件**
+
+- (1)URL 地址中的锚链与锚点元素对应并有交互行为;
+
+  - 改变地址栏的锚链值，页面中有对应的元素（非隐藏状态）
+
+  - 锚链就是一个很简单的#时，则定位行为发生的时候，页面是定位 到顶部的。
+
+    - ```html
+      <a href="#">返回顶部></a>
+      
+      配合 JavaScript 实现一些动效或者避免点击时候 URL 地址出现#
+      <a href="javascript:">返回顶部></a>
+      ```
+
+- (2)可 focus 的锚点元素处于 focus 状态。
+  - focus 锚点定位”指的是类似链接或者按钮、输入框等可以被 focus 的元素在被 focus 时发生的页面重定位现象。
+  -  例子：PC 端，我们使用 Tab 快速定位可 focus 的元素的时候，如果我们 的元素正好在屏幕之外，浏览器就会自动重定位，将这个屏幕之外的元素定位到屏幕之中。
+  - 例子：一个可读写的`<input>`输入框在屏幕之外，则执行类似下面的 JavaScript 代码` document.querySelector('input').focus();`这个输入框会自动定位在屏幕之中
+  - “focus 锚点定位”也不依赖于 JavaScript，是浏览器内置的无障碍访问行为，并且所有浏览器都是如此。
+- 差异：“URL 地址锚链定位”是让元素定位在浏览器窗体的上边缘，而“focus 锚点定位”是让元素在浏览器窗体范围内显 示即可，不一定是在上边缘。
+
+**锚点定位作用的本质**
+
+- 锚点定位行为的发生，本质上是通过改变容器滚动高度或者宽度来实现的。
+- 
+- 注意，这里说的是容器的滚动高度，而不是浏览器的滚动高度，这一点小小区分**非常重要**。
+
+锚点定位也可以发生在普通的容器元素上，而且定位行为的发生是**由内而外**的。
+
+```html
+.box {
+	height: 120px;
+	border: 1px solid #bbb;
+	overflow: auto;
+}
+.content {
+  height: 200px;
+  background-color: #eee;
+}
+<div class="box">
+<div class="content"></div> <h4 id="title">底部标题</h4>
+</div>
+<p><a href="#title">点击测试</a></p>
+```
+
+<img src="http://cdn.wangtongmeng.com/20250119195817.png" style="zoom:50%;" />
+
+点击下面的“点击测试”链接，则滚动条位置变化(实际上改变了 scrollTop 值)，“底部标题”自动出现了。
+
+“由内而外”指的是，普通元素和窗体同时可滚动的时候，会由内而外触发所有可滚 动窗体的锚点定位行为。
+
+假设我们的浏览 器窗体也是可滚动的，则点击“点击测试”链接后，“底部 标题”先触发.box 容器的锚点定位，也就是滚动到底部， 然后再触发窗体的锚点定位，“底部标题”和浏览器窗口的上边缘对齐。
+
+<img src="http://cdn.wangtongmeng.com/20250119195931.png" style="zoom:50%;" />
+
+**设置了 overflow:hidden 的元素也是可滚动的**
+
+overflow:hidden 跟 overflow:auto 和 overflow:scroll 的差别就在于有没有那个滚动条。
+
+案例
+
+- 基于 URL 地址的锚链触发锚 点定位实现的选项卡切换效果。
+
+- 访问基于“focus 锚点定位”实现的无 JavaScript 选项卡切换效果实例页面。
+- 自定义的滚动条效果（类似移动端的悬浮式滚动条）
+
+
+
+
+
+
+
+
+
