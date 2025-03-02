@@ -2251,7 +2251,6 @@ HTML 中有两个标签是默认可以产生滚动条的，一个是根元素`<h
 **锚点定位作用的本质**
 
 - 锚点定位行为的发生，本质上是通过改变容器滚动高度或者宽度来实现的。
-- 
 - 注意，这里说的是容器的滚动高度，而不是浏览器的滚动高度，这一点小小区分**非常重要**。
 
 锚点定位也可以发生在普通的容器元素上，而且定位行为的发生是**由内而外**的。
@@ -2293,11 +2292,669 @@ overflow:hidden 跟 overflow:auto 和 overflow:scroll 的差别就在于有没�
 - 访问基于“focus 锚点定位”实现的无 JavaScript 选项卡切换效果实例页面。
 - 自定义的滚动条效果（类似移动端的悬浮式滚动条）
 
+### 6.5-6.5.1
 
+### 6.5 float 的兄弟 position:absolute
 
+absolute是float的兄弟，都兼具“块状化”“包裹性”“破坏性”等特性，不少布局场合甚至可以相互替代。同时存在时float无效。
 
+- 块状化：元素一旦 position 属性值为 absolute 或 fixed，其 display 计算值就是 block 或者 table。
+- 破坏性：破坏正常的流特性，但本身还是受普 通的流体元素布局、位置甚至一些内联相关的 CSS 属性影响。
+- 两者都能“块状格式化上下文”， 也就是 BFC。
+- 包裹性：尺寸收缩包裹，同时具有自适应性。
 
+**absolute 的自适应性最大宽度**往往不是由父元素决定的，本质上说，这个差异是**由“包 含块”的差异决定**的。换句话说，absolute 元素具有与众不同的“包含块”。
 
+#### 6.5.1 absolute 的包含块
+
+包含块是元素用来计算和定位 的一个框。
+
+绝对定位元素的宽度是相对于第一个 position 不为 static 的祖先元素计算的。
+
+计算规则
+
+- (1)根元素(很多场景下可以看成是`<html>`被称为“初始包含块”，其尺寸等同于浏览器可视窗口的大小。
+
+- (2)对于其他元素，如果该元素的 position 是 relative 或者 static，则“包含块” 由其最近的块容器祖先盒的 content box 边界形成。
+
+- (3)如果元素 position:fixed，则“包含块”是“初始包含块”。
+
+- (4)如果元素 position:absolute，则“包含块”由最近的 position 不为 static 的祖先元素建立，具体方式如下。
+
+> 如果该祖先元素是纯 inline 元素，则规则略复杂:
+>
+> - 假设给内联元素的前后各生成一个宽度为 0 的内联盒子(inline box)，则这两个内联盒子的 padding box 外面的包围盒就是内联元素的“包含块”;
+> - 如果该内联元素被跨行分割了，那么“包含块”是未定义的，也就是 CSS2.1规范并没有明确定义，浏览器自行发挥。 否则，“包含块”由该祖先的 padding box 边界形成。
+
+**和常规元素相比，absolute 绝对定位元素的“包含块”有以下 3 个明显差异:**
+
+- **(1)内联元素也可以作为“包含块”所在的元素;**
+
+- **(2)“包含块”所在的元素不是父块级元素，而是最近的 position 不为 static 的祖先 元素或根元素;**
+
+- **(3)边界是 padding box 而不是 content box。**
+
+  
+
+**差异1**：内联元素也可以作为“包含块”所在的元素;
+
+**内联元素可以作为“包含块”。**使用较少，原因：1.absolute一般用于布局，不会考虑内联元素2.理解和学习成本较高3.兼容性问题
+
+内联元素的“包含块” 是由“生成的”前后内联盒子决定的，与里面的内联盒子细节没有任何关系。
+
+<img src="http://cdn.wangtongmeng.com/20250211074158.png" style="zoom:50%;" />
+
+**差异2：**“包含块”所在的元素不是父块级元素，而是最近的 position 不为 static 的祖先 元素或根元素;
+
+对于绝对定位元素。height:100%是第一个具有定位属性值的祖先元素的高度，而 height:inherit 则是单纯的父元素的高度继承，在某些场景下非常好用。
+
+**绝对定位元素的“包裹性” 中的“宽度自适应性”其实也是相对于“包含块”来表现的**。
+
+```css
+.container {
+  width: 200px;
+  border: 1px solid;
+  position: relative;
+}
+.box { position: absolute; }
+```
+
+box 元素的“包含块”就是.container 元素， 因此，.box 元素最终的宽度就是 200px，也就是说，绝对定位元素默认的最大宽度就是“包含块”的宽度。
+
+<img src="http://cdn.wangtongmeng.com/20250211075141.png" style="zoom:50%;" />
+
+黑色的提示元素的“包含块”宽度是整个浏览器窗体宽度，放几个 文字绰绰有余，但是，由于我们的图标位于浏览器的右边缘，JavaScript 定位的时候，就会设置 一个**很大的 left 属性值**，导致“包含块”剩余的空间不足，也就是提示元素的“自适应宽度” 不足，导致文字只能竖着显示，从而出现“一柱擎天”。
+
+要修复此问题其实很简单，只要**改变默认的宽度显示类型就可以，添加 white-space: nowrap，让宽度表现从“包裹性”变成“最大可用宽度”**。实际开发的时候，最好改变提示的方向，例如右边缘的 时候，左侧提示。
+
+**差异3**：边界是 padding box 而不是 content box。
+
+和 overflow 隐藏也是 padding box 边界类似，都是 由使用场景决定的。
+
+在列表的右上角显示一个明显的标签，padding变化不会影响
+
+```css
+.list {
+  padding: 1rem;
+}
+.tag {
+  position: absolute;
+  top: 0; right: 0;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250211080243.png" style="zoom:50%;" />
+
+定位在内容的边缘，**使用透明的 border 撑开**，当间距发生变化的时候，只需要改变 border 宽度就可以，注意的就是尽量不要设置 overflow:hidden。
+
+```css
+.list {
+  border: 1rem solid transparent;
+}
+.tag {
+  position: absolute;
+  top: 0; right: 0;
+}
+```
+
+### **6.5.2-6.6**
+
+#### 6.5.2 具有相对特性的无依赖 absolute 绝对定位
+
+一个**绝对定位元素**，没有任何 left/top/right/bottom 属性设置，并且**其祖先元素全部都是非定位元素**，其**位置还是当前位置，不是在浏览器左上方。**
+
+absolute 是非常独立的 CSS 属性值，其样式和行为表现不依赖其他任何 CSS 属性就可以完成。
+
+左上角有一个“TOP1”的图形标志
+
+<img src="http://cdn.wangtongmeng.com/20250218071848.png" style="zoom: 50%;" />
+
+absolute 定位效果实现完全不需要父元素设置 position 为 relative 或其他什么属性就可以实现，这种没有设置 left/top/ right/bottom 属性值的绝对定位称为“**无依赖绝对定位**”。
+
+很多场景下，“无依赖绝对定位”要比使用 left/top 之类属性定位实用和强大很多，因 为其除了代码更简洁外，还有一个很棒的特性，就是“**相对定位特性**”。**无依赖绝对定位”本质上就是“相对定位”，仅仅是不占据 CSS 流的尺寸空间而已。**
+
+**1.各类图标定位**
+
+<img src="http://cdn.wangtongmeng.com/20250218072320.png" style="zoom:50%;" />
+
+-  IE6 在内的浏览器都是兼容良好
+- 后这个图标下架了，我们只需要把图标对应的 HTML 代码和 CSS 删掉就可以，原来的代码完全不需要改动。
+- **无依赖绝对定位”的图标是自动跟在文字后面显示的**。
+
+```css
+ .icon-hot {
+      position: absolute;
+      margin: -6px 0 0 2px;
+      width: 28px; height: 11px;
+      background: url(hot.gif);
+}
+```
+
+**普通的水平对齐的图标**也可以使用“无依赖绝对定位”实现
+
+<img src="http://cdn.wangtongmeng.com/20250218073019.png" style="zoom:50%;" />
+
+```css
+<span class="icon-x">
+	<i class="icon-warn"></i>邮箱格式不准确
+</span>
+.icon-x {
+  line-height: 20px;
+  padding-left: 20px;
+}
+.icon-warn {
+  position: absolute; // 同样是 position:absolute，然后简单的 margin 偏移实现
+  margin-left: -20px;
+  width: 20px; height: 20px;
+  background: url(warn.png) no-repeat center; // 利用背景居中
+}
+```
+
+> 如果使用“无依赖绝对定位”实现，则不会因为icon高度影响行框高度，因为绝对定位元素不会改变正常流的尺寸空间，就算我们的图标有 30px 大小，行框高度依然是纯文本所在 的 20px 高度。
+
+**2.超越常规布局的排版**
+
+输入框后面的提示语
+
+- ```css
+  remark {
+        position: absolute;
+        margin-left: 10px;
+  }
+  ```
+
+- 既在输入框的后面显示，又跳出了容器宽度的限制， 同时显隐不会影响原先的布局。
+
+- 提示信息的位置智能跟随输入框，与容器设置 position:relative 再通 过 left 属性实现的定位相比，其代码更简洁，容错性更强，维护成本更低。
+
+星号
+
+- 星号也是典型的“无依赖绝对定位”，自身绝对定位，然后通过 margin-left 负值偏移实现
+
+<img src="http://cdn.wangtongmeng.com/20250218073757.png" style="zoom: 67%;" />
+
+**3.下拉列表的定位**
+
+<img src="http://cdn.wangtongmeng.com/20250218074253.png" style="zoom:50%;" />
+
+- 兼容性好到 IE6 都完美定位
+- 维护成本低，输入框的高度发生了 变化，我们不需要修改任何 CSS 代码
+- z-index 层级管理规则更简单，并且也无 须担心父元素设置 oveflow:hidden 会裁剪下拉列表
+
+```css
+<input>
+<div class="result">
+	<div class="datalist">
+	<a href>搜索结果1</a>
+	...
+	</div>
+</div>
+/* 下拉列表的无依赖绝对定位 */
+.datalist {
+  position: absolute;
+}
+/* 列表的显隐控制 */ 
+.search-result {
+  display: none;
+}
+input:focus ~ .search-result {
+  display: block;
+}
+```
+
+**虽然“无依赖绝对定位”好处多多，但建议只用在静态交互 效果上，比方说，导航二级菜单的显示与定位。如果是动态呈现的列表，建议还是使用 JavaScript 来计算和定位。**
+
+**4.占位符效果模拟**
+
+IE9 及其以下浏览器不支持 placeholder 占位符效果，实际开发的时候，针对这些浏览器，需要进行模拟。
+
+比较好的做法是使用`<label>`标签和输入框关联并覆盖在输入框上面，好 处是点击占位文字输入框天然 focus，并且不会污染输入框的 value。
+
+```css
+<label class="placeholder" for="text">占位符</label> <input id="test">
+/* 和输入框一样的样式 */
+.placeholder, input {
+... 
+}
+/* 占位符元素特有样式 */ 
+.placeholder {
+    position: absolute;
+}
+```
+
+**5.进一步深入“无依赖绝对定位”**
+
+元素 position:absolute 后的 display 计算值都是块状的，但是其**定位的位置和没有设置 position:absolute 时候的位置相关**。
+
+```html
+<h3>标题<span class="follow">span</span></h3>
+<h3>标题<div class="follow">div</div></h3>
+.follow {
+	position: absolute;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250218075130.png" style="zoom:50%;" />
+
+一些问题
+
+- ie 7兼容性问题
+- 浮动”和“无依赖绝对定位”一起使用时会有问题（解决方案：加一层标签，分开使用）
+
+#### 6.5.3 absolute 与 text-align
+
+absolute 和 float 一样，都可以让元素块状化，但 **text-align 居然可以改变 absolute 元素的位置**。
+
+```css
+<p><img src="1.jpg"></p> 
+p{
+  text-align: center;
+}
+img {
+  position: absolute;
+}
+// 兼容ie edge
+p:before {
+  content: '';
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250218075651.png" style="zoom:50%;" />
+
+本质上是“幽灵空白节点”和“无依赖绝对定 位”共同作用的结果。
+
+具体的渲染原理如下。
+
+- (1)由于`<img>`是内联水平，`<p >`标签中存在一个宽度为 0、看不见摸不着的“幽灵空白
+
+节点”，也是内联水平，于是受 text-align:center 影响而水平居中显示。 
+
+- (2)`<img>`设置了 position:absolute，表现为“无依赖绝对定位”，因此在“幽灵空 白节点”后面定位显示;同时由于图片不占据空间，这里的“幽灵空白节点”当仁不让，正好在`<p>`元素水平中心位置显示，于是我们就看到了图片从<p>元素水平中间位置显示的效果。
+
+解决方案：margin-left 一半图片宽度负值大小
+
+利用 text-align 控制 absolute 元素的定位最适合的使用场景就是**主窗体右侧的“返回顶部”以及“反馈”等小布局的实现**。
+
+<img src="http://cdn.wangtongmeng.com/20250218080143.png" style="zoom:50%;" />
+
+```css
+ <div class="alignright">
+   <span class="follow"></span>
+</div>
+.alignright {
+  height: 0; // 插入了一个空格，会占据一定的高度，把占据的高度抹掉，设置 height:0 同时 overflow:hidden 即可
+  text-align: right;
+  overflow: hidden;
+}
+.alignright:before {
+  content: "\2002"; // 在前面插入一个空格
+}
+.follow {
+  position: fixed; // 固定定位元素(同绝对定位元素)由于“无依赖定 位”特性，左边缘正好就是主结构的右边缘
+  bottom: 100px;
+  z-index: 1;
+}
+```
+
+### 6.6 absolute 与 overflow
+
+**如果 overflow 不是定位元素，同时绝对定位元素和 overflow 容器之间也没有定位元素，则 overflow 无法对 absolute 元素进行剪裁。**
+
+- 作用一是解决实际问题。例如上一节最后“返回顶部”的案例，保证高度为 0，同时里面的定位内容不会被剪裁，或者在局部滚动的容器中模拟近似 position:fixed 的效果。
+
+- 作用二是在遇到类似现象的时候知道问题所在，可以“对症下药”，快速解决问题。
+
+对于局部滚动，我们经常会有元素不跟随滚动的需求，建议还是将这个表头元素移动到滚动容器外进行模拟，如 果 HTML 结构被限制无法修改，则利用 overflow 滚动 absolute 元素不滚动的特性来实现。
+
+transform 除了改变 overflow 属性原有规则，对层叠上下文以及 position:fixed 的 渲染都有影响。因此，当大家遇到 absolute 元素被剪裁或者 fixed 固定定位失效时，可以 看看是不是 transform 属性在作祟。
+
+### 6.7-6.8
+
+### 6.7 absolute 与 clip
+
+使用剪裁属性 clip  position， 属性值必须是 absolute 或者 fixed。语法，`clip: rect(top right bottom left)`或 `clip: rect(top, right, bottom, left)`(标准语法)
+
+> 4个值不能缩写，不支持百分比 值
+
+#### 6.7.1 重新认识的 clip 属性
+
+clip在以下两个场景非常有用
+
+**1.fixed 固定定位的剪裁**
+
+对于 position:fixed 元素，因为 fixed 固定定位元素的包含块是根元素，除非是根元素滚动条，普通元素的 overflow 是 根本无法对其进行剪裁的。可以利用clip属性进行裁剪。
+
+```css
+ .fixed-clip {
+      position: fixed;
+      clip: rect(30px 200px 200px 20px);
+}
+```
+
+**2.最佳可访问性隐藏**
+
+所谓“可访问性隐藏”，指的是虽然内容肉眼看不见，但是其他辅助设备却能够进行识别和访问的隐藏。
+
+网站logo，为了更好地 SEO 以及无障碍识别，一般会这么写：
+
+```html
+<a href="/" class="logo">
+  <h1>CSS 世界</h1>
+</a>
+```
+
+隐藏`<h1>`标签中的“CSS 世界”这几个文字
+
+- 下策是 display:none 或者 visibility:hidden 隐藏，因为屏幕阅读设备会忽略这里的文字。
+
+- text-indent 缩进是中策，但文字如果缩进过大，大到屏幕之外，屏幕阅读设备也是不会读取的。
+
+- color:transparent 是移动端上策，但却是桌面端中策，因为原生 IE8 浏览器并不支持它。color:transparent 声明，很难用简单的方式阻止文本被框选。
+
+- clip 剪裁隐藏是上策，既满足视觉上的隐藏，屏幕阅读设备等辅助设备也支持得很好。
+
+  - ```css
+    .logo h1 {
+      position: absolute;
+      clip: rect(0 0 0 0);
+    }
+    ```
+
+使用label代替button作为提交按钮
+
+```html
+<form>
+	<input type="submit" id="someID" class="clip">
+  <label for="someID">提交</label>
+</form>
+
+.clip {
+  position: absolute;
+  clip: rect(0 0 0 0);
+}
+```
+
+使用 clip 剪裁隐藏的好处
+
+- display:none 或者 visibility:hidden 隐藏有两个问题，一个是按钮无法被 focus 了，另外一个是 IE8 浏览器下提交行为丢失，原因应该与按钮 focus 特性丢 失有关。
+
+- 透明度 0 覆盖也是一个不错的实践。如果是移动端项目，建议这么做;但如果是桌面 端项目，则完全没有必要。使用透明度 0 覆盖的问题是每一个场景都需要根据环境的 不同重新定位，以保证点击区域的准确性，成本较高，但 clip 隐藏直接用一个类名 加一下就好。
+
+- 还有一种比较具有适用性的“可访问隐藏”是下面这种屏幕外隐藏:
+
+  - ```css
+    .abs-out {
+      position: absolute;
+      left: -999px; top: -999px;
+    }
+    ```
+
+### 6.7.2 深入了解 clip 的渲染
+
+```diff
+.box {
+  width: 300px; height: 100px;
+  background-color: #f0f3f9;
+  position: relative;
+  overflow: auto;
+}
+.box > img {
+  width: 256px; height: 192px;
+  position: absolute;
++  clip: rect(0 0 0 0);
+}
+```
+
+![](http://cdn.wangtongmeng.com/20250302084245.png)
+
+图片显然看不见了，但是注意，在 Chrome 浏览器下，.box 元素的滚动条依旧存在
+
+clip 隐藏仅仅是决定了哪部分是可见的，非可见部分无法响应点击事件等;然后，虽然视觉上隐藏，但是元素的尺寸依然是原本的尺寸，在 IE 浏览器和 Firefox 浏览 器下抹掉了不可见区域尺寸对布局的影响，Chrome 浏览器却保留了。
+
+### 6.8 absolute 的流体特性
+
+#### 6.8.1 当 absolute 遇到 left/top/right/bottom 属性
+
+设置两个方向的属性，则原本的相对特性丢失。
+
+```css
+.box {
+      position: absolute;
+      left: 0; top: 0;
+}
+```
+
+仅设置了一个方向的绝对定位，另一个方向仍保持相对特性。
+
+#### 6.8.2 absolute 的流体特性
+
+定位元素，对立方向同时发生定位的时候，会具有类似的流体特性。
+
+如果只有 left 属性或者只有 right 属性，则由于包裹性，此时.box 宽度是 0。
+
+因为 left 和 right 同时存在，所以宽度就不是 0，而是表现为“格式化宽度”，宽 度大小自适应于.box 包含块的 padding box，即如果包含块 padding box 宽度发生变 化，.box 的宽度也会跟着一起变。
+
+```html
+<div class="box"></div>
+.box {
+  position: absolute;
+  left: 0; right: 0;
+}
+```
+
+假设.box 元素的包含块是根元素，则下面的代码可以让.box 元素正好完全覆盖浏 览器的可视窗口，并且如果改变浏览器窗口大小，.box 会自动跟着一起变化:
+
+```css
+.box {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+}
+```
+
+添加padding、margin也不会影响流动性，比`width: 100%; height: 100%;`更好
+
+```css
+.box {
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      padding: 30px;
+  		margin: 30px; // 自动上下左右留白 30px
+}
+    .box {
+      position: absolute;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      padding: 30px;
+      margin: 30px;
+}
+```
+
+#### 6.8.3 absolute 的 margin:auto 居中
+
+当绝对定位元素处于流体状态时，各个盒模型相关属性的解析和普通流体元素一致，margin 负值可以让元素的尺寸更大，并且可以使用 margin:auto 让绝对定位元 素保持居中。
+
+- 如果一侧定值，一侧 auto，auto 为剩余空间大小;
+- 如果两侧均是 auto，则平分剩余空间。
+- 唯一的区别在于，绝对定位元素 margin:auto 居中从 IE8 浏览器开始支持，而普通元素的 margin:auto 居中很早就支持了。
+
+利用绝对定位元素的流体特性和 margin:auto 的自动分配特性实现居中
+
+```css
+.element {
+      width: 300px; height: 200px;
+      position: absolute;
+      left: 0; right: 0; top: 0; bottom: 0;
+      margin: auto;
+}
+```
+
+### 6.9-7.1
+
+### 6.9 position:relative 才是大哥
+
+#### 6.9.1 relative 对 absolute 的限制
+
+relative/absolute/fixed 都能对 absolute 的“包裹性”以及“定位”产生限制，但只有 relative 可以让元素依然保持在正常的文档流中。
+
+```html
+<div class="icon">
+      <div class="box"></div>
+</div>
+
+.icon {
+  width: 20px; height: 20px;
+  position: relative;
+}
+.box {
+  position: absolute;
+  left: 0; right: 0; top: 0; bottom: 0;
+}
+```
+
+此时.box 元素的包含块变成了.icon，尺寸是 20px×20px。
+
+#### 6.9.2 relative 与定位
+
+relative 的定位有两大特性:
+
+- 一是**相对自身**。相对于自身进行偏移定位。
+- 二是**无侵入**。当 relative 进行定位偏移的时候，一般情况下不会影响周围元素的布局。
+
+margin定位和relative定位的区别
+
+```css
+.pk-1 { margin-top: -50px; }
+.pk-2 { position: relative; top: -50px;}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250302091801.png" style="zoom:50%;" />
+
+margin 定位的图片后面的文字跟着上来了，而使用 relative 定 位的图片后面的文字依然在原地纹丝不动，中间区域留出了一大块空白
+
+相对定位元素的 left/top/right/bottom 的**百分比值是相对于包含块计算**的，而不是自身。注意，虽然**定位位移是相对自身，但是百分比值的计算值不是**。
+
+top 和 bottom 这两个垂直方向的百分比值计算，都是相对高度计算的。如果父元素没有设定高度或者不是“格式化高度”，那么 relative 类似 top:20% 的代码等同于 top:0。
+
+当相对定位元素top/bottom 和 left/right 同时使用时，有优先级，top>bottom，left>right
+
+#### 6.9.3 relative 的最小化影响原则
+
+- (1)尽量不使用 relative，如果想定位某些元素，看看能否使用“无依赖的绝对定位”;
+
+-  (2)如果场景受限，一定要使用 relative，则该 relative 务必最小化。
+
+relative定位会使普通元素层叠顺序提高，可能会导致一些绝对 定位浮层无论怎么设置 z-index 都会被其他元素覆盖的情况。
+
+```html
+<div style="position:relative;">
+      <img src="icon.png" style="position:absolute;top:0;right:0;">
+  		<p>内容 1</p><p>内容 2</p> <p>内容 3</p> <p>内容 4</p> ...
+</div>
+```
+
+采用“relative 的最小化影响原则”
+
+```html
+<div>
+      <div style="position:relative;">
+				<img src="icon.png" style="position:absolute;top:0;right:0;">
+  		</div>
+			<p>内容 1</p> <p>内容 2</p> <p>内容 3</p> <p>内容 4</p> ...
+</div>
+```
+
+### 6.10 强悍的 position:fixed 固定定位
+
+祖先元素relative和overflow:hidden对 **position为fixed的元素**都无效。因为其**“包含块”和其他元素不一样**。
+
+#### 6.10.1 position:fixed 不一样的“包含块”
+
+position:fixed 固定定位元素的“包含块”（限制元素）是根元素，我们可以将其近似看成`<html>` 元素。
+
+**无依赖的固定定位**
+
+- 利用 absolute/fixed 元素 没有设置 left/top/right/bottom 的相对定位特性，可以将目标元素定位到我们想要的位置
+
+- ```html
+  <div class="father">
+    <div class="right">
+      &nbsp;<div class="son"></div>
+    </div>
+  </div>
+  .father {
+    width: 300px; height: 200px;
+    position: relative;
+  }
+  .right {
+    height: 0;
+    text-align: right;
+    overflow: hidden;
+  }
+  .son {
+    display: inline;
+    width: 40px; height: 40px;
+    position: fixed;
+    margin-left: -40px;
+  }
+  ```
+
+#### 6.10.2 position:fixed 的 absolute 模拟
+
+希望元素既有不跟随滚动的固定定位效果，又能被定位元素限制和精准定位
+
+```html
+ <html>
+   <body>
+     <div class="fixed"><div>
+   </body>
+  </html>
+  .fixed {
+     position: fixed;
+  }
+```
+
+面的滚动使用普通元素替代，此时滚动元素之外的其他元素自然就有了“固定定位”的效果了。
+
+```html
+<html>
+	<body>
+		<div class="page">固定定位元素<div>
+      <div class="fixed"><div>
+  </body>
+</html>
+html, body {
+	height: 100%;
+	overflow: hidden;
+}
+.page {
+	height: 100%;
+	overflow: auto;
+}
+.fixed {
+	position: absolute; // 不随页面滚动，可以使用 relative 进行限制或者 overflow 进行裁剪
+}
+```
+
+#### 6.10.3 position:fixed 与背景锁定
+
+弹窗蒙层使用 position: fixed 定位实现时，蒙层无法覆盖浏览器右侧的滚动栏，并且鼠标滚动的时候后面的背景内容依然可以被滚动，并没有被锁定。
+
+滚动原因：滚动元素是根元素，正好是 position:fixed 的“包含块”。
+
+解决滚动
+
+- 1.让页面滚动条由内部 的普通元素产生即可。
+- 2.如果网站的滚动结构不方便调整，则需要借助 JavaScript 来实现锁定。
+  - 如果是移动端项目，阻止 touchmove 事件的默认行为可以防止滚动;
+  - 如果是桌面端项目， 可以让根元素直接 overflow:hidden。
+
+## 第7章 CSS 世界的层叠规则
+
+### 7.1 z-index 只是 CSS 层叠规则中的一叶小舟
+
+在 CSS 世界中，z-index 属性只有和定位元素(position 不为 static 的元素)在一 起的时候才有作用，可以是正数也可以是负数。
+
+网页中绝大部分元素是非定位元素，并且影响层叠顺序的属性远不止 z-index 一个。
 
 
 
