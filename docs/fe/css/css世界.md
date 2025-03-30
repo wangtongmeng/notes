@@ -2913,7 +2913,7 @@ position:fixed 固定定位元素的“包含块”（限制元素）是根元�
   }
 ```
 
-面的滚动使用普通元素替代，此时滚动元素之外的其他元素自然就有了“固定定位”的效果了。
+页面的滚动使用普通元素替代，此时滚动元素之外的其他元素自然就有了“固定定位”的效果了。
 
 ```html
 <html>
@@ -2943,7 +2943,7 @@ html, body {
 
 解决滚动
 
-- 1.让页面滚动条由内部 的普通元素产生即可。
+- 1.让页面滚动条由内部的普通元素产生即可。
 - 2.如果网站的滚动结构不方便调整，则需要借助 JavaScript 来实现锁定。
   - 如果是移动端项目，阻止 touchmove 事件的默认行为可以防止滚动;
   - 如果是桌面端项目， 可以让根元素直接 overflow:hidden。
@@ -2956,5 +2956,526 @@ html, body {
 
 网页中绝大部分元素是非定位元素，并且影响层叠顺序的属性远不止 z-index 一个。
 
+### 7.2-7.6
 
+#### 7.2 理解 CSS 世界的层叠上下文和层叠水平
+
+**层叠上下文**跟“块状格式化上下文” (BFC)类似，自成一界。其中可能有其他的“层叠结界”，而自身也可能处于其他“层叠结界”中。
+
+**层叠水平**，决定了**同一个层叠上下文中**元素在 z 轴上的显示顺序。所有的元素都有层叠水平，包括层叠上下文元素，也包括普通元素。对普通元素的层叠水平探讨只局限在当前层叠上下文元素中。
+
+#### 7.3 元素的层叠顺序
+
+- (1)位于最下面的 background/border **特指层叠上下文元素**的边框和背景色。每一个层叠顺序规则仅适用于当前层叠上下文元素的小世界。
+
+- (2)inline 水平盒子指的是包括 inline/inline-block/inline-table 元素的“层叠顺序”，它们都是同等级别的。
+
+- (3)单纯从层叠水平上看，实际上 z-index:0 和 z-index:auto 是可以看成是一样的。注意这里的措辞— “单纯从层叠水平上看”，实际上，两者在层叠上下文领域有着根本性的差异。
+
+<img src="http://cdn.wangtongmeng.com/20250310211840.png"  />
+
+#### **7.4 层叠准则**
+
+当元素发生层叠的时候，其覆盖关系遵循下面两条准则: 
+
+- (1)**谁大谁上**:当具有明显的层叠水平标识的时候，如生效的 z-index 属性值，在同一个层叠上下文领域，层叠水平值大的那一个覆盖小的那一个。
+
+- (2)**后来居上**:当元素的层叠水平一致、层叠顺序相同的时候，在 DOM 流中处于后面的元素会覆盖前面的元素。
+
+#### 7.5 深入了解层叠上下文
+
+**层叠上下文的特性**：
+
+- 层叠上下文的层叠水平要**比普通元素高**。
+- 层叠上下文可以阻断元素的混合模式。
+- 层叠上下文可以**嵌套**，内部层叠上下文及其所有子元素均受制于外部的“层叠上下文”。
+- 每个层叠上下文和兄弟元素**独立**，也就是说，当进行层叠变化或渲染的时候，只需要考虑后代元素。
+- 每个层叠上下文是**自成体系**的，当元素发生层叠的时候，整个元素被认为是在父层叠上下文的层叠顺序中。
+
+**层叠上下文的创建**：
+
+和块状格式化上下文一样，层叠上下文也基本上是**由一些特定的 CSS 属性创建**的
+
+- 1.**根层叠上下文**：可以看成是`<html>`元素。
+- 2.**定位元素与传统层叠上下文**：对于 position 值为 relative/absolute 以及 Firefox/IE 浏览器(不包括 Chrome 浏览 器)下含有 position:fixed 声明的定位元素，当其 z-index 值不是 auto 的时候，会创建层叠上下文。
+- **3.CSS3 与新时代的层叠上下文**
+  - (1)元素为 flex 布局元素(父元素 display:flex|inline-flex)，同时 z-index 值不是 auto。
+  - (2)元素的 opacity 值不是 1。
+  - (3)元素的 transform 值不是 none。
+  - (4)元素 mix-blend-mode 值不是 normal。
+  - (5)元素的 filter 值不是 none。
+  - (6)元素的 isolation 值是 isolate。
+  - (7)元素的 will-change 属性值为上面 2~6 的任意一个(如 will-change:opacity、will-change:transform 等)。 (8)元素的-webkit-overflow-scrolling 设为 touch。
+
+**层叠上下文与层叠顺序**
+
+**一旦普通元素具有了层叠上下文，其层叠顺序就会变高**。
+
+- (1)如果层叠上下文元素不依赖 z-index 数值，则其层叠顺序是 z-index:auto，可看成 z:index:0 级别;
+- (2)如果层叠上下文元素依赖 z-index 数值，则其层叠顺序由 z-index 值决定。
+
+**定位元素会层叠在普通元素的上面**，其根本原因就是:元素 一旦成为定位元素，其 z-index 就会自动生效，此时其 z-index 就是默认的 auto，也就是 0 级别，根据上面的层叠顺序表，就会覆盖 inline 或 block 或 float 元素。
+
+<img src="http://cdn.wangtongmeng.com/20250310213840.png" style="zoom:50%;" />
+
+淡出的 CSS3 动画，文字就跑到图片后面去
+
+<img src="http://cdn.wangtongmeng.com/20250310213558.png" style="zoom:50%;" />
+
+> opacity 的值不是 1 的时候，是具有层叠上下文的，层叠顺序是 z-index:auto 级别，跟没有 z-index 值的 absolute 绝对定位元素是平起平坐的
+>
+> 解决方案：(1)调整 DOM 流的先后顺序; (2)提高文字的层叠顺序，例如，设置 z-index:1。
+
+#### 7.6 z-index 负值深入理解
+
+因为 z-index 负值的最终表现并不是单一的，而是与“层叠上下文”和“层叠顺序”密切相关。
+
+z-index 负值元素的层级是在层叠上下文元素上面、block 元素的下面，也就是 z-index 虽然名为负数层级，但依然无法突破当前层叠上下 文所包裹的小世界。
+
+<img src="http://cdn.wangtongmeng.com/20250310214349.png" style="zoom:50%;" />
+
+```html
+<div class="box">
+  <img src="1.jpg">
+</div>
+.box {
+	background-color: blue;
+}
+.box > img {
+position: relative;
+  z-index: -1;
+  right: -50px;
+}
+```
+
+给.box增加样式，使其具有层叠上下文
+
+```diff
+.box {
+      background-color: blue;
++      transform: scale(1);
+}
+.box > img {
+      position: relative;
+      z-index: -1;
+      right: -50px;
+}
+```
+
+z-index实际项目作用
+
+- (1)可访问性隐藏。z-index 负值可以隐藏元素，只需要层叠上下文内的某一个父元素加个背景色就可以。
+- (2)IE8 下的多背景模拟。
+- (3)定位在元素的后面。例如，模拟纸张效果。
+
+
+
+### 7.7-8.1
+
+### 7.7 z-index“不犯二”准则
+
+对于非浮层元素，避免设置 z-index 值，z-index 值没有任何道理需 要超过 2。
+
+这里的“不犯二”准则，并不包括那些在页面上飘来飘去的元素定位，弹框、出错提示、一些下拉效果等都不受这一准则限制。
+
+对于这类 JavaScript 驱动的浮层组件，我会借助“层级计数器”来管理，原因如下: 
+
+- (1)总会遇到意想不到的高层级元素;
+- (2)组件的覆盖规则具有动态性。 
+
+## 第8章 强大的文本处理能力
+
+CSS 文本处理能力之所以强大，一方面是其基础概念，例如块级盒模型和内联盒模型，就 是为了让文本可以如文档般自然呈现;另一方面是有非常非常多与文本处理相关 CSS 属性的支持。
+
+### 8.1 line-height 的另外一个朋友 font-size
+
+#### 8.1.1 font-size 和 vertical-align 的隐秘故事
+
+line-height 的部分类别属性值是相对于 font-size 计算的，vertical-align 百分比值属性值又是相对于 line-height 计算的
+
+#### 8.1.2 理解 font-size 与 ex、em 和 rem 的关系
+
+在 CSS 中，1em 的计算值等同于当前元素所在的 font-size 计算值，可以将 其想象成当前元素中(如果有)汉字的高度。
+
+要想实现带有缩放性质的弹性布局，使用 rem 是最佳策略，但 rem 是 CSS3 单位， IE9 以上浏览器才支持，需要注意兼容性。
+
+场景
+
+- 用于图文内容展示的场景，对此进行弹性布局
+
+-  SVG 矢量图标
+
+- ```css
+  svg {
+        width: 1em; height: 1em;
+  }
+  ```
+
+#### 8.1.3 理解 font-size 的关键字属性值
+
+font-size 支持长度值，如 1em，也支持百分比值，如 100%。 还支持关键字属性值
+
+- (1)相对尺寸关键字 larger、smaller
+- (2)绝对尺寸关键字 xx-large、x-large、larger、medium、small、x-small、xx-small
+
+#### 8.1.4 font-size:0 与文本的隐藏
+
+font-size:0，哪怕设置成 font-size:0.0000001px， 都还是会被当作 12px 处理的，所以要使用0px
+
+### 8.2-8.3
+
+### 8.2 字体属性家族的大家长 font-family
+
+font-family 字体家族，默认值由操作系统和浏览器共同决定，不从操作系统和浏览器下个不相同。
+
+font-family 支持两类属性值
+
+- 字体名（字体名称）
+
+  - ``` css
+    body { font-family: simsun;}
+    // 如果字体名包含空格，需要使用引号包起来
+    body { font-family: 'Microsoft Yahei';}
+    // 可以不用区分大小写，如果有多个字体设定，从左往右依次寻找本地是否有对应的字体，找不到使用默认值
+    body { font-family: 'PingFang SC', 'Microsoft Yahei';}
+    ```
+
+- 字体族
+
+  - serif:衬线字体
+  - sans-serif:无衬线字体
+  - monospace:等宽字体
+  - cursive:手写字体（不常用）
+  - fantasy:奇幻字体（不常用）
+  - system-ui:系统 UI 字体
+
+#### 8.2.1 了解衬线字体和无衬线字体
+
+字体分**衬线**字体和**无衬线**字体。
+
+- 衬线字体，通俗讲就是笔画开始、结束的地方有额外装饰而且笔画的粗细会有所不同的字体。例如，宋体、Times New Roman、Georgia 。
+- 无衬线字体没有这些额外的装饰，而且笔画的粗细差不多， 如中文的“雅黑”字体，英文包括 Arial、Verdana、Tahoma、Helivetica、Calibri 等。
+
+```css
+font-family: serif; /* 衬线字体 */
+font-family: sans-serif; /* 无衬线字体 */
+
+// 移动端Web开发时，虽然设备的默认中文字体不一样，但都是无衬线
+body { font-family: sans-serif; }
+
+// serif 和 sans-serif 还可以和具体的字体名称写在一起
+// 注意：serif 和 sans-serif 一定要写在最后
+body { font-family: "Microsoft Yahei", sans-serif; }
+```
+
+#### 8.2.2 等宽字体的实践价值
+
+所谓等宽字体，一般是**针对英文字体**而言的，东亚字体应该都是等宽的。例如 Consolas、Monaco、monospace。
+
+<img src="http://cdn.wangtongmeng.com/20250325073055.png" style="zoom:50%;" />
+
+等宽字体在 Web 中的用处
+
+- 1.等宽字体与代码呈现
+  - <img src="http://cdn.wangtongmeng.com/20250325073217.png" style="zoom:50%;" />
+- 2.等宽字体与图形呈现案例
+  - <img src="http://cdn.wangtongmeng.com/20250325073258.png" style="zoom:50%;" />
+- 3.ch 单位与等宽字体布局
+  - ch 和 em、rem、ex 一样，是 CSS 中和字符相关的相对单位。
+  - 1ch 表示一个 0 字符的宽度，**和等宽字体在一起使用**。
+  - 应用场景：
+    - 1.手机号输入框，设置该输入框宽度为 11ch，同时让字体等宽。
+    - 2.代码打字效果，如果代码是等宽字体，此时使用 ch 单位来控制宽度，配合 overflow 属性和 CSS animation。
+
+#### 8.2.3 中文字体和英文名称
+
+一些常见中文字体 对应的 font-family 英文属性名称。
+
+- (1)Windows 常见内置中文字体和对应英文名称见 图 8-10。
+
+- (2)OS X 系统内置中文字体和对应英文名称见 图 8-11。
+
+- (3)Office 软件安装新增中文字体和对应英文名称见图 8-12。
+
+- (4)其他一些中文字体和对应英文名称见图 8-13。
+
+![](http://cdn.wangtongmeng.com/20250325074106.png)
+
+### 8.3 字体家族其他成员
+
+#### 8.3.1 貌似粗犷、实则精细无比的 font-weight
+
+font-weight 表示“字重”，就是表示文字的粗细程度。
+
+font-weight 支持的属性值
+
+- 属性值必须是 100~900 的整百数
+- 数值关键字和字母 关键字之间是有对应关系，400=normal，700=bold
+
+```css
+/* 平常用的最多的 */ font-weight: normal; font-weight: bold;
+/* 相对于父级元素 */ font-weight: lighter; font-weight: bolder;
+/* 字重的精细控制 */ font-weight: 100; font-weight: 200; font-weight: 300; font-weight: 400; font-weight: 500; font-weight: 600; font-weight: 700; font-weight: 800; font-weight: 900;
+```
+
+- lighter 和 bolder 这两个具有相对特定的关键字就是基于这 4 个临界点进行解析和渲染的。
+  - <img src="http://cdn.wangtongmeng.com/20250325074439.png" style="zoom:50%;" />
+- 所有这些数值关键字浏览器都是支持的，之所以没有看到任何粗细的变化，是因为我们的系统里面**缺乏对应粗细的字体**。
+
+#### 8.3.2 具有近似姐妹花属性值的 font-style
+
+font-style 表示文字造型是斜还是正，开发中使用italic即可
+
+```css
+font-style: normal;
+font-style: italic; // 使用当前字体的斜体字体，如果没找到对应的斜体字体，则使用 oblique
+font-style: oblique; // 单纯地让文字倾斜
+```
+
+#### 8.3.3 不适合国情的 font-variant
+
+### 8.4-8.5.1
+
+### 8.4 font 属性
+
+#### 8.4.1 作为缩写的 font 属性
+
+font 是利用 font 属性进行文本相关 样式的缩写
+
+```bash
+# ||表示或，?和正则表达式中的?的含义一致，表示 0 个或 1 个。
+# font-size 和 font-family 后面没有问号，也就是说是必需的，是不可以省略的
+[ [ font-style || font-variant || font-weight ]? font-size [ / line-height ]? font-family ]
+
+ .font { font: normal 700 14px/20px; } # 无效，缺字体
+ .font { font: 14px '☺'; } # 有效
+ .font { font: 400 30px 'Microsoft Yahei'; } # line-height 属性值就被重置为了 normal，需要单独设置行高
+ 
+# font 缩写必须要带上 font-family，如果避免呢
+# 方法一 找一个系统根本不存在的字体名占位, 然后再设置 font-family:inherit 来重置这个占位字体
+.font {
+	font: 30px/30px '☺';
+	font-family: inherit;
+}
+# 方法二:利用@font face规则将我们的字体列表重定义为一个字体（兼容性很好、 效益很高）
+```
+
+#### 8.4.2 使用关键字值的 font 属性
+
+font 属性除了缩写用法，还**支持关键字属性值**
+
+```BASH
+font:caption | icon | menu | message-box | small-caption | status-bar
+```
+
+如果将 font 属性设置为上面的一个值，就等同于设置 font 为操作系统该部件对应的 font，也就是说直接使用系统字体。
+
+各个关键字的含义（ Windows 系统下）如下
+
+- caption:活动窗口标题栏使用的字体。
+- icon:包含图标内容所使用的字体，如所有文件夹名称、文件名称、磁盘名称，甚至浏览器窗口标题所使用的字体。
+- menu:菜单使用的字体，如文件夹菜单。
+- message-box:消息盒里面使用的字体。
+- small-caption:调色板标题所使用的字体。
+- status-bar:窗体状态栏使用的字体。
+
+```bash
+.menu { font: menu; }
+# 使用关键字作为属性值的时候必须是独立的，不能添加 font-family 或者 font-size 之类的
+.menu { font: 14px menu; } # wrong,此时的 menu 是作为自定义的字体名称存在的，而不是表示系统的 menu 菜单字体
+```
+
+font 关键字属性值本质上也是一种缩写，里面已经包含了诸如 font-size 等信息
+
+caption、icon、message-box 这 3 个关键字在 Windows 系统下的 Chrome 浏览器中似乎是无效的，并不会实时跟着系统字体走。
+
+考虑到 Chrome 浏览器的市场占有率，我们在使用 font 属性的时候，要**避开 caption、 icon 和 message-box 这 3 个关键字**。
+
+在实际使用时，我们还需要在一下面再设 定一下 font-size 大小来保证一致性。
+
+```css
+html { font: menu; }
+body { font-size: 16px; }
+```
+
+除了关键字，还有很多其他非标准的关键字
+
+#### 8.4.3 font 关键字属性值的应用价值
+
+非 Windows 系统下不要使用“微软雅黑”字体，而是 使用其系统字体。
+
+```css
+html { font: menu; }
+body { font-size: 16px; }
+```
+
+使用的是 font 关键字属性值，网站字体能时时刻刻 与时俱进。
+
+### 8.5 真正了解@font face 规则
+
+#### 8.5.1 @font face 的本质是变量
+
+@font face 本质上就是一个定 义字体或字体集的变量，这个变量不仅仅是简单地自定义字体，还包括字体重命名、默认字体 样式设置等。
+
+@font face 规则支持的 CSS 属性有 font-family、src、font-style、font-weigh、 unicode-range、font-variant、font-stretch 和 font-feature-settings。
+
+我们关注其中常用的属性
+
+```css
+ @font-face {
+      font-family: 'example';
+      src: url(example.ttf);
+      font-style: normal;
+      font-weight: normal;
+      unicode-range: U+0025-00FF;
+}
+```
+
+**1.font-family**
+
+这里的 font-family 可以看成是一个字体变量，名称随意，但是有一类名称不能随便设置，就是原本系统就有的字体名称。
+
+```css
+@font-face {
+      font-family: '$';
+   		src: url(example.ttf);
+}
+
+
+@font-face {
+      font-family: 'Microsoft Yahei'; // “微软雅黑”字体就变成了这里 example.ttf 对应的 字体了
+      src: url(example.ttf);
+}
+```
+
+**2.src**
+
+src 表示引入的字体资源可以是系统字体，也可以是外链字体。
+
+如果是使用系统安装字体， 则使用 local()功能符;如果是使用外链字体，则使用 url()功能符。
+
+```css
+ @font-face {
+      font-family: ICON;
+      src: url('icon.eot');
+      src: local('☺'),
+          url('icon.woff2') format("woff2"),
+          url('icon.woff') format("woff"),
+          url('icon.ttf');
+}
+```
+
+**3.font-style**
+
+font face 规则中的 font-style 和 font-weight 类似，都是用来设置对应字体样式或字重下该使用什么字体
+
+```css
+ @font-face {
+      font-family: 'I';
+      font-style: normal;
+      src: local('FZYaoti');
+    }
+    @font-face {
+      font-family: 'I';
+      font-style: italic; // 使用 font-style:italic 的时候，就会调用这个对应字体
+      src: local('FZShuTi');
+}
+```
+
+```html
+.i {
+	font-family: I;
+}
+<p><i class="i">类名是i，标签是i</i></p> // <i>标签天然有 font-style:italic
+<p><span class="i">类名是 i, 标签是 span</span></p>
+```
+
+<img src="http://cdn.wangtongmeng.com/20250330083339.png" style="zoom:50%;" />
+
+**4.font-weight**
+
+font-weight 和 font-style 类似，只不过它定义了不同字重、使用不同字体。
+
+```css
+ @font-face {
+      font-family: 'QH';
+      font-weight: 400;
+      src: local('HYQihei 40S');
+}
+ @font-face {
+      font-family: 'QH';
+      font-weight: 500;
+      src: local('HYQihei 50S');
+    }
+@font-face {
+      font-family: 'QH';
+      font-weight: 600;
+      src: local('HYQihei 60S');
+}
+.hy-40s,
+.hy-50s,
+.hy-60s {
+      font-family: 'QH';
+}
+.hy-40s {
+      font-weight: 400;
+}
+.hy-50s {
+      font-weight: 500;
+}
+.hy-60s {
+      font-weight: 600;
+} <ul>
+<li class="hy-40s">汉仪旗黑40s</li> <li class="hy-50s">汉仪旗黑50s</li> <li class="hy-60s">汉仪旗黑60s</li>
+</ul>
+```
+
+<img src="http://cdn.wangtongmeng.com/20250330083540.png" style="zoom:50%;" />
+
+**“响应式图标”**，指的是字号较大时图标字体细节更丰富，字号较小时图标字体更简单的响应式处理。
+
+```css
+@font-face {
+  font-family: ICON;
+  src: url(icon-large.eot);
+  src: local("☺"),
+      url(icon-large.woff);
+  font-weight: 700;
+}
+@font-face {
+  font-family: ICON;
+  src: url(icon-medium.eot);
+  src: local("☺"),
+      url(icon-medium.woff);
+  font-weight: 400;
+}
+@font-face {
+  font-family: ICON;
+  src: url(icon-small.eot);
+  src: local("☺"),
+      url(icon-small.woff);
+  font-weight: 100;
+}
+```
+
+<img src="http://cdn.wangtongmeng.com/20250330083659.png" style="zoom:50%;" />
+
+**5.unicode-range**
+
+unicode-range 的作用是可以让特定的字符或者特定范围的字符使用指定的字体。
+
+例如， “微软雅黑”字体的引号左右间隙不均，方向不明，实在是看着不舒服，此时我们就专门指定这两个引号使用其他字体
+
+```css
+@font-face {
+       font-family: quote;
+       src: local('SimSun');
+       unicode-range: U+201c, U+201d;
+}
+.font {
+ 			 font-family: quote, 'Microsoft Yahei';
+}
+```
+
+<img src="/Users/wangtongmeng/Library/Application Support/typora-user-images/image-20250330084111341.png" alt="image-20250330084111341" style="zoom:50%;" />
 
