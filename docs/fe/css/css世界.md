@@ -3479,3 +3479,240 @@ unicode-range 的作用是可以让特定的字符或者特定范围的字符使
 
 <img src="/Users/wangtongmeng/Library/Application Support/typora-user-images/image-20250330084111341.png" alt="image-20250330084111341" style="zoom:50%;" />
 
+### **8.5.2-8.6.4**
+
+#### 8.5.2 @font face 与字体图标技术
+
+字体图标技术的使用会越来越边缘化，因为和 SVG 图标技术相比， 其唯一的优势就是兼容一些老的 IE 浏览器。
+
+SVG 图标同样是矢量的，同样颜色可控，但资源占用更少，加载体验更好，呈现效果更佳， 更加符合语义。
+
+一个是**字体**，另一个是**字符**，而这两个东西就是字体图标技术的本质所在。
+
+所谓字体，本质上是字符集和图形的一种映射关系。
+
+```css
+ .icon {
+   font-family: ICON;
+}
+.icon-microphone:before {
+  content: '\1f3a4' // 1f3a4 就是一个唯一的“门牌号”
+}
+```
+
+### 8.6 文本的控制
+
+#### 8.6.1 text-indent 与内联元素缩进
+
+text-indent 就是对文本进行缩进控制，使用固定长度居多，也能使用百分比。
+
+用得比较多的是 text-indent 负值隐藏文本内容。
+
+```html
+<h1 class="logo">CSS世界</h1>
+.logo {
+      width: 120px;
+      background: url(logo.png);
+      text-indent: -120px;
+}
+```
+
+#### 8.6.2 letter-spacing 与字符间距
+
+letter-spacing 可以用来控制字符之间的间距，这里说的“字符”包括英文字母、汉 字以及空格等。
+
+letter-spocing 具有以下一些特性。
+
+- (1)继承性。
+-  (2)默认值是 normal 而不是 0。虽然说正常情况下，normal 的计算值就是 0，但两者还是有差别的，在有些场景下，letter-spacing 会调整 normal 的计算值以实现更好的版 面布局。
+- (3)支持负值，且值足够大的时候，会让字符形成重叠，甚至反向排列(非 IE 浏览器)。另外，letter-spacing 负值仅能让字符重叠，但是不能让替换元素或者 inline-block/inline-table 元素发生重叠。
+-  (4)和 text-indent 属性一样，无论值多大或多小，第一行一定会保留至少一个字符。
+- (5)支持小数值，即使 0.1px 也是支持的，但并不总能看到效果，这与屏幕的密度有关。
+
+在实际开发的时候，letter-spacing 除了控制文字内容排版外，还可以修复一些布局上的问题。例如，清除 inline-block 列表由于换行符或者空格产生的空白间隙，使我们的 布局控制更精准
+
+```css
+
+.box {
+  letter-spacing: -1em;
+}
+.list {
+  letter-spacing: 0;
+}
+```
+
+由于 letter-spacing 负值的字体重叠特性，我们还可以利用该属性实现一些文本动效， 核心 CSS 代码如下:
+
+```css
+// 文字依次飞入的效果,只适合移动端这类无须关心 IE 浏览器的项目。
+.title {
+     animation: textIn 1s both;
+    }
+    @keyframes textIn {
+      0% {
+        letter-spacing: -200px;
+}
+100% {
+        letter-spacing: 0;
+      }
+}
+```
+
+#### 8.6.3 word-spacing 与单词间距
+
+word-spacing 和 letter-spacing 名称类似，其特性也有很多共通之处:
+
+-  (1)都具有继承性。
+- (2)默认值都是 normal 而不是 0。通常情况下，两者表现并无差异。 
+- (3)都支持负值，都可以让字符重叠，但是对于 inline-block 和 inline-table 元素却存在兼容性差异，Chrome 浏览器下可以重叠，IE 和 Firefox 浏览器下则再大的负值也不会重 叠，因此不适合使用 word-spacing 来清除空白间隙。
+- (4)都支持小数值，如 word-spacing:0.5px。
+- (5)在目前的 CSS2.1 规范中，并不支持百分比值，但新的草案中新增了对百分值的支持， 是根据相对于字符的“步进宽度”(advance width)计算的。这属于新世界内容，本书不做介绍。
+- (6)间隔算法都会受到 text-align:justify 两端对齐的影响。
+
+当然也有差异。letter-spacing 作用于所有字符，但 word-spacing 仅作用于空格字符。
+
+#### 8.6.4 了解 word-break 和 word-wrap 的区别
+
+word-break
+
+```css
+ word-break: normal; // 使用默认的换行规则
+ word-break: break-all; // 允许任意非 CJK(Chinese/Japanese/Korean)文本间的单词断行。
+ word-break: keep-all; // 不允许 CJK 文本中的单词换行，只能在半角空格或连字符处换行。非 CJK文本的行为实际上和normal 一致。
+```
+
+- break-all 这个值所有浏览器都支持
+-  word-break:keep-all 移动端还不适合使用
+
+word-wrap
+
+```css
+word-wrap: normal; // 正常的换行规则。
+word-wrap: break-word; // 一行单词中实在没有其他靠谱的换行点的时候换行。
+```
+
+在 CSS3 规范里，这个属性的名称被修改了，叫作 overflow-wrap。考虑兼容性还是使用 word-wrap
+
+### 8.6.5-8.6.8
+
+### 8.6.5 white-space 与换行和空格的控制
+
+**1.white-space 的处理模型**
+
+white-space 属性声明了如何处理元素内的空白字符，这类空白字符包括 Space(空格) 键、Enter(回车)键、Tab(制表符)键产生的空白。
+
+<img src="http://cdn.wangtongmeng.com/20250412081114.png" style="zoom:50%;" />
+
+**2.white-space 与最大可用宽度**
+
+当 white-space 设置为 nowrap 的时候，元素的宽度此时表现为“最大可用宽度”，换 行符和一些空格全部合并，文本一行显示。
+
+应用场景
+
+- (1)“包含块”尺寸过小处理。
+- (2)单行文字溢出点点点效果。
+- (3)水平列表切换效果。
+
+### 8.6.6 text-align 与元素对齐
+
+text-align:justify 两端对齐。IE 浏览器(至少 到 IE11)到目前为止使用 text-align:justify 都无法让中文两端对齐，而 Chrome、Firefox 和 Safari 等浏览器都是可以的。
+
+全部浏览器都兼容的中文两端对齐效果
+
+```css
+.justify {
+      text-align: justify;
+      text-justify: inter-ideograph; // “国际象形文字”，非官方非标
+}
+```
+
+text-align:justify 除了实现文本的两端对齐，还可以实现容错性更强的**两端对齐布局**效果
+
+如果是多行，可以通过占位元素解决
+
+```html
+ <ul class="justify">
+		<li>
+			<img src="1.jpg">
+			<p>图标描述 1</p>
+		</li>
+		<li>
+		<img src="1.jpg">
+    <p>图标描述 2</p>
+		</li>
+</ul>
+
+
+.justify {
+	text-align: justify;
+	font-size: .1px; // ie下保证空格存在
+	font-size: -webkit-calc(0px + 0px); // 解决inine-block导致的额外高度
+}
+.justify:after { // 借助伪元素自动补一行，实现最后一行的对齐就是两端对齐
+  content: "";
+  display: inline-table;
+  width: 100%;
+  vertical-align: bottom;
+}
+  .justify li {
+  display: inline-block;
+  font-size: 14px;
+}
+```
+
+### 8.6.7 如何解决 text-decoration 下划线和文本重叠的问题
+
+利用border
+
+```css
+a{
+	text-decoration: none;
+  border-bottom: 1px solid;
+  padding-bottom: 5px; // 对于纯内联元素，垂直方向的 padding 属性和 border 属性对原来的布局定位等没有任何影响。
+}
+```
+
+使用 border-bottom 模拟下划线的时候，**border-color 最好省略，这样就会使用文字的 color 颜色作为边框色**，鼠标 hover 的时候，下划线会自动和文字一起变色
+
+text-decoration 还支持同时设置多个属性（不常用）
+
+```css
+a{
+	text-decoration: underline overline;
+}
+```
+
+### 8.6.8 一本万利的 text-transform 字符大小写
+
+text-transform 也是为英文字符设计的，要么全大写 text-transform:uppercase， 要么全小写 text-transform:lowercase
+
+1.场景一:身份证输入
+
+```css
+input {
+      text-transform: uppercase;
+}
+```
+
+2.场景二:验证码输入
+
+```css
+input {
+      text-transform: uppercase;
+}
+```
+
+### 8.7-9.1
+
+
+
+
+
+
+
+
+
+
+
+
+
