@@ -178,9 +178,165 @@ observer中新增了一段代码，它可以在value 上新增一个不可枚 �
 
 ## 4.1
 
+## 第4章 变化侦测相关的API 实现 原理
+
+### 4.1 vm.$watch
+
+#### 4.1.1 用法
+
+```bash
+# 用法
+vm.$watch(expOrFn, callback, [options])
+# 观察一个表达式或computed函数
+vm.$watch('a.b.c', function (newVal, oldVal) {})
+# 返回一个取消观察函数
+var unwatch = vm. $watch'a', (newVal, oldVal) >= (})
+unwatch ()
+
+# 对象深度监听，数组变动不需要
+vm.$watch('someObject', callback, {deep: true})
+vm.someObject.nestedValue = 123 # 回调函数将被触发
+# 立即执行
+vm.$watch('a', callback, { immediate: true}) # 立即以'a' 的当前值触发回调
+```
+
+#### 4.1.2 watch的内部原理
+
+- vm.$watch 是对 Watcher的一种封装
+- exponFn 是函数时，会发生很神奇的事情。它不只可以动态返回数据，其中读取的所有数 据 也 都 会 被 watcher观 察 。
+- 执行newwatcher 后，代码会判断用户是否使用了imediate 参数，
+- 如果使用了，则立即 执 行 一次 c b 。最后，返回 一个函数unwatchFn。顾名思义，它的作用是取消观察数据。 其 本 质 是 把watcher 实例从当前正在观察的状态的依赖列表中移除。
+
+![](http://cdn.wangtongmeng.com/20250726162520.png)
+
+#### 4.1.3 deep 参数的实现原理
+
+除了要触发当前这个被监听数据的收集依赖的逻辑之外，还要 把当前监听的这个值在内的所有子值都触发一遍收集依赖逻辑。
+
+如果用户使用了deep 参数，则在window.target= undefined之前调 用traverse 来处理deep的逻辑。
+
+
+
+![](http://cdn.wangtongmeng.com/20250726163112.png)
+
 ## 4.2-4.4
+
+### 4.2 vm.$set
+
+#### 4.2.1 用法
+
+```bash
+vm.$set( target, key, value )
+参数:
+• {Object | Array} target 
+• {string | number} key
+• (any} value
+返回值:{Funct ion}unwatch
+用法:在object 上设置 一个属性，如果object 是响应式的，Vue.js 会保证属性被创建 后也是响应式的，并且触发视图更新。这个方法主要用来避开Vue.js 不能侦测属性被添 加的限制。
+```
+
+<img src="http://cdn.wangtongmeng.com/20250726165516.png" style="zoom:50%;" />
+
+vm.$set 的具体实现其实是在observer 中抛出的set 方法
+
+**target 不能是Vuejs实例或者Vue.js实例的根数据对象。**
+
+#### 4.2.2 Array的处理
+
+如果target 是数组并且key 是一个有效的索引值，就先设置length 属性。这样如果我们传递的索引值大于当前数组的length，就需要让target 的length 等于 索引值。
+接下来，通过splice 方法把val 设置到target 中的指定位置(参数中提供的索引值的位置)。**当我们使用splice方法把val 设置到target中的时候，数组拦截器会侦测到target发生了变化，并且会自动帮助我们把这个新增的val 转换成响应式的**。
+
+<img src="http://cdn.wangtongmeng.com/20250726165610.png" style="zoom:50%;" />
+
+#### 4.2.3 key 已存在于 target 中
+
+由于key已经存在于target 中，所以其实这个key已经被侦测了变化。直接赋值。
+
+<img src="http://cdn.wangtongmeng.com/20250726165740.png" style="zoom:50%;" />
+
+#### 4.2.4 处理新增的属性
+
+- 获取`target.__ob__` 属性。
+- 处理文档中所说的“target 不能是Vuejs实例或Vue.js实例的根数据对象”的情况。
+- 如果 target 身上没有 __ 属性，说明它并不是响应式的，并不需要做什么特殊处理，只需要通过 key 和 val 在 target 上设置就行了。
+- 如果前面的所有判断条件都不满足，那么说明用户是在响应式数据上新增了一个属性，这种 情况下需要追踪这个新增属性的变化，即使用defineReactive 将新增属性转换成getter/setter 的形式即可。
+- 最后，向target 的依赖触发变化通知，并返回val。
+
+
+
+<img src="http://cdn.wangtongmeng.com/20250726170953.png" style="zoom:50%;" />
+
+### 4.3 vm.$delete
+
+#### 4.3.1 用法
+
+```bash
+vm.$delete( target, key )
+参数:
+• {Object | Array} target
+• {string | number} key/index
+用法:删除对象的属性。如果对象是响应式的，需要确 保删除能触发更新视图。这个方法主要用于避开Vuejs 不能检测到属性被删除的限制。 在2.2.0+中，同样支持在数组上工作。
+```
+
+**注意：目标对象不能是Vue.js实例或Vuejs 实例的根数据对象。**
+
+#### 4.3.2 实现原理
+
+在ES6之前，JavaScript并没有办法侦测到 一个属性在object 中被删除，所以如果使用delete 来删除 一个属性，Vue.js根本不知道这个属 性被删除了。
+
+使用 `vm.$delete`。它帮助我们在删除属性后自动向依赖发送消息，通知 watcher 数据发生了变化。
+
+![](http://cdn.wangtongmeng.com/20250726172345.png)
 
 ## 5.1-5.4
 
 ## 第6章
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
