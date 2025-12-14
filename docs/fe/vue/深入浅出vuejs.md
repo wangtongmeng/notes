@@ -290,7 +290,449 @@ vm.$delete( target, key )
 
 ## 5.1-5.4
 
-## 第6章
+## 第5章 虚拟 DOM简介
+
+### 5.1 什么是虚拟 DOM
+
+虚拟 DOM 的解决方式是 通过状态 生成 一个虚拟节点树，然 后使用虚拟节点树进行渲染。 在渲染之前，会使用新生成的虚拟节点树和上一次生成的虚拟节点树进行对比，只渲染不同的 部分。
+
+### 5.2 为什么要引入虚拟 DOM
+
+Vue.js 2.0 开始选择了一个中等粒度的解决方案，那就是引入了虚拟 DOM。组件级别是一个 watcher 实例，就是说即便一个组件内有 10 个节点使用了某个状态，但其实也只有一个 watcher 在观察这个状态的变化。所以当这个状态发生变化时，只能通知到组件，然后组件内部通过虚拟 DOM 去进行比对与渲染。这是一个比较折中的方案。
+
+### 5.3 Vue.js 中的虚拟DOM
+
+在Vue.js 中，我们使用模板来描述状态与DOM之间的映射关系。Vue.js通过编译将模板转 换成渲染函数(render )，执行渲染函数就 可以得到 一个虚拟节点树，使用这个虚拟节点树就可以渲染页面
+
+<img src="http://cdn.wangtongmeng.com/20250729073934.png" style="zoom:50%;" />
+
+为了避免不必要的DOM操作，虚拟D OM 在虚拟节点映射到视图的过程中，将虚拟节点与 上一次渲染视图所使用的旧虚拟节点 (oldVnode)做对比，找出真正需要更新的节点来进行DOM 操作，从而避免操作其他无任何改动的DOM。
+
+<img src="http://cdn.wangtongmeng.com/20250729074035.png" style="zoom:50%;" />
+
+虚拟DOM做的两件事
+
+- 提供与真实DOM 节点所对应的虚拟节点vnode。
+- 又将虚拟节点vnode 和旧虚拟节点oldVnode进行比对，然后更新视图。
+
+
+
+## 第6章 VNode
+
+### 6.1什么是 VNode
+
+Vnode类，可以生成不同类型的vnode 实例，而不同类型的vnode 表示不同类型的真实DOM元素。vnode本质上是一个js对象，用于创建真实DOM节点。
+
+![](http://cdn.wangtongmeng.com/20250804075321.png)
+
+### 6.2 VNode 的作用
+
+每次渲染视图时，都是先创建 vnode，再使用它创建真实DOM插入页面，我们会缓存上一次的vnode，在重新渲染视图时，对比新老vnode，找出需要更新的真实DOM再去更新。
+
+Vue.js侦测策略时中等粒度，也就是组件级别
+
+- 当组件使用的状态中有一个发生变化，组件会重新渲染
+- 组件中只有一个节点发生变化，也会重新渲染整个组件的所有节点，造成**性能浪费**。因此进行**新老vnode对比**只更新发生变化的节点就变得尤为重要。
+
+### 6.3 Vnode 的类型
+
+- 注释节点、文本节点、元素节点、组件节点、函数式组件、克隆节点
+
+#### 6.3.1 注释节点
+
+一个注释节点只有两个有效属性 text 和isComment，其余属性全是默认的 undefined 或者false。
+
+![](http://cdn.wangtongmeng.com/20250804080325.png)
+
+#### 6.3.2 文本节点
+
+![](http://cdn.wangtongmeng.com/20250804080452.png)
+
+#### 6.3.3 克隆节点
+
+克隆节点是将现有节点的属性复制到新节点中，让新创建的节点和被克隆节点的属性保持 一 致 ，从而实现克隆效果。它的作用时优化静态节点和插槽节点(slot node)。
+
+当组件某个状态发生变化后，当前组件会通过虚拟DOM重新渲染视图，静态节点内容不会改变，只需要首次执行渲染函数获取vnode，后面更新不需要重新生成。所以会将vnode克隆一份，**使用克隆节点进行渲染**。这样**不需要重新执行渲染函数生成静态节点的vnode**，从而提升一定程度的性能。
+
+<img src="http://cdn.wangtongmeng.com/20250804081051.png" style="zoom:50%;" />
+
+#### 6.3.4 元素节点
+
+元素节点通常会存在以下4种有效属性。 
+
+- tag:顾名思义，tag就是一个节点的名称，例如p、ul、li和div等。
+- data:该属性包含了一些节点上的数据，比如attrs、class 和style等。
+- children:当前节点的子节点列表。
+- context:它当前组件的Vue.js实例。
+
+<img src="http://cdn.wangtongmeng.com/20250804081314.png" style="zoom:50%;" />
+
+#### 6.3.5 组件节点
+
+除了元素节点的属性，还有两个独有属性。
+
+- componentOptions：组件节点的选项参数，包含 propsData、tag、children等信息。
+- componentInstance：组件的实例，也是Vue.js的实例。
+
+<img src="http://cdn.wangtongmeng.com/20250804081754.png" style="zoom:50%;" />
+
+#### 6.3.6 函数式组件
+
+也有两个独有属性，functionalContext和functionalOptions。
+
+<img src="http://cdn.wangtongmeng.com/20250804081903.png" style="zoom:50%;" />
+
+## 第7章 patch
+
+虚拟DOM最核心的部分是patch，它可以将vnode渲染成真实的DOM。
+
+因为DOM操作的执行速度远不如JavaScript的运算速度快，因此将大量的DOM操作转移到JavaScript中，使用patching算法计算出真正需要更新的节点，最大限度地减少DOM操作，从而显著提升性能。
+
+### 7.1 patch介绍
+
+Patch 对比新老node，找出差异，在现有DOM上进行修改来达到渲染视图的目的。
+
+对现有DOM进行修改需要做三件事：
+
+- 创建新增的节点；
+- 删除已经废弃的节点；
+- 修改需要更新的节点"
+
+### 7.1.1 新增节点
+
+需要使用vnode生成真实DOM元素并插入到视图
+
+- 当oldVnode不存在而vnode存在时
+- 当 vnode和oldVnode完全不是同一个节点时
+
+<img src="http://cdn.wangtongmeng.com/20250812074528.png" style="zoom: 33%;" />
+
+### 7.1.2 删除节点
+
+需要删除的场景
+
+- 当一个节点只在 oldVnode中存在时
+
+### 7.1.3 更新节点
+
+需要更新的场景
+
+- 当oldVnode和vnode是同一个节点时，使用更详细的对⽐操作对真实的DOM节点进行更新。
+
+### 7.1.4小结
+
+<img src="http://cdn.wangtongmeng.com/20250812075058.png" style="zoom: 33%;" />
+
+## 7.2-7.3
+
+### 7.2 创建节点
+
+一个元素从创建到渲染的过程
+
+根据vnode创建DOM元素，然后将DOM插入视图中。
+
+有三种类型节点会被创建插入DOM中：元素节点(是否具有tag属性，创建子节点是递归的过程)、注释节点（isComment是否为true）和文本节点。
+
+<img src="http://cdn.wangtongmeng.com/20250817091904.png" style="zoom:50%;" />
+
+
+
+### 7.3 删除节点
+
+通过索引值找到对应vnode，通过其父元素删除自己。
+
+nodeOps的写法是为了实现框架渲染机制和DOM解耦，方便跨平台渲染。
+
+<img src="http://cdn.wangtongmeng.com/20250817092111.png" style="zoom:50%;" />
+### 7.4 更新节点
+只有两个节点是同一个节点时，才需要更新节点，找出最小更新范围更新。
+#### 7.4.1 静态节点
+如果新旧虚拟节点是静态节点，直接跳过。
+#### 7.4.2 新虚拟节点有文本属性
+当新旧虚拟节点不是静态节点，且属性不同时，以新虚拟节点为准更新时图。
+新节点有text属性，直接setTextContent方法更新视图dom。
+#### 7.4.3 新虚拟节点无文本属性
+新节点无text属性，说明是元素节点
+- 有children的情况
+	- oldVnode有children属性：新旧vnode children对比更新。
+	- oldVnode无children属性：说明oldVnode是空标签或有文本的文本节点。只需清空标签，将vnode中的children挨个创建真是DOM节点并插入视图DOM节点下面。
+- 无children的情况
+	- 当vnode无text属性也无children属性时，说明创建的是空节点。只需要删除oldVnode的子节点或文本。
+### 7.5 更新子节点
+更新节点时，当新旧vnode都存在子节点且不同时，需要进行子节点的更新操作。
+更新子节点有4种操作：更新、新增、删除、移动节点。
+#### 7.5.1 更新策略
+循环newCihldren新子节点列表，判断oldChildren中有没有相同节点，没有则说明是新增节点，则创建节点并插入视图。如果oldChildren中有节点，则做更新操作。如果只是位置不同则移动节点。
+#### 7.5.2 优化策略
+一些快捷查找节点的操作：
+- 新前与旧前
+- 新后与旧后
+- 新后与旧前
+- 新前与旧后
+新前：newChildren中所有未处理的第一个节点。
+新后：newChildren中所有未处理的最后一个节点。
+旧前：oldChildren中所有未处理的第一个节点。
+旧后：oldChildren中所有未处理的最后一个节点。
+
+通过4种方式就可以找到相同节点，节省循环操作。
+#### 7.5.3 哪些节点是为处理过的
+未循环到的是未处理过的，结合前面的优化策略，通过双指针记录范围，最后在进行循环操作。
+## 第8章 模板编译
+
+模板编译，主要是将模板编译成渲染函数。
+
+模板编译分三部分内容：
+
+- 解析器将模板解析成 AST
+- 优化器遍历 AST 标记静态节点
+- 代码生成器使用 AST 生成渲染函数
+
+## 9.1-9.3.1
+## 9.3-9.3.3
+## 9.3.3-.9.3.7
+## 9.3.8-9.5
+## 第10章
+## 第11章
+## 第12章
+## 13.1-13.2
+## 13.3.1-13.2
+## 13.3.1-13.3.3
+## 13.3.4 vm.$mount
+
+`vm.$mount` 
+
+- 参数：Element | string（elementOrSelector）
+- 返回值：vm，实例本身。
+- 用法：可以让vue实例关联到DOM元素。
+
+<img src="http://cdn.wangtongmeng.com/20251207230747.png" style="zoom:50%;" />
+
+`vm.$mount`在完整版(vue.js)和只包含运行时版本(vue.runtime.js)中的表现不一样。
+
+- 完整版：**模板编译**->渲染函数->挂载与渲染
+- 运行时版：渲染函数->挂载与渲染
+
+<img src="http://cdn.wangtongmeng.com/20251207231403.png" style="zoom:50%;" />
+
+**1.完整版`vm.$mount`的实现原理**
+
+- 函数劫持`vm.$mount`原始方法，增加编译功能。
+- 编译功能
+  - **第一步：通过 el 获取 DOM 元素**
+  - **第二步：获取模板 template**
+    - vue 实例有 render 选项，直接使用 render，不进入模板编译。
+    - 有 template，无 render
+      - template 是模板字符串，说明用户设置的模板，直接使用
+      - template 是#开头的选择器，获取 DOM 元素的 innerHTML 作为模板
+      - template 是 DOM 元素，取元素的 innerHTML 作为模板
+    - 无 template，会从 el 选项中获取 HTML 字符串(`el.outerHTML`)作为模板
+  - **第三步：将模板编译成渲染函数**
+    - 检查编译缓存
+    - 模板编译成代码字符串并存储在 compiled 中的 render 属性中，例如`with(this) freturn _C("div",{attrs:("id":"el"}},[_v("Hello "+_s(name))])}'`
+    - 调用 createFunction 函数将代码字符串转换为函数（`new Function(code)`），并设置到 `this.$options` 上。
+
+**2.只包含运行时版本的 `vm.$mount` 的实现原理**
+
+- 获取el 对应的 DOM 元素
+- 使用 mountComponent 将 vue 实例挂在到 DOM 元素上
+  - _update：调用虚拟 DOM 中的 patch 方法执行节点对比与渲染操作。
+  - _render：执行渲染函数，生成新 Vnode。
+  - 函数所有读操作会被 watcher观察，wacher 会监听数据变化，持续渲染到指定 DOM 元素上。
+
+<img src="http://cdn.wangtongmeng.com/20251208080952.png" style="zoom:50%;" />
+
+
+
+## 13.4.1-13.4.5
+
+Vue.extend：使用Vue构造器创建一个子类，参数为组件选项。 内部创建一个 Sub 函数并继承父类。
+
+- 增加缓存策略使用父类 id 作为缓存的 key，将子类缓存在 cachedCtors 中。
+- 创建子类并返回，此时还没有继承 Vue 的能力。
+- 新增原型继承的逻辑(`Sub.prototype = Object.create(Super.prototype)`)，并将父类的 options 选项继承到子类中(mergeOptions)
+- 如果选项中存在 props 属性，则初始化`initProps(Sub)`，作用是将 key 代理到 _props 中。此时 vm.name 访问的是 `Sub.prototype._props.name`
+- 如果有 computed，也进行初始化(`initComputed(sub)`)
+- 将父类中存在的属性依此复制到子类中，包括 extend，mixin，use，component，directive 和 filter。同时子类上新增了 superOptions，extendOptions 和 sealedOptions 属性。
+
+Vue.nextTick：在下次DOM更新循环结束后执行延迟回调，可用来获取更新后的DOM。
+
+Vue.set：同vm.$set，设置对象属性，如果对象是响应式的，则创建后也是响应式的。用于避开 Vue 不能检测属性被添加的限制。
+
+Vue.delete：删除对象属性。如果对象是响应式的，则会触发更新试图。用于避开Vue不能检测到属性被删除的限制。
+
+Vue.directive：注册或获取全局指令。
+
+## 13.4.6-13.5
+
+## 14.1-14.2
+
+## 14.3.-14.6
+
+## 14.7.1-14.7.3
+
+## 14.7.4-14.9
+
+## 15
+
+## 16
+
+## 17.1-17.6
+
+## 17.7-17.10
+
+## 17.11-17.18
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

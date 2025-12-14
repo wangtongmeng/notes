@@ -1,0 +1,204 @@
+{
+  "main": {
+    "id": "53d3e9e3fa3742ee",
+    "type": "split",
+    "children": [
+      {
+        "id": "c287b3d8f67e4344",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0b6b94ce10a06e9a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "fe/vue/深入浅出vuejs.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "深入浅出vuejs"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "424b42189ce41e5c",
+    "type": "split",
+    "children": [
+      {
+        "id": "5f389fab5638beb1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "62ef838ae0501430",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1a305d9b9d895203",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "521862a9d4d43f4a",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "458cf87a1425953c",
+    "type": "split",
+    "children": [
+      {
+        "id": "b54fd1b8e1c8e323",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "26e8334fc6090e19",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "fe/vue/深入浅出vuejs.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for 深入浅出vuejs"
+            }
+          },
+          {
+            "id": "ff6c5c865bf057f8",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "355ed9f09900cde1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "e611bcbf337cd255",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "fe/vue/深入浅出vuejs.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of 深入浅出vuejs"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0b6b94ce10a06e9a",
+  "lastOpenFiles": [
+    "fe/专题/服务端渲染/next实现ssr.md",
+    "fe/专题/服务端渲染/实现ssr.md",
+    "fe/运维/ci/jenkins.md",
+    "fe/运维/ci/gitlab ci.md",
+    "fe/设计模式/设计模式.md",
+    "index.md",
+    "tools/picgo使用.md",
+    "tools/windows/解决Microsoft Office SDX Helper服务占用率高.md",
+    "public/img/insight.png",
+    "public/img/footprint.png",
+    "public/img/focus.png",
+    "read/index.md",
+    "ai/pyhton",
+    "ai",
+    "Untitled.canvas",
+    "Untitled 1.canvas",
+    "fe/vue/pinia实现原理.md",
+    "fe/vue/nuxt.js实现 ssr.md",
+    "fe/vue/Dialog.md",
+    "fe/vue/深入浅出vuejs.md",
+    "fe/react/connected-react-router.md",
+    "fe/node/express/express.md",
+    "fe/javascript/js基础.md",
+    "fe/interview/公司面试/2024/今日水印相机.md",
+    "fe/interview/公司面试/2024/何时利.md",
+    "fe/interview/公司面试/2024/百度贴吧.md",
+    "fe/interview/公司面试/2024/合合信息.md",
+    "fe/interview/公司面试/2024/豆神教育.md",
+    "fe/跨端/uniapp/uniapp的使用.md",
+    "fe/vue/vue-router4实现原理.md"
+  ]
+}
