@@ -488,9 +488,49 @@ nodeOps的写法是为了实现框架渲染机制和DOM解耦，方便跨平台�
 - 代码生成器使用 AST 生成渲染函数
 
 ## 9.1-9.3.1
-## 9.3-9.3.3
-## 9.3.3-.9.3.7
-## 9.3.8-9.5
+
+## 第9章 解析器
+
+将模板解析成 AST 的过程。
+
+解析器内部分了好几个子解析器，比如 HTML 解析器、文本解析器以及过滤器解析器，其中最主要的是 HTML 解析器。
+
+<img src="http://cdn.wangtongmeng.com/20260104074712.png" style="zoom:50%;" />
+
+我们在钩子函数中构建 AST节点。在 start 钩子函数中构建元素类型的节点，在 chars 钩子函数中构建文本类型的节点，在 comment 钩子函数中构建注释类型的节点。
+
+钩子函数 start 有三个参数，分别是 tag、attires 和 unary，分别是标签名、标签属性和是否是自闭合标签。
+
+文本节点的钩子函数 chars 和注释节点的钩子函数 comment 都只有一个参数，只有 text。
+
+构建 AST 层级是通过栈类记录的，对应 DOM 的深度。
+
+HTML 解析器运行原理是通过循环 HTML 模板字符串，每轮循环从 HTML 模板中截取一小段字符串，重复以上过程，直到 HTML 模板被截成一个空字符串时结束循环，解析完毕。
+
+## 9.3.2-9.3.3 9.3.4-.9.3.7 9.3.8-9.5
+
+第九章 解析器
+
+解析器的作用是通过模板得到 AST。
+
+生成 AST 的过程需要借助 HTML 解析器， 当 HTML 解析器触发不同的钩子函数时，我们可以构建不同的节点。
+
+我们通过栈来得到当前正在构建的节点的父节点，然后构建出父节点添加到父节点下面。
+
+最终，当 HTML 解析器运行完毕后，我们就可以得到一个完整的带DO吗层级关系的 AST。
+
+HTML解析器的内部原理是一小段一小段截取模板字符串，每截取一小段字符串，就会根据截取出来的字符类型触发不同的钩子函数，直到模板字符串截空停止运行。
+
+![](http://cdn.wangtongmeng.com/20260110154027.png)
+
+文本分两种类型，不带变量的纯文本和带变量的文本，后者需要使用文本解析器进行二次加工。
+
+<img src="http://cdn.wangtongmeng.com/20260110153539.png" style="zoom:50%;" />
+
+
+
+
+
 ## 第10章
 ## 第11章
 ## 第12章
@@ -564,7 +604,44 @@ Vue.directive：注册或获取全局指令。
 
 ## 13.4.6-13.5
 
+Vue.filter 或侧或获取全局过滤器。
+
+Vue.component 注册或获取全局组件，原理是将组件保存在`Vue.options['components']`。`Vue.component = function (id, definition) {};`
+
+definition 不存在，则使用 id 从 `this.options['components']`中读取组件并返回；存在，则注册组件，将组件保存在`Vue.options['components']`中。definition 支持两种参数，选项对象和构造器，如果是对象，则内部使用`Vue.extend`变成Vue的子类，
+
+Vue.use 注册插件，参数可以是install方法，也可以是包含install方法的对象，内部逻辑会保证只安装一次。
+
+Vue.mixin：全局注册一个混入，注册后会影响每个vue实例，会和组件自己的optiosn属性合并
+
+Vue.compile：编译模板字符串并返回包含渲染函数的对象，只存在在完整版中。
+
+Vue.version，提供vue安装版本号
+
 ## 14.1-14.2
+
+## 第14章 生命周期
+
+Vue.js 实例的生命周期分为4个阶段：初始化阶段、模板编译阶段、挂载阶段、卸载阶段。
+
+- 初始化阶段：new Vue() 到 created 之间的阶段，初始化实例的一些属性、事件及相应数据，如 props、methods、data、computed、watch、provide 和 inject 等。
+- 模板编译阶段： created 到 beforeMount 之间的阶段，主要目的是将模板编译成渲染函数（只存在完整版中）。
+- 挂载阶段：beforeMount 到 mounted 之间，将实例挂载到 DOM 元素上，挂载过程中，会开启 Watcher 持续跟踪依赖变化。状态发生变化时，Watcher 会通知虚拟 DOM 重新渲染视图，并且会在渲染视图前触发 beforeUpdate 钩子，渲染完毕后触发 updated 钩子。
+- 卸载阶段：应用调用 vm.$destroy 后，Vue.js的生命走起进入卸载阶段。
+
+**new Vue() 被调用时发生了什么**
+
+首先执行`this._init(options)`来执行生命周期的初始化流程。_init是通过initMixin给 Vue 构造函数的 prototype 属性上添加一个 _init 方法实现的。
+
+_init 方法的内部原理
+
+- beforeCreate之前执行 initLifecycle、initEvents 和 initRender，初始化事件和属性，然后出发 beforeCreate
+- beforeCreate和 created之间，初始化 provide/inject 和状态，这里的状态指的是 props、methods、data、computed 以及 watch。
+- created 之后，判断是否有 el 选项，有则调用 vm.$mount 进入后面的生命周期。
+
+<img src="http://cdn.wangtongmeng.com/20260104065106.png" style="zoom:50%;" />
+
+Vue 在合并 options过程中 会找出所有钩子函数，并转换为数组。因为Vue.mixin和用户实例话的vue.js，可以设置统一个生命周期钩子，数组可以存储多个钩子。
 
 ## 14.3.-14.6
 
