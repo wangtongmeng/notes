@@ -96,8 +96,7 @@ function generateIndexContent(docsPath, dir) {
   }
   
   // 生成Markdown内容
-  let content = `# ${dir.charAt(0).toUpperCase() + dir.slice(1)}\n\n`;
-  content += `## 文章列表\n\n`;
+  let content = '# 文章汇总\n\n';
   
   // 递归生成目录索引
   content += generateDirIndex(docsPath, dir, 0);
@@ -106,9 +105,21 @@ function generateIndexContent(docsPath, dir) {
 }
 
 // 递归遍历目录并生成索引内容
-function generateDirIndex(docsPath, dir, indentLevel) {
-  const fullPath = path.join(docsPath, dir);
-  const relativePath = dir ? dir : '';
+function generateDirIndex(docsPath, topLevelDir, indentLevel) {
+  const fullPath = path.join(docsPath, topLevelDir);
+  let content = '';
+  
+  // 检查目录是否应该隐藏
+  if (shouldHideDirectory(fullPath, docsPath)) {
+    return '';
+  }
+  
+  return generateDirContent(docsPath, topLevelDir, '', indentLevel);
+}
+
+// 递归遍历目录并生成内容
+function generateDirContent(docsPath, topLevelDir, currentRelativePath, indentLevel) {
+  const fullPath = path.join(docsPath, topLevelDir, currentRelativePath || '');
   let content = '';
   
   // 检查目录是否应该隐藏
@@ -143,14 +154,17 @@ function generateDirIndex(docsPath, dir, indentLevel) {
       
       if (hasValidFiles) {
         // 目录：显示目录名并递归
-        const dirPath = relativePath ? `${relativePath}/${item}` : item;
+        const nextRelativePath = currentRelativePath ? `${currentRelativePath}/${item}` : item;
         content += `${indent}- ${item}\n`;
-        content += generateDirIndex(docsPath, dirPath, indentLevel + 1);
+        content += generateDirContent(docsPath, topLevelDir, nextRelativePath, indentLevel + 1);
       }
     } else if (item.endsWith('.md') && item !== 'index.md') {
       // 文件：显示文件链接
       const fileName = item.replace('.md', '');
-      const link = relativePath ? `./${relativePath}/${fileName}` : `./${fileName}`;
+      // 当前文件相对于topLevelDir的路径
+      const relativePath = currentRelativePath ? `${currentRelativePath}/${fileName}` : fileName;
+      // 链接应该是相对于当前index.md所在目录的路径
+      const link = `./${relativePath}`;
       content += `${indent}- [${fileName}](${link})\n`;
     }
   }

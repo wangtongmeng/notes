@@ -62,7 +62,7 @@ function generateSidebarConfig(docsPath, dir, depth = 1) {
       
       // 二级目录（depth=1，如alg）应该默认展开
       // 三级及更深目录（depth>=2）应该默认收起
-      const shouldCollapse = depth >= 2;
+      const shouldCollapse = depth >= 1;
       
       return {
         text: item,

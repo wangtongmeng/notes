@@ -11,8 +11,8 @@
     "deploy": "./scripts/deploy.sh",
     "menu": "./scripts/menu.sh"
   },
+  "type": "module",
   "devDependencies": {
-    "vitepress": "^1.6.4"
-  },
-  "type": "module"
+    "vitepress": "^2.0.0-alpha.16"
+  }
 }

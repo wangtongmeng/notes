@@ -19,7 +19,7 @@ CSS 中的流
 
 - 利用元素”流“的特性实现各类布局效果。
 - ”流体布局“具有自适应性（因为”流“本身具有自适应性）。
-- `<div>`是具有“流”特性的元素，“div+CSS布局“ 实际上指的就是”流体布局“。
+- `&lt;div&gt;`是具有“流”特性的元素，“div+CSS布局“ 实际上指的就是”流体布局“。
 
 CSS 世界
 
@@ -28,8 +28,8 @@ CSS 世界
 
 table
 
-- 流影响整个CSS世界，但不包括`<table>`。
-- `<table>`出现时间早，有自己的规则。
+- 流影响整个CSS世界，但不包括`&lt;table&gt;`。
+- `&lt;table&gt;`出现时间早，有自己的规则。
 
 CSS3
 
@@ -52,7 +52,7 @@ CSS3
 
 **块级元素**
 
-- 常见的块级元素`<div>`、`<li>`、`<table>`等
+- 常见的块级元素`&lt;div&gt;`、`&lt;li&gt;`、`&lt;table&gt;`等
 
 - “块级元素”和“display为block的元素”不同，display为list-item(li)、table(table)的也是块级元素
 
@@ -72,7 +72,7 @@ CSS3
 
 **width:auto** （默认值），至少包含以下4种宽度表现
 
-- 充分利用可用空间：`<div>`、`<p>`等宽度默认是100%于父级容器。
+- 充分利用可用空间：`&lt;div&gt;`、`&lt;p&gt;`等宽度默认是100%于父级容器。
 - 收缩与包裹：浮动、绝对定位、inline-block元素、table元素，会收缩到合适（包裹性），对应CSS3的fit-content表现。
 - 收缩到最小：table-layout为auto的表格，当每列空间不够时，中文随便断，英文按单词断。
 - 超出容器限制：
@@ -84,12 +84,12 @@ CSS3
 - 内部尺寸，有内部元素（子元素）决定
 
 - 外部尺寸，由外部元素（父元素）决定
-  - `<div>`默认宽度100%显示，是“外部尺寸”（唯一的外部尺寸，“流”的精髓所在），其余全部是“内部尺寸”。
+  - `&lt;div&gt;`默认宽度100%显示，是“外部尺寸”（唯一的外部尺寸，“流”的精髓所在），其余全部是“内部尺寸”。
 
 **外部尺寸与流体特性**
 
 - 正常流宽度
-  - `<div>`尺寸会铺满父容器行，blocak容器的流特性（一种margin/padding/content内容区域自动分配水平空间的机制）
+  - `&lt;div&gt;`尺寸会铺满父容器行，blocak容器的流特性（一种margin/padding/content内容区域自动分配水平空间的机制）
   - width设置固定值，会导致流动性丢失，开发过程中要遵循“**无宽度、无图片、无浮动**”的准则。
   - 例如设置子元素width:100%时，如果有padding和margin，父容器宽度又固定，会导致样式超出。
 - 格式化宽度
@@ -124,10 +124,10 @@ CSS3
 
 width 是作用在“内在盒子”上的，这个“内在盒子”是由很多部分构成的，内在盒子”又被分成了 4 个盒子，分别是 content box、padding box、border box 和 margin box。
 
-问题：width:100px 是如何作用到`<div>`元素上的?
+问题：width:100px 是如何作用到`&lt;div&gt;`元素上的?
 
 - content box 环绕着 width 和 height 给定 的矩形
-- width:100px 作用在了 content box 上，当 padding、border 和 margin 都是 0，因此，该`<div>` 宽度就是 100 px，否则不是。
+- width:100px 作用在了 content box 上，当 padding、border 和 margin 都是 0，因此，该`&lt;div&gt;` 宽度就是 100 px，否则不是。
 
 **CSS 流体布局下的宽度分离原则**
 
@@ -141,7 +141,7 @@ width 是作用在“内在盒子”上的，这个“内在盒子”是由很�
 
 **1.替换元素**
 
-替换元素：根据是否具有替换内容，把元素分为替换元素(通过修改某个属性值呈现的内容)和非替换元素。`<img>`、`<object>`、`<video>`、`<iframe>`或表单元素`<textarea>`和`<input>`都是替换元素。
+替换元素：根据是否具有替换内容，把元素分为替换元素(通过修改某个属性值呈现的内容)和非替换元素。`&lt;img&gt;`、`&lt;object&gt;`、`&lt;video&gt;`、`&lt;iframe&gt;`或表单元素`&lt;textarea&gt;`和`&lt;input&gt;`都是替换元素。
 
 除了内容可替换这一特性，还有以下特征：
 
@@ -495,7 +495,7 @@ padding 属性和 background-clip 属性配合，可以在有限的标签下实�
       }
       ```
 
-    - 时`<ul>`的宽度就相当于 100%+20px，于是，第 3n 的`<li>`标签的 margin-right: 20px 就多了 20 像素的使用空间，正好列表的右边缘就是父级`<ul>`容器 100%宽度位置
+    - 时`&lt;ul&gt;`的宽度就相当于 100%+20px，于是，第 3n 的`&lt;li&gt;`标签的 margin-right: 20px 就多了 20 像素的使用空间，正好列表的右边缘就是父级`&lt;ul&gt;`容器 100%宽度位置
 
 **margin 与元素的外部尺寸**
 
@@ -538,7 +538,7 @@ margin 负值实现等高布局不足之处：
 ```html
 .box { background-color: olive; overflow: hidden;}
 .box > div { margin: 50%; }
-<-- .box 是一个宽高比为 2:1 的橄榄绿长方形 -->
+<!-- .box 是一个宽高比为 2:1 的橄榄绿长方形 -->
 <div class="box">
   <div></div>
 </div>

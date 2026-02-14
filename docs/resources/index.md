@@ -1,5 +1,3 @@
-# Resources
+# 文章汇总
 
-## 文章列表
-
-- [books](./resources/books)
+- [books](./books)
