@@ -4,14 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "generate-index": "node docs/.vitepress/generate-index.js",
+    "docs:dev": "node docs/.vitepress/generate-index.js && vitepress dev docs",
+    "docs:build": "node docs/.vitepress/generate-index.js && vitepress build docs",
     "docs:serve": "vitepress serve docs",
     "deploy": "./scripts/deploy.sh",
     "menu": "./scripts/menu.sh"
   },
   "devDependencies": {
-    "vitepress": "^1.0.0-rc.45"
+    "vitepress": "^1.6.4"
   },
   "type": "module"
 }
