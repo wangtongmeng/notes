@@ -101,7 +101,7 @@
   - node基础
     - [01.node的基本概念](./node/node基础/01.node的基本概念)
     - [02.npm常用命令](./node/node基础/02.npm常用命令)
-    - [03.异步&事件环](./node/node基础/03.异步&事件环)
+    - [03.异步和事件环](./node/node基础/03.异步和事件环)
     - [04.node中的模块](./node/node基础/04.node中的模块)
     - [05.Buffer的应用](./node/node基础/05.Buffer的应用)
     - [06.模板引擎实现原理](./node/node基础/06.模板引擎实现原理)
@@ -109,7 +109,7 @@
     - [08.Express应用与原理](./node/node基础/08.Express应用与原理)
     - [09.koa的使用与原理](./node/node基础/09.koa的使用与原理)
     - [10.node中的设计模式](./node/node基础/10.node中的设计模式)
-    - [11.cookie&session](./node/node基础/11.cookie&session)
+    - [11.cookie和session](./node/node基础/11.cookie和session)
     - [node使用esm](./node/node基础/node使用esm)
   - [npm镜像](./node/npm镜像)
 - projects

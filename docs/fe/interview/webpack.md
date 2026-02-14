@@ -319,7 +319,7 @@ Webpack 的热更新通过 WebSocket 实时通信，模块重新编译，和运�
 
 优化 babel-loader
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014191204868.png" alt="image-20231014191204868" style="zoom: 25%;" />
+<img src="./assets/image-20231014191204868.png" alt="image-20231014191204868" style="zoom: 25%;" />
 
 ```json
 {
@@ -335,7 +335,7 @@ Webpack 的热更新通过 WebSocket 实时通信，模块重新编译，和运�
 
 noParse 避免重复打包
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014192644213.png" alt="image-20231014192644213" style="zoom:25%;" />
+<img src="./assets/image-20231014192644213.png" alt="image-20231014192644213" style="zoom:25%;" />
 
 ```js
 module.exports = {
@@ -369,7 +369,7 @@ module.export = {
 
 
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231014193856648.png" alt="image-20231014193856648" style="zoom:25%;" />
+<img src="./assets/image-20231014193856648.png" alt="image-20231014193856648" style="zoom:25%;" />
 
 
 

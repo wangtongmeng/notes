@@ -406,7 +406,7 @@ toRefs
 
 合成函数返回响应式对象（解构）
 
-![image-20231013075153869](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013075153869.png)
+![image-20231013075153869](./assets/image-20231013075153869.png)
 
 最佳使用
 
@@ -686,7 +686,7 @@ toRefs
 
 合成函数返回响应式对象（解构）
 
-![image-20231013075153869](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013075153869.png)
+![image-20231013075153869](./assets/image-20231013075153869.png)
 
 最佳使用
 
@@ -711,35 +711,35 @@ toRefs
 
 createApp
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101122828.png" alt="image-20231013101122828" style="zoom:33%;" />
+<img src="./assets/image-20231013101122828.png" alt="image-20231013101122828" style="zoom:33%;" />
 
 emits属性
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101152098.png" alt="image-20231013101152098" style="zoom:25%;" />
+<img src="./assets/image-20231013101152098.png" alt="image-20231013101152098" style="zoom:25%;" />
 
 多事件处理
 
-![image-20231013101431227](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101431227.png)
+![image-20231013101431227](./assets/image-20231013101431227.png)
 
 Fragment
 
-![image-20231013101501380](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101501380.png)
+![image-20231013101501380](./assets/image-20231013101501380.png)
 
 移除 .sync
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101545880.png" alt="image-20231013101545880" style="zoom:25%;" />
+<img src="./assets/image-20231013101545880.png" alt="image-20231013101545880" style="zoom:25%;" />
 
 异步组件
 
-![image-20231013101640605](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101640605.png)
+![image-20231013101640605](./assets/image-20231013101640605.png)
 
 Teleport
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101854652.png" alt="image-20231013101854652" style="zoom:25%;" />
+<img src="./assets/image-20231013101854652.png" alt="image-20231013101854652" style="zoom:25%;" />
 
 Suspense
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013101959000.png" alt="image-20231013101959000" style="zoom:25%;" />
+<img src="./assets/image-20231013101959000.png" alt="image-20231013101959000" style="zoom:25%;" />
 
 Composition API
 
@@ -781,7 +781,7 @@ Composition API
 
 基本使用
 
-<img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013104301985.png" alt="image-20231013104301985" style="zoom: 25%;" />
+<img src="./assets/image-20231013104301985.png" alt="image-20231013104301985" style="zoom: 25%;" />
 
 Reflect作用(非考点)
 
@@ -827,15 +827,15 @@ https://template-explorer.vuejs.org/
 - tree-shaking
   - 编译时，根据不同的情况，引入不同的API
 
- <img src="/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013205915026.png" alt="image-20231013205915026" style="zoom:25%;" />
+ <img src="./assets/image-20231013205915026.png" alt="image-20231013205915026" style="zoom:25%;" />
 
 HoistStatic - options 开启hoits
 
-![image-20231013210718754](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013210718754.png)
+![image-20231013210718754](./assets/image-20231013210718754.png)
 
 相邻静态节点很多的时候，会合并
 
-![image-20231013211600883](/Users/wtm/fe/notes/docs/fe/interview/assets/image-20231013211600883.png)
+![image-20231013211600883](./assets/image-20231013211600883.png)
 
 CacheHandler
 
