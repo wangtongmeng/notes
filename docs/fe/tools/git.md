@@ -80,16 +80,22 @@ git stash drop stash@{0}
 
 ## git 配置信息
 
-要设置 Git 的全局邮箱配置，可以使用以下命令：
-
+设置 Git 全局邮箱配置：
 ```bash
 git config --global user.email "your_email@example.com"
 ```
 
-如果你想为当前项目单独设置邮箱（而不是全局设置），可以去掉 --global 参数：
+为当前项目单独设置邮箱（而不是全局设置），可以去掉 --global 参数：
 
 ```bash
 git config user.email "your_email@example.com"
 ```
+
+查看当前项目配置的信息
+
+```bash
+git config --list --local
+```
+
 
 
