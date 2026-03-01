@@ -63,6 +63,7 @@ vscode settings extensions
 + <font style="color:rgb(51, 51, 51);">主要输出文件的默认值是 </font><font style="color:rgb(111, 89, 144);background-color:rgb(237, 237, 247);">./dist/main.js</font><font style="color:rgb(51, 51, 51);">，其他生成文件默认放置在 </font><font style="color:rgb(111, 89, 144);background-color:rgb(237, 237, 247);">./dist</font><font style="color:rgb(51, 51, 51);"> 文件夹中。</font>
 
   
+
  <font style="color:rgb(51, 51, 51);">webpack.config.js</font>
 
 ```diff
@@ -373,7 +374,7 @@ module.exports = (env,argv) => { // 导出函数接收参数
   console.log('argv', argv) // { env: { production: true } } 或 ...
   return {
     mode: env.production ? 'production' : 'development', // 通过env变量判断，控制多个配置项
-    devtool: false,
+    devtool: false, // 去掉 eval
     entry: './src/index.js',
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -511,7 +512,7 @@ module.exports = {
       template: './src/index.html'
     }),
     new webpack.DefinePlugin({
-+      'process.env.NODE_ENV':JSON.stringify(process.env.NODE_ENV),
++      'process.env.NODE_ENV':JSON.stringify(process.env.NODE_ENV), // JSON.stringify('development') 等价于 '"' + process.env.NODE_ENV + '"'
 +      'NODE_ENV':JSON.stringify(process.env.NODE_ENV),
    })
   ]
@@ -598,7 +599,7 @@ npm i style-loader css-loader -D
 ```
 
 #### <font style="color:rgb(51, 51, 51);">webpack.config.js</font>
-```javascript
+```diff
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
@@ -774,7 +775,7 @@ npm i dart-sass sass-loader -D # 以前用node-sass 最新的改成dart-sass
 ```
 
 #### <font style="color:rgb(51, 51, 51);">webpack.config.js</font>
-```javascript
+```diff
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
@@ -800,7 +801,7 @@ module.exports = {
 ```
 
 #### <font style="color:rgb(51, 51, 51);">src\index.html</font>
-```html
+```diff
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -816,7 +817,7 @@ module.exports = {
 ```
 
 #### <font style="color:rgb(51, 51, 51);">src\index.js</font>
-```javascript
+```diff
 import './index.css';
 +import './less.less';
 +import './sass.scss';
@@ -941,26 +942,48 @@ let postCSSPresetEnv = require('postcss-preset-env');
 module.exports = {
     plugins:[
         postCSSPresetEnv({
-            browsers:'last 10 version'
+            browsers:'last 5 version' // 支持最新的5个版本
         })
     ]
 }
 ```
 
-#### <font style="color:rgb(51, 51, 51);">webpack.config.js</font>
-```javascript
+#### package.json
+
+也可以配置在package.json
+
+```json
 {
-        test: /.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              modules: false
-            }
-          },
-+          'postcss-loader' // css预处理器 处理厂商样式兼容
-        ]
+  "browserslist": {
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ],
+    "production": [
+      ">0.2%"
+    ]
+  }
+}
+```
+
+
+
+#### <font style="color:rgb(51, 51, 51);">webpack.config.js</font>
+
+```diff
+{
+        test: /\.css$/,
+        // 最右侧的loader读的是源文件内容 最左侧的loader一定会返回一个js模块
++        use: ['style-loader', 'css-loader', 'postcss-loader'],
+      },
+      {
+        test: /\.less$/,
++        use: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader'],
+      },
+      {
+        test: /\.scss$/,
++        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
       },
 ```
 
@@ -975,7 +998,7 @@ module.exports = {
 ```
 
 #### <font style="color:rgb(51, 51, 51);">src\index.html</font>
-```html
+```diff
 <!DOCTYPE html>
 <html lang="en">
 <head>
